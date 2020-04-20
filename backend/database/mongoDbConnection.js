@@ -1,6 +1,6 @@
 const dotenv = require('dotenv').config();
 const mongoose = require('mongoose');
-var url = process.env.MONGOURI;
+var url = process.env.MONGO_URI;
 var pool; 
 
 var options = {
@@ -18,7 +18,6 @@ mongoose.connect(url, options, (err, db) => {
         return
     }
     pool = db;
-    
     console.log("You are connected to MongoDB");
 } )
 

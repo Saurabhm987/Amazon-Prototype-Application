@@ -3,9 +3,12 @@ var bodyParser = require('body-parser');
 var cors = require('cors');
 const passport = require('passport');
 require('./database/mySqlConnection')
-const app = express();
 require('./config/passport');
 const morgan = require('morgan');
+
+const mongoPool = require('./database/mongoDbConnection')
+const mysqlPool = require('./database/mySqlConnection')
+const app = express();
 
 app.use(function(req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
@@ -20,6 +23,10 @@ app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(passport.initialize());
+
+// mongo and mysql connection pool
+mongoPool
+mysqlPool
 
 // route handlers
 require('./routes/signUp')(app);
