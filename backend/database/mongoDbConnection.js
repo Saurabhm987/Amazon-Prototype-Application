@@ -1,6 +1,6 @@
 const dotenv = require('dotenv').config();
 const mongoose = require('mongoose');
-var url = process.env.MONGOURI;
+var url = process.env.MONGO_URI;
 var pool; 
 
 mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology: true }, (err, db) => {
@@ -9,7 +9,6 @@ mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology: true }, (err, 
         return
     }
     pool = db;
-    
     console.log("You are connected to MongoDB");
 } )
 
