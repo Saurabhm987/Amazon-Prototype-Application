@@ -5,6 +5,7 @@ const passport = require('passport');
 require('./database/mySqlConnection')
 const app = express();
 require('./config/passport');
+const morgan = require('morgan');
 
 app.use(function(req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
@@ -16,6 +17,7 @@ app.use(function(req, res, next) {
   });
 
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(passport.initialize());
 
