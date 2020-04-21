@@ -10,6 +10,10 @@ const userAuthSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    name: {
+        type: String,
+        required: true
+    },
     userType: {
         type: String,
         required: true
