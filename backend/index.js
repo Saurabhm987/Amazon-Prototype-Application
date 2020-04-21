@@ -2,6 +2,7 @@ const express = require('express')
 var bodyParser = require('body-parser');
 var cors = require('cors');
 const passport = require('passport');
+const mongoose = require('mongoose')
 require('./database/mySqlConnection')
 require('./config/passport');
 
@@ -27,7 +28,11 @@ mongoPool
 mysqlPool
 
 // route handlers
-require('./routes/signUp')(app);
+require('./routes/seller/xyz')(app);
+app.use('/product', require('./routes/products'))
+
+
+
 
 app.listen(3001);
 console.log("Server Listening on port 3001")

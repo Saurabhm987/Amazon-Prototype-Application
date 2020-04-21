@@ -16,13 +16,19 @@ import {
 const FixedMenuLayout = () => (
   <div>
     <Menu fixed='top' inverted>
+    
         <Menu.Item as='a' header>
-            <Image size='mini' src='/amazon-prime.jpg' style={{width:"100px", height:"60px"}} />
-        </Menu.Item>
-        <Menu.Item as='a' style={{width:"1400px"}}>
-            <Input action='Search' placeholder='Search...' />
+            <Image size='mini' src='/amazon-prime.jpg'/>
         </Menu.Item>
 
+        <Grid.Row columns={1} style={{width:"100%"}}>
+            <Grid.Column>
+                <Menu.Item fluid as='a' >
+                  <Input size='large' icon='search' placeholder='Search...' />
+                </Menu.Item>
+            </Grid.Column>
+      </Grid.Row>
+       
         <Dropdown item simple text='Hello Your Name'>
           <Dropdown.Menu>
             <Dropdown.Item>List Item</Dropdown.Item>
@@ -164,8 +170,8 @@ const FixedMenuLayout = () => (
             </Segment>
         </Grid.Column>
     </Grid>
-
     </Container>
+
     <Segment inverted vertical style={{ margin: '5em 0em 0em', padding: '2em 0em ' }}>
       <Container textAlign='center'>
         <Grid divided inverted stackable>
