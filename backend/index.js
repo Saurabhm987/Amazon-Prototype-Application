@@ -1,9 +1,11 @@
 const express = require('express')
-var bodyParser = require('body-parser');
-var cors = require('cors');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+const path = require('path');
 const passport = require('passport');
 require('./database/mySqlConnection')
 require('./config/passport');
+const morgan = require('morgan');
 
 const mongoPool = require('./database/mongoDbConnection')
 const mysqlPool = require('./database/mySqlConnection')
@@ -19,7 +21,11 @@ app.use(function(req, res, next) {
   });
 
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+
+app.use(express.static(path.join(__dirname, '/public'))); // specify the path of static directory
+app.use(morgan('dev'));
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());
 
 // mongo and mysql connection pool
@@ -27,7 +33,8 @@ mongoPool
 mysqlPool
 
 // route handlers
-require('./routes/signUp')(app);
+app.use('/signUp', require('./routes/signUp'));
+app.use('/signin', require('./routes/signin'));
 
 app.listen(3001);
 console.log("Server Listening on port 3001")
