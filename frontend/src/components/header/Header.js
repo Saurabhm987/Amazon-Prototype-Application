@@ -10,7 +10,8 @@ import {
   Input,
   Menu,
   Segment,
-  Placeholder
+  Placeholder,
+  GridColumn
 } from 'semantic-ui-react'
 
 const FixedMenuLayout = () => (
@@ -18,17 +19,18 @@ const FixedMenuLayout = () => (
     <Menu fixed='top' inverted>
     
         <Menu.Item as='a' header>
-            <Image size='mini' src='/amazon-prime.jpg'/>
+            <Image size='mini' src='/amazon-prime.jpg' style={{padding:"none"}} />
         </Menu.Item>
-
-        <Grid.Row columns={1} style={{width:"100%"}}>
-            <Grid.Column>
-                <Menu.Item fluid as='a' >
-                  <Input size='large' icon='search' placeholder='Search...' />
-                </Menu.Item>
-            </Grid.Column>
+        
+      <Grid.Row columns={1} style={{width:"100%"}}>
+        <Grid.Column>
+        <Menu.Item as='a' >
+        <Input fluid icon='search' placeholder='Search...' />
+            {/* <Input action='Search' placeholder='Search...' /> */}
+        </Menu.Item>
+        </Grid.Column>
       </Grid.Row>
-       
+        
         <Dropdown item simple text='Hello Your Name'>
           <Dropdown.Menu>
             <Dropdown.Item>List Item</Dropdown.Item>
