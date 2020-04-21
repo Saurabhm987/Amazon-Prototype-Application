@@ -43,12 +43,14 @@ router.get('/', checkAuth, async (req, res) => {
      user_type 
  * }
  */
+
+// Post /signin
 router.post('/', async (req, res, next) => {
     const {email, password} = req.body;
     console.log('/login req.data: ', req.body);
 
     try {
-        const userAuthResult = await UserAuth.findOne({ email });
+        const userAuthResult = await userAuth.findOne({ email });
         console.log('dbResponse:', userAuthResult);
         if(userAuthResult) {
             if(isValidPassword(password, userAuthResult.password)) {
