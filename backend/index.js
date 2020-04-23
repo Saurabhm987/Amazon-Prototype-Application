@@ -29,21 +29,17 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());
 
+app.use('/public', express.static('public'));
+
+
 // mongo and mysql connection pool
 mongoPool
 mysqlPool
 
 // route handlers
-<<<<<<< HEAD
-require('./routes/seller/xyz')(app);
 app.use('/product', require('./routes/products'))
-
-
-
-=======
 app.use('/signUp', require('./routes/signUp'));
 app.use('/signin', require('./routes/signin'));
->>>>>>> 8d72bb20c4aaf13c4a8f4deab20dc58efdd49f9c
 
 app.listen(3001);
 console.log("Server Listening on port 3001")

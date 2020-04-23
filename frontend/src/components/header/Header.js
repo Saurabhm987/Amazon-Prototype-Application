@@ -10,8 +10,7 @@ import {
   Input,
   Menu,
   Segment,
-  Placeholder,
-  GridColumn
+  Placeholder
 } from 'semantic-ui-react'
 
 const FixedMenuLayout = () => (

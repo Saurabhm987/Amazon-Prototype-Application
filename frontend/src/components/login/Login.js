@@ -35,7 +35,7 @@ class LoginForm extends Component {
                                 <Header size="large">Sign-in</Header>
                                 <Form.Input fluid label="Email (phone for mobile accounts)"  placeholder='Your Name' />
                                 <Form.Input fluid label="Password"  placeholder='Password' />
-                                <Button color='yellow'  fluid size='large' style={{border:"solid 1px black", textColor:"black"}} onClick={this.loginHandler}>
+                                <Button color='yellow'  fluid size='large' style={{border:"solid 1px black", color: 'black'}} onClick={this.loginHandler}>
                                         Continue
                                 </Button>
                                 <div style={{marginTop:"20px"}}>

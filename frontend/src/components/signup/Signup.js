@@ -28,7 +28,7 @@ const SignupForm = () => (
           <div style={{marginBottom: "20px"}}>
               By creating an account, you agree to Amazon's Conditions of Use and Privacy Notice.
           </div>
-          <Button color='yellow' fluid size='large' style={{border:"solid 1px black"}}>
+          <Button color='yellow' fluid size='large' style={{border:"solid 1px black", color:'black'}}>
               Create your Amazon Account
           </Button>
         </Segment>

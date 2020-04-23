@@ -23,6 +23,7 @@ var productSchema = new Schema({
     category: String,
     desription: String,
     images:Array,
+    views: Number,
     reviews: [ReviewsSchema]
 })
 
