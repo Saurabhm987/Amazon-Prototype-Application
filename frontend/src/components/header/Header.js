@@ -10,10 +10,21 @@ import {
   Input,
   Menu,
   Segment,
-  Placeholder
-} from 'semantic-ui-react'
+  Placeholder,
+  GridColumn
+} from 'semantic-ui-react';
 
-const FixedMenuLayout = () => (
+import { Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import { logout } from '../../actions/auth';
+
+
+const FixedMenuLayout = (props) => {
+  if (!props.user) {
+    return <Redirect to = '/' />
+  }
+  return (
   <div>
     <Menu fixed='top' inverted>
     
@@ -44,7 +55,7 @@ const FixedMenuLayout = () => (
                 <Dropdown.Item>List Item</Dropdown.Item>
               </Dropdown.Menu>
             </Dropdown.Item>
-            <Dropdown.Item>List Item</Dropdown.Item>
+            <Dropdown.Item onClick={(e) => props.logout()}>Sign Out</Dropdown.Item>
           </Dropdown.Menu>
         </Dropdown>
         <Menu.Item as='a' header>
@@ -238,4 +249,17 @@ const FixedMenuLayout = () => (
   </div>
 )
 
-export default FixedMenuLayout
+}
+
+Header.propTypes = {
+  logout: PropTypes.func.isRequired,
+}
+
+const mapStateToProps = (state) => ({
+  isAuthenticated: state.auth.isAuthenticated,
+  user: state.auth.user
+})
+
+export default connect(mapStateToProps, {
+  logout
+})(FixedMenuLayout);
