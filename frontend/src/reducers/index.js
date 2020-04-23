@@ -1,8 +1,9 @@
 // combine reducer
-
 import { combineReducers } from 'redux';
-// import Name_of_Reducer from './reducer_Path';
+import auth from './reducer/auth';
+import alert from './reducer/alert';
 
-// export default combineReducers({
-//     Name_You_wanna_Access_Globally: Name_of_Reducer
-// });
+export default combineReducers({
+    auth: auth,
+    alert: alert,
+});
