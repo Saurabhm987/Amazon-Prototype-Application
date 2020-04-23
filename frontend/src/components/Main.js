@@ -9,12 +9,12 @@ class Main extends Component {
         return (
             <Router>
                 {/* <Root> */}
-                    <Route path="/dashboard" exact component={HeaderView}/>
-                     <Route path="/signup" component={SignupForm} />
-                    <Route path='/' exact component={LoginForm} />
+                <Route path="/dashboard" exact component={HeaderView}/>
+                <Route path="/signup" component={SignupForm} />
+                <Route exact path='/' component={LoginForm} />
                     {/* <Route path="/dashboard" exact component={Post} /> */}
                 {/* </Root> */}
-        </Router>
+            </Router>
         );
     }
 }

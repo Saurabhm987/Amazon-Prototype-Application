@@ -13,23 +13,22 @@ function auth() {
     };
     passport.use(
         new JwtStrategy(opts, (jwt_payload, callback) => {
-            const user_id = jwt_payload._id;
-            userAuth.findById(user_id, (err, results) => {
+            const userId = jwt_payload.userId;
+            userAuth.findById(userId, (err, results) => {
                 if (err) {
                     return callback(err, false);
                 }
                 if (results) {
-                    callback(null, results);
+                    callback(null, jwt_payload);
                 }
                 else {
                     callback(null, false);
                 }
             });
         })
-    )
+    );
 }
 auth();
-// exports.auth = auth;
 
 const checkAuth = passport.authenticate("jwt", { session: false });
 module.exports = checkAuth;
