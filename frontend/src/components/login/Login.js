@@ -45,7 +45,7 @@ class LoginForm extends Component {
                     return <Redirect to='/dashboard' />;
                     break;
                 case USER_SELLER:
-                    return <Redirect to='/dashboard' />;
+                    return <Redirect to='/sellerCentral' />;
                     break;
                 case USER_ADMIN:
                     return <Redirect to='' />;
