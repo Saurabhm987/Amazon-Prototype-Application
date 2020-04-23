@@ -9,19 +9,17 @@ import LoginForm from './login/Login'
 class Main extends Component {
     render() {
         return (
-            <Container>
-                <Router>
-                    {/* <Root> */}
-                    <Route path="/" exact component={HeaderView} />
-                    <Route path="/sellerCentral" exact component={sellerCentral} />
+            <Router>
                 {/* <Root> */}
-                    <Route path="/dashboard" exact component={HeaderView}/>
-                     <Route path="/signup" component={SignupForm} />
-                    <Route path='/' exact component={LoginForm} />
-                    {/* <Route path="/dashboard" exact component={Post} /> */}
-                    {/* </Root> */}
-                </Router>
-            </Container>
+                <Route path="/" exact component={HeaderView} />
+                <Route path="/sellerCentral" exact component={sellerCentral} />
+                {/* <Root> */}
+                <Route path="/dashboard" exact component={HeaderView} />
+                <Route path="/signup" component={SignupForm} />
+                <Route path='/' exact component={LoginForm} />
+                {/* <Route path="/dashboard" exact component={Post} /> */}
+                {/* </Root> */}
+            </Router>
         );
     }
 }
