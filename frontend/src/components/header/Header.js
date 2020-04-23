@@ -17,6 +17,7 @@ import {
 const FixedMenuLayout = () => (
   <div>
     <Menu fixed='top' inverted>
+    
         <Menu.Item as='a' header>
             <Image size='mini' src='/amazon-prime.jpg' style={{padding:"none"}} />
         </Menu.Item>
@@ -171,8 +172,8 @@ const FixedMenuLayout = () => (
             </Segment>
         </Grid.Column>
     </Grid>
-
     </Container>
+
     <Segment inverted vertical style={{ margin: '5em 0em 0em', padding: '2em 0em ' }}>
       <Container textAlign='center'>
         <Grid divided inverted stackable>
