@@ -10,6 +10,8 @@ import {
     LOGIN_SUCCESS
 } from './types';
 
+import { USER_ADMIN, USER_CUSTOMER, USER_SELLER } from '../components/controller/config';
+
 export async function setAuthTokenToHeaders(token) {
     if (token) {
       axios.defaults.headers.common['Authorization'] = `jwt ${token}`;
@@ -78,16 +80,25 @@ export const loginUser = (email, password) => async dispatch => {
 };
 
 // Register new user, and set redux user state if success
-export const registerUser = (userFormData, user_type) => async dispatch => {
-    const registerRoute = (user_type === 'student') ? '/register/student': '/register/company';
-
-    const config = {
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    };
-    const body = JSON.stringify(userFormData);
+export const registerUser = (userFormData, userType) => async dispatch => {
     try {
+        let registerRoute = '/signUp';
+        if (userType === USER_CUSTOMER)  {
+            registerRoute += '/customer';
+        } else if(userType === USER_SELLER) {
+            registerRoute += '/seller';
+        } else if(userType === USER_ADMIN) {
+            registerRoute += '/admin';
+        } else {
+            throw 'action registerUser: userType route not available';
+        }
+        const config = {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        };
+        const body = JSON.stringify(userFormData);
+    
         axios.defaults.withCredentials = true;
         const res = await axios.post(registerRoute, body, config);
 
