@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Menu, Segment } from 'semantic-ui-react'
+import { Menu, Dropdown } from 'semantic-ui-react'
 
 export default class CentralHeader extends Component {
   state = { activeItem: 'CATALOG' }
@@ -12,16 +12,60 @@ export default class CentralHeader extends Component {
     return (
       <div>
         <Menu pointing secondary>
-          <Menu.Item
-            name='CATALOG'
-            active={activeItem === 'CATALOG'}
-            onClick={this.handleItemClick}
-          />
-          <Menu.Item
+          <Dropdown text='CATALOG' pointing className='link item'>
+            <Dropdown.Menu>
+              <Dropdown.Item
+                name='Demo'
+                active={activeItem === 'Demo'}
+                onClick={this.handleItemClick}>Demo</Dropdown.Item>
+              <Dropdown.Item>Bedroom</Dropdown.Item>
+              <Dropdown.Divider />
+              <Dropdown.Header>Order</Dropdown.Header>
+              <Dropdown.Item>Status</Dropdown.Item>
+              <Dropdown.Item>Cancellations</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+          {/* <Menu.Item
             name='INVENTORY'
             active={activeItem === 'INVENTORY'}
             onClick={this.handleItemClick}
-          />
+          /> */}
+          <Dropdown text='INVENTORY' pointing className='link item'>
+            <Dropdown.Menu>
+              <Dropdown.Item
+                name='Manage Inventory'
+                active={activeItem === 'Manage Inventory'}
+                onClick={this.handleItemClick}>Manage Inventory</Dropdown.Item>
+              <Dropdown.Item
+                name='Manage FBA Inventory'
+                active={activeItem === 'Manage FBA Inventory'}
+                onClick={this.handleItemClick}>Manage FBA Inventory</Dropdown.Item>
+              <Dropdown.Item
+                name='Inventory Planning'
+                active={activeItem === 'Inventory Planning'}
+                onClick={this.handleItemClick}>Inventory Planning</Dropdown.Item>
+              <Dropdown.Item
+                name='Add a Product'
+                active={activeItem === 'Add a Product'}
+                onClick={this.handleItemClick}>Add a Product</Dropdown.Item>
+              <Dropdown.Item
+                name='Add products via Upload'
+                active={activeItem === 'Add products via Upload'}
+                onClick={this.handleItemClick}>Add products via Upload</Dropdown.Item>
+              <Dropdown.Item
+                name='Inventory Reports'
+                active={activeItem === 'Inventory Reports'}
+                onClick={this.handleItemClick}>Inventory Reports</Dropdown.Item>
+              <Dropdown.Item
+                name='Sell Globaly'
+                active={activeItem === 'Sell Globaly'}
+                onClick={this.handleItemClick}>Sell Globaly</Dropdown.Item>
+              <Dropdown.Item
+                name='Manage FBA'
+                active={activeItem === 'Manage FBA'}
+                onClick={this.handleItemClick}>Manage FBA</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
           <Menu.Item
             name='PRICING'
             active={activeItem === 'PRICING'}
