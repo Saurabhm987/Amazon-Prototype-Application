@@ -18,6 +18,7 @@ import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { logout } from '../../actions/auth';
+import './header.css'
 
 
 const FixedMenuLayout = (props) => {
@@ -26,7 +27,7 @@ const FixedMenuLayout = (props) => {
   }
   return (
   <div>
-    <Menu fixed='top' inverted>
+    <Menu id="headerMenu" fixed='top' inverted>
     
         <Menu.Item as='a' header>
             <Image size='mini' src='/amazon-prime.jpg' style={{padding:"none"}} />
