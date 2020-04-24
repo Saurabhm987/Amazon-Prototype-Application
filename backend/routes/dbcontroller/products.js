@@ -1,4 +1,5 @@
-    const   Product = require('../../dbModels/productModel')
+    const   Product = require('../../dbModels/product'),
+            mongoose = require('mongoose')
 
     async function getallProduct(_id){
         try{
@@ -25,9 +26,14 @@
     }
 
     async function addProduct(request_body){
+
+        console.log('request_body - ', request_body)
+
         try{
             const newProduct = await new Product(request_body)
-            return response = await newProduct.save()
+            response = await newProduct.save()
+            console.log('response - ', response)
+            return response
         }catch{
             return {'error':'something went wrong'}
         }

@@ -1,16 +1,13 @@
 const productDao = require('../dbcontroller/products')
 
 const keys = require('../../config/keys'),
-      fs = require('fs'),
       AWS = require('aws-sdk'),
       express = require('express'),
       router = express.Router(),
-      mongoose = require('mongoose'),
-      Product = require('../../dbModels/productModel'),
       uuidv4 = require('uuid/v4'),
       multer = require('multer'),
-      DIR = './public',
-      multerS3 = require('multer-s3')
+      multerS3 = require('multer-s3'),
+      mongoose = require('mongoose')
 
 AWS.config.update({
 accessKeyId: keys.iam_access_id,
@@ -65,8 +62,9 @@ router.post('/addproduct' ,uploadMultiple, async (req, res) => {
     })
 
     product.images = productImages
+    product.seller._id = new mongoose.Types.ObjectId()
 
-    const result = productDao.addProduct(product)
+    const result = await productDao.addProduct(product)
 
     res.json(result)
 

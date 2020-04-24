@@ -61,9 +61,7 @@ class LoginForm extends Component {
                 <Grid textAlign='center' style={{ height: '100vh' }} horizontalAlign='middle'>
                 <Grid.Column textAlign='left' style={{ maxWidth: 450 }}>
                     <Header as='h2' color='teal' textAlign='center'>
-                        {/* <Image src='/amazonsignup.png' style={{margin:"0px" , height:"100px", width:"100px"}}/> */}
-                        <Image src='https://amazon-prototype-application-bucket.s3-us-west-2.amazonaws.com/00cbd278-19c2-4df5-9e52-172930de1c2e-semantic-pic-4.png' style={{margin:"0px" , height:"100px", width:"100px"}}/>
-
+                        <Image src='/amazonsignup.png' style={{margin:"0px" , height:"100px", width:"100px"}}/>
                     </Header>
 
                     <AlertMessage />
