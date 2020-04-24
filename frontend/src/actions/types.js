@@ -12,4 +12,7 @@ export const AUTH_ERROR = 'AUTH_ERROR';
 export const SET_ALERT = 'SET_ALERT';
 export const REMOVE_ALERT = 'REMOVE_ALERT';
 
+//product actions
+export const LOAD_CATEGORY = 'LOAD_CATEGORY';
+
 // ...add a new action type
