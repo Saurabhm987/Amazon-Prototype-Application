@@ -1,13 +1,12 @@
-const productDao = require('../dbcontroller/products')
-
 const keys = require('../../config/keys'),
+      productDao = require('../dbcontroller/products')
       AWS = require('aws-sdk'),
       express = require('express'),
       router = express.Router(),
       uuidv4 = require('uuid/v4'),
       multer = require('multer'),
       multerS3 = require('multer-s3'),
-      mongoose = require('mongoose')
+      mongoose = require('mongoose'),
 
 AWS.config.update({
 accessKeyId: keys.iam_access_id,
@@ -62,6 +61,8 @@ router.post('/addproduct' ,uploadMultiple, async (req, res) => {
     })
 
     product.images = productImages
+
+    // for temporary purpose creating id's by mongoose
     product.seller._id = new mongoose.Types.ObjectId()
 
     const result = await productDao.addProduct(product)
@@ -88,7 +89,7 @@ router.get('/:product_id', async (req, res, next) => {
 
     const _id = req.params.product_id
 
-    if(_id === "getallproduct" ){ 
+    if(_id === "getallproduct" || _id ==="productcategories" ){ 
         return next()
     }
 
@@ -138,11 +139,30 @@ router.get('/sellerproduct/:seller_id', async (req, res) => {
 
 */
 router.get('/getallproduct', async (req, res) => {
+    console.log('hitting this route!!!')
+
     try{
         const result = await productDao.getallProduct()
         res.json(result)
     }catch{
         res.status(500).send({'error': 'something went wrong!'})
+    }
+})
+
+
+/* 
+    Get product categories
+    request_body ={}
+    response_body = {
+        [...{category}]
+    }
+*/
+router.get('/productcategories', async (req, res) => {
+    try{
+        const result = await productDao.productCategories()
+        res.json(result)
+    }catch{
+        res.status(500).send({'error': 'something went wrong while getting categories!'})
     }
 })
 
