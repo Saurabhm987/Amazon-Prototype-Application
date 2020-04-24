@@ -12,7 +12,7 @@ AWS.config.update({
 
   const s3= new AWS.S3();
 
-  function uploadFile(source,targetName, mimetype, type,fileType, emailType, email,  res){
+  function uploadFile(source,targetName, mimetype, res){
     console.log('preparing to upload...');
     fs.readFile(source, function (err, filedata) {
       if (!err) {

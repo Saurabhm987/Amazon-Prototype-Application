@@ -26,7 +26,7 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    Images: [{
+    images: [{
         type: String,
         required: true
     }],
@@ -37,6 +37,9 @@ const productSchema = new mongoose.Schema({
     giftPrice: {
         type: Number,
         required: true
+    },
+    views:{
+        type: Number
     },
     review: [{
         type: reviewSchema
