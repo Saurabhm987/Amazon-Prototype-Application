@@ -82,7 +82,7 @@ export const loginUser = (email, password) => async dispatch => {
 // Register new user, and set redux user state if success
 export const registerUser = (userFormData, userType) => async dispatch => {
     try {
-        let registerRoute = '/signUp';
+        var registerRoute = '/signUp';
         if (userType === USER_CUSTOMER)  {
             registerRoute += '/customer';
         } else if(userType === USER_SELLER) {
