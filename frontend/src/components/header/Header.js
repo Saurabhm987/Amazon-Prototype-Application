@@ -19,6 +19,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { logout } from '../../actions/auth';
 import './header.css'
+import ProductCategoryDropdown from '../product/productCategoryDropdown';
 
 
 const FixedMenuLayout = (props) => {
@@ -28,7 +29,12 @@ const FixedMenuLayout = (props) => {
   return (
   <div>
     <Menu id="headerMenu" fixed='top' inverted>
-    
+
+        <Menu.Item as='a' header>
+            <i className="align justify icon"></i>
+            <ProductCategoryDropdown/>
+        </Menu.Item>
+
         <Menu.Item as='a' header>
             <Image size='mini' src='/amazon-prime.jpg' style={{padding:"none"}} />
         </Menu.Item>
