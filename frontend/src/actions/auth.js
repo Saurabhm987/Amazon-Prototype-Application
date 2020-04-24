@@ -82,7 +82,7 @@ export const loginUser = (email, password) => async dispatch => {
 // Register new user, and set redux user state if success
 export const registerUser = (userFormData, userType) => async dispatch => {
     try {
-        let registerRoute = '/signUp';
+        var registerRoute = '/signUp';
         if (userType === USER_CUSTOMER)  {
             registerRoute += '/customer';
         } else if(userType === USER_SELLER) {
@@ -115,7 +115,7 @@ export const registerUser = (userFormData, userType) => async dispatch => {
         console.log('actions/auth/registerUser', err);
         dispatch(setAlert(err.body.error, 'danger'));
         dispatch({
-            type: AUTH_ERROR
+            type: REGISTER_FAIL
         });
     }
 };
