@@ -89,9 +89,31 @@ productSchema = new mongoose.Schema ({
     }]
 }),
 
+const statusHistorySchema = new mongoose.Schema({
+    status: {
+        type: String
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now
+    }
+});
+
 const orderSchema = new mongoose.Schema({
+    orderId: { // Not unique
+        type: Schema.Types.ObjectID,
+        required: true,
+    },
     buyerId: {
         type: Schema.Types.ObjectID,
+        required: true,
+    },
+    sellerId: {
+        type: Schema.Types.ObjectID,
+        required: true,
+    },
+    sellerName: {
+        type: String,
         required: true,
     },
     deliveryAddress: {
@@ -116,9 +138,10 @@ const orderSchema = new mongoose.Schema({
         type: Date
     },
     status: {
-        type: String
+        type: statusHistorySchema,
+        required: true
     },
-    
+    statusHistory: [statusHistorySchema]    
 });
 
 
