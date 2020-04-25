@@ -37,7 +37,16 @@ mongoPool
 mysqlPool
 
 // route handlers
+<<<<<<< Updated upstream
 app.use('/product', require('./routes/apicontroller/products'))
+=======
+// require('./routes/seller/xyz')(app);
+app.use('/product', require('./routes/products'))
+app.use('/customer', require('./routes/cart'))
+
+
+  
+>>>>>>> Stashed changes
 app.use('/signUp', require('./routes/signUp'));
 app.use('/signin', require('./routes/signin'));
 
