@@ -1,10 +1,7 @@
 const mongoose = require('mongoose');
-const cardSchema = required('./card')
-<<<<<<< Updated upstream
-=======
+const cardSchema = require('./card')
 const uniqueValidator = require('mongoose-unique-validator');
 
->>>>>>> Stashed changes
 
 const addressSchema = new mongoose.Schema({
     street1: {
@@ -35,41 +32,26 @@ const addressSchema = new mongoose.Schema({
         required: true
     },
 
-}),
+});
 
 const commentSchema = new mongoose.Schema ({
     productId: {
-<<<<<<< Updated upstream
-        type: Schema.Types.ObjectID,
-        required: true
-    },
-    commentId: {
-        type: Schema.Types.ObjectID,
-=======
         type: mongoose.Schema.Types.ObjectID,
         required: true
     },
     
     commentId: {
         type: mongoose.Schema.Types.ObjectID,
->>>>>>> Stashed changes
         required: true
     },
-}),
+});
 
 const cartSchema = new mongoose.Schema ({
-<<<<<<< Updated upstream
-    productId: {
-        type: Schema.Types.ObjectID,
-        required: true
-    },
-=======
     productId: 
     {   type: mongoose.Schema.Types.ObjectId, 
         ref: "products" 
     },
 
->>>>>>> Stashed changes
     quantity: {
         type: Number,
         required: true
@@ -80,26 +62,19 @@ const cartSchema = new mongoose.Schema ({
     giftMessage: {
         type: String
     }
-}),
+});
 
 const saveForLaterSchema = new mongoose.Schema ({
-<<<<<<< Updated upstream
-    productId: {
-        type: Schema.Types.ObjectID,
-        required: true
-    },
-=======
     productId: 
     {   type: mongoose.Schema.Types.ObjectId, 
         ref: "products"
     },
 
->>>>>>> Stashed changes
     SavedQuantity: {
         type: Number,
         required: true
     },
-}),
+});
 
 const buyerSchema = new mongoose.Schema({
     name: {
@@ -122,15 +97,6 @@ const buyerSchema = new mongoose.Schema({
     comments: [{
         type: commentSchema
     }],
-<<<<<<< Updated upstream
-    address: {
-        type: addressSchema,
-        required: true
-    },
-    card: {
-        type: cardSchema
-    },
-=======
     address: [{
         type: addressSchema,
         required: true
@@ -138,7 +104,6 @@ const buyerSchema = new mongoose.Schema({
     card: [{
         type: cardSchema
     }],
->>>>>>> Stashed changes
     cart: [{
         type: cartSchema
     }],
@@ -146,18 +111,9 @@ const buyerSchema = new mongoose.Schema({
         type: saveForLaterSchema
     }],
     orders: [{
-<<<<<<< Updated upstream
-        type: Schema.Types.ObjectID,
-    }]
-});
-
-
-module.exports = buyer = mongoose.model('buyer', buyerSchema);
-=======
         type: mongoose.Schema.Types.ObjectID,
     }]
 });
 
 buyerSchema.plugin(uniqueValidator);
 module.exports = buyer = mongoose.model('buyer', buyerSchema);
->>>>>>> Stashed changes

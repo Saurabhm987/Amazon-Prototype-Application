@@ -1,22 +1,24 @@
 const express = require('express');
 const router = express.Router();
 const queries = require('../queries/mongoQueries')
-const products = require('../dbModels/productModel')
+const products = require('../dbModels/product')
 
 exports.getProductsforCustomer = async (request) => {
     try {
         const { searchText, filterText, offset, sortType } = request.query;
         if (searchText === "" && filterText === "") {
-            query = { 'isAvailable': true }
+            query = { 'removed': false }
         } else if (searchText === "") {
-            query = { 'category': filterText, 'isAvailable': true };
+            query = { 'category': filterText, 'removed': false };
         } else if (filterText === "") {
             query = {
-                $or: [{ 'productName': { $regex: searchText, $options: 'i' }, 'isAvailable': true },
-                { 'category': { $regex: searchText, $options: 'i' }, 'isAvailable': true }]
+                $or: [{ 'name': { $regex: searchText, $options: 'i' }, 'removed': false },
+                { 'category': { $regex: searchText, $options: 'i' }, 'removed': false },
+                { 'seller.name': { $regex: searchText, $options: 'i' }, 'removed': false }]
             };
         } else {
-            query = { 'productName': { $regex: searchText, $options: 'i' }, 'category': filterText, 'isAvailable': true };
+            query = {$or: [{ 'name': { $regex: searchText, $options: 'i' }, 'category': filterText, 'removed': false },
+            { 'seller.name': { $regex: searchText, $options: 'i' }, 'category': filterText, 'removed': false }]};
         }
         if (sortType === 'PriceLowtoHigh') {
             sortBy = { price: 1 }
@@ -27,11 +29,11 @@ exports.getProductsforCustomer = async (request) => {
         } else {
             sortBy = {}
         }
-        // console.log(query)
-        // console.log(sortBy)
-        // console.log(offset)
+        console.log(query)
+        console.log(sortBy)
+        console.log(offset)
         // const cate = await queries.findDocumentsByQuery(productCategory, {}, { _id: 0 }, {})
-        const resp = await queries.findDocumentsByQueryFilter(products, query, { _id: 1, productName: 1, price: 1, overallRating: 1, images: 1 }, { skip: Number(offset) - 1, limit: 50, sort: sortBy })
+        const resp = await queries.findDocumentsByQueryFilter(products, query, { _id: 1, name: 1, price: 1, overallRating: 1, images: 1, "seller.name": 1 }, { skip: Number(offset) - 1, limit: 50, sort: sortBy })
         const count = await queries.countDocumentsByQuery(products, query)
         console.log(resp)
         console.log(count)
