@@ -71,6 +71,52 @@ router.post('/addproduct' ,uploadMultiple, async (req, res) => {
 
 })
 
+/* 
+    update product information 
+    request_body = {
+        product properites to update
+    }
+    request_params = {
+        product_id
+    }
+    response_body = {
+        updated product information
+    }
+*/
+router.put('/updateproduct/:product_id', async (req, res) => {
+
+    let _id = req.params.product_id
+
+    const {
+        name, 
+        category, 
+        quantity,
+        price,
+        description,
+        giftPrice,
+    } = req.body
+
+    let upadateQuery = {
+        $set : 
+        {
+            name:name,
+            category:category,
+            quantity:quantity,
+            price: price,
+            description: description,
+            giftPrice: giftPrice
+        }
+    }
+
+    let options = {
+        new: true,
+        useFindAndModify: false,
+    }
+
+    const result = await productDao.updateProduct(_id, upadateQuery, options)
+    res.json(result)
+})
+
 
 
 /*
@@ -89,7 +135,7 @@ router.get('/:product_id', async (req, res, next) => {
 
     const _id = req.params.product_id
 
-    if(_id === "getallproduct" || _id ==="productcategories" ){ 
+    if(_id === "getallproduct" || _id ==="productcategories" || _id === 'updateproduct' ){ 
         return next()
     }
 

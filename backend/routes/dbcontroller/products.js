@@ -45,6 +45,16 @@
         }
     }
 
+    async function updateProduct(productId, update_query, options){
+        try{
+            const response = await Product.findOneAndUpdate({_id:mongoose.Types.ObjectId(productId)}, update_query, options)
+            console.log('response - ', response)
+            return response
+        }catch{
+            return {'error':'Can not update product'}
+        } 
+    }
+
     async function deleteProduct(_id){
         try{
             const response = await Product.deleteOne({_id: mongoose.Types.ObjectId(productId)})
@@ -61,4 +71,5 @@
         getProduct:getProduct,
         addProduct:addProduct,
         productCategories:productCategories,
+        updateProduct:updateProduct
     }
