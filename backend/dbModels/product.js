@@ -43,7 +43,7 @@ const productSchema = new mongoose.Schema({
         type: reviewSchema
     }],
     removed: {
-        type: Boolean
+        type: Boolean, default: false
     }
     
 });
