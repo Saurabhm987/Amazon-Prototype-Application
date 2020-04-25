@@ -15,8 +15,8 @@ const isValidPassword = (chk_password, db_password_hash) => {
 // API: GET /signin
 // used to check they jwt token validity
 router.get('/', checkAuth, async (req, res) => {
-    // query user_auth collection with jwt data to check if the jwt token is still valid
-    console.log(req.user);
+    // query user_auth collection with jwt data to check if the jwt token is still valid    
+    console.log(req.user); 
     res.status(200).json(req.user);
 
     // try {
