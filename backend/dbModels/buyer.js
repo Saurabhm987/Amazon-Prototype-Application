@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
-const cardSchema = required('./card')
+const cardSchema = require('./card')
+const uniqueValidator = require('mongoose-unique-validator');
+
 
 const addressSchema = new mongoose.Schema({
     street1: {
@@ -30,24 +32,26 @@ const addressSchema = new mongoose.Schema({
         required: true
     },
 
-}),
+});
 
 const commentSchema = new mongoose.Schema ({
     productId: {
-        type: Schema.Types.ObjectID,
+        type: mongoose.Schema.Types.ObjectID,
         required: true
     },
+    
     commentId: {
-        type: Schema.Types.ObjectID,
+        type: mongoose.Schema.Types.ObjectID,
         required: true
     },
-}),
+});
 
 const cartSchema = new mongoose.Schema ({
-    productId: {
-        type: Schema.Types.ObjectID,
-        required: true
+    productId: 
+    {   type: mongoose.Schema.Types.ObjectId, 
+        ref: "products" 
     },
+
     quantity: {
         type: Number,
         required: true
@@ -58,18 +62,19 @@ const cartSchema = new mongoose.Schema ({
     giftMessage: {
         type: String
     }
-}),
+});
 
 const saveForLaterSchema = new mongoose.Schema ({
-    productId: {
-        type: Schema.Types.ObjectID,
-        required: true
+    productId: 
+    {   type: mongoose.Schema.Types.ObjectId, 
+        ref: "products"
     },
+
     SavedQuantity: {
         type: Number,
         required: true
     },
-}),
+});
 
 const buyerSchema = new mongoose.Schema({
     name: {
@@ -92,13 +97,13 @@ const buyerSchema = new mongoose.Schema({
     comments: [{
         type: commentSchema
     }],
-    address: {
+    address: [{
         type: addressSchema,
         required: true
-    },
-    card: {
+    }],
+    card: [{
         type: cardSchema
-    },
+    }],
     cart: [{
         type: cartSchema
     }],
@@ -106,9 +111,9 @@ const buyerSchema = new mongoose.Schema({
         type: saveForLaterSchema
     }],
     orders: [{
-        type: Schema.Types.ObjectID,
+        type: mongoose.Schema.Types.ObjectID,
     }]
 });
 
-
+buyerSchema.plugin(uniqueValidator);
 module.exports = buyer = mongoose.model('buyer', buyerSchema);

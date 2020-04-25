@@ -37,10 +37,13 @@ mongoPool
 mysqlPool
 
 // route handlers
+app.use('/product', require('./routes/products'))
+
 app.use('/product', require('./routes/apicontroller/products'))
 app.use('/signUp', require('./routes/signUp'));
 app.use('/signin', require('./routes/signin'));
 
+// app.use('/customer', require('./routes/cart'))
 app.listen(3001);
 console.log("Server Listening on port 3001")
 module.exports = app;
