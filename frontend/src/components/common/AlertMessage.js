@@ -9,7 +9,7 @@ const AlertMessage = ({ alerts }) =>
         const type = alert.alertType;
         return (
             <Message {...type} key={alert.id} >
-            <Message.Header> {alert.msg} </Message.Header>
+                <Message.Header> {alert.msg} </Message.Header>
             </Message>
             );
     });

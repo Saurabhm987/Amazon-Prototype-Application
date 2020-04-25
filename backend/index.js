@@ -29,16 +29,15 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());
 
+app.use('/public', express.static('public'));
+
+
 // mongo and mysql connection pool
 mongoPool
 mysqlPool
 
 // route handlers
-// require('./routes/seller/xyz')(app);
-app.use('/product', require('./routes/products'))
-
-
-  
+app.use('/product', require('./routes/apicontroller/products'))
 app.use('/signUp', require('./routes/signUp'));
 app.use('/signin', require('./routes/signin'));
 

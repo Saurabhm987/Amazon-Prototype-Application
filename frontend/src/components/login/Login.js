@@ -76,6 +76,7 @@ class LoginForm extends Component {
                         placeholder='Your Name' />
                         <Form.Input fluid 
                         name = 'password'
+                        type = 'password'
                         value = {this.state.password}
                         onChange = {this.handleInput}
                         label="Password"  
