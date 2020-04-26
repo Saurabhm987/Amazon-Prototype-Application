@@ -32,7 +32,6 @@ const findDocumentsByQueryFilter = async (modelObject, query, projection, filter
 }
 
 
-
 const findDocumentsByQuery = async (modelObject, query, options) => {
     try {
         return await modelObject.find(query, options).lean();
@@ -51,8 +50,23 @@ const updateField = async (modelObject, filters, update) => {
     }
 }
 
-exports.findDocumentsByQuery = findDocumentsByQuery;
-exports.findDocumentsByQueryFilter = findDocumentsByQueryFilter;
-exports.countDocumentsByQuery = countDocumentsByQuery;
-exports.updateField = updateField;
+const addProduct =  async (modelObject, data) => {
+    try{
+        const newData = await new modelObject(data)
+        return response = await newData.save()
+    }catch(error){
+        console.log('error while adding product')
+        throw new Error(error)
+    }
+}
+
+module.exports ={
+    findDocumentsByQuery:findDocumentsByQuery,
+    findDocumentsByQueryFilter:findDocumentsByQueryFilter,
+    countDocumentsByQuery:countDocumentsByQuery,
+    updateField:updateField,
+    addProduct:addProduct,
+}
+
+
 

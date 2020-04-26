@@ -1,9 +1,8 @@
-const express = require('express');
-const router = express.Router();
 const queries = require('../queries/mongoQueries')
-const products = require('../dbModels/product')
+      products = require('../dbModels/product')
+      mongoose = require('mongoose')
 
-exports.getProductsforCustomer = async (request) => {
+const getProductsforCustomer = async (request) => {
     try {
         const { searchText, filterText, offset, sortType } = request.query;
         if (searchText === "" && filterText === "") {
@@ -56,5 +55,120 @@ exports.getProductsforCustomer = async (request) => {
 
         return { "status": code, body: { message } }
     }
-   
+}
+
+
+const addProduct = async (request) => {
+    try{
+        const {body, files} = request
+        var product = JSON.parse(body.productInfo)
+
+        let productImages = []
+    
+        files.map( file => {
+            productImages.push(file.location)
+        })
+
+        product.images = productImages
+        product.seller._id = new mongoose.Types.ObjectId()    
+        const result = await queries.addProduct( products ,product)
+
+        return {status:200, body:result}
+    
+    }catch (error){
+        if (error.message)
+            message = error.message
+        else
+            message = 'Error while adding product'
+        
+        if (error.statusCode)
+            code = error.statusCode
+        else
+            code = 500
+
+        return { "status": code, body: { message } }
+    }
+}
+
+const updateProduct = async (request) => {
+    try{
+
+        const {body, params} = request
+
+        const _id = params.product_id
+
+        const {
+            name, 
+            category, 
+            quantity,
+            price,
+            description,
+            giftPrice,
+        } = body
+
+        let upadateQuery = {
+            $set : 
+            {
+                name:name,
+                category:category,
+                quantity:quantity,
+                price: price,
+                description: description,
+                giftPrice: giftPrice
+            }
+        }
+
+        let findQuery = {_id : mongoose.Types.ObjectId(_id)}
+          
+        const result = await queries.updateField(products,findQuery, upadateQuery)
+    
+        return {status:200, body:result}
+    
+    }catch (error){
+        if (error.message)
+            message = error.message
+        else
+            message = 'Error while adding product'
+        
+        if (error.statusCode)
+            code = error.statusCode
+        else
+            code = 500
+
+        return { "status": code, body: { message } }
+    }
+}
+
+const addComment = async (request) => {
+
+    try{
+        const { body, params } = request
+
+        let comment = body.comment
+        let _id = params.comment_id
+
+        upadateQuery = {
+            
+        }
+
+    }catch{
+        if (error.message)
+        message = error.message
+        else
+            message = 'Error while adding product'
+        
+        if (error.statusCode)
+            code = error.statusCode
+        else
+            code = 500
+
+        return { "status": code, body: { message } }
+    }   
+}
+
+module.exports ={
+    addProduct:addProduct,
+    updateProduct:updateProduct,
+    getProductsforCustomer:getProductsforCustomer,
+    addComment: addComment
 }
