@@ -13,7 +13,7 @@ import { loginUser } from '../../actions/auth';
 class LoginForm extends Component {
     constructor(props){
         super(props)
-        this.state ={
+        this.state = {
             email: '',
             password: ''
         }
@@ -53,7 +53,6 @@ class LoginForm extends Component {
                 default:
                     console.log(`Error: redirect for userType: ${userType} not defined`);
             }
-            
         }
 
         return (

@@ -69,6 +69,31 @@ productSchema = new mongoose.Schema ({
         required: true,
     },
     trackingId: {
+        type: Schema.Types.ObjectID, 
+        required: true,
+    },
+    name: {
+        type: String,
+        required: true,
+    }
+}),
+
+const statusHistorySchema = new mongoose.Schema({
+    status: {
+        type: String
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now
+    }
+});
+
+const orderSchema = new mongoose.Schema({
+    orderId: { // Not unique - uuid()
+        type: Schema.Types.ObjectID,
+        required: true,
+    },
+    buyerId: {
         type: Schema.Types.ObjectID,
         required: true,
     },
@@ -76,22 +101,8 @@ productSchema = new mongoose.Schema ({
         type: Schema.Types.ObjectID,
         required: true,
     },
-    name: {
+    sellerName: {
         type: String,
-        required: true,
-    },
-    quantity: {
-        type: Number,
-        required: true,
-    },
-    update: [{
-
-    }]
-}),
-
-const orderSchema = new mongoose.Schema({
-    buyerId: {
-        type: Schema.Types.ObjectID,
         required: true,
     },
     deliveryAddress: {
@@ -109,16 +120,22 @@ const orderSchema = new mongoose.Schema({
     paymentDetails: {
         type: cardSchema
     },
-    orderTotal: {
+    totalAmount: {
         type: Number
     },
-    orderDate: {
-        type: Date
+    quantity: {
+        type: Number,
+        required: true,
+    },
+    orderDate: { // filter by month
+        type: Date,
+        default: Date.now
     },
     status: {
-        type: String
+        type: statusHistorySchema,
+        required: true
     },
-    
+    statusHistory: [statusHistorySchema]    
 });
 
 
