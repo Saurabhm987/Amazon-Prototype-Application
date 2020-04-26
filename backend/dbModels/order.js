@@ -69,24 +69,13 @@ productSchema = new mongoose.Schema ({
         required: true,
     },
     trackingId: {
-        type: Schema.Types.ObjectID,
-        required: true,
-    },
-    sellerId: {
-        type: Schema.Types.ObjectID,
+        type: Schema.Types.ObjectID, 
         required: true,
     },
     name: {
         type: String,
         required: true,
-    },
-    quantity: {
-        type: Number,
-        required: true,
-    },
-    update: [{
-
-    }]
+    }
 }),
 
 const statusHistorySchema = new mongoose.Schema({
@@ -100,7 +89,7 @@ const statusHistorySchema = new mongoose.Schema({
 });
 
 const orderSchema = new mongoose.Schema({
-    orderId: { // Not unique
+    orderId: { // Not unique - uuid()
         type: Schema.Types.ObjectID,
         required: true,
     },
@@ -131,11 +120,16 @@ const orderSchema = new mongoose.Schema({
     paymentDetails: {
         type: cardSchema
     },
-    orderTotal: {
+    totalAmount: {
         type: Number
     },
-    orderDate: {
-        type: Date
+    quantity: {
+        type: Number,
+        required: true,
+    },
+    orderDate: { // filter by month
+        type: Date,
+        default: Date.now
     },
     status: {
         type: statusHistorySchema,
