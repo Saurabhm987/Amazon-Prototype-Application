@@ -1,6 +1,6 @@
 const countDocumentsByQuery = async (modelObject, query, options) => {
     try {
-        return await modelObject.find(query,  options).lean().count();
+        return await modelObject.find(query, options).lean().count();
     } catch (error) {
         console.log("Error while fetching data:" + error)
         throw new Error(error);
@@ -23,14 +23,13 @@ const findDocumentsByQueryFilter = async (modelObject, query, projection, filter
         console.log(projection)
         console.log(filter)
 
-        
+
         return await modelObject.find(query, projection, options).lean().sort(filter.sort).skip(filter.skip).limit(filter.limit);
     } catch (error) {
         console.log("Error while fetching data:" + error)
         throw new Error(error);
     }
 }
-
 
 
 const findDocumentsByQuery = async (modelObject, query, options) => {
@@ -43,22 +42,56 @@ const findDocumentsByQuery = async (modelObject, query, options) => {
 }
 
 const updateField = async (modelObject, filters, update) => {
-    try {        
+    try {
         // console.log(update)
         // console.log(modelObject)
         // console.log(filters)
 
-        return await modelObject.findOneAndUpdate(filters, update, { useFindAndModify: false, new: true });        
+        return await modelObject.findOneAndUpdate(filters, update, { useFindAndModify: false, new: true });
     } catch (error) {
         console.log("Error while fetching data:" + error)
         throw new Error(error);
     }
 }
 
+const createDocument = async (modelObject, data) => {
+    try {
+        const newData = await new modelObject(data)
+        return response = await newData.save()
+    } catch (error) {
+        console.log('error while crating document')
+        throw new Error(error)
+    }
+}
+
+const findDocumets = async (modelObject, findQuery) => {
+    try {
+        const response = await modelObject.find(findQuery)
+        return response
+
+    } catch (error) {
+        console.log('error while getting document')
+        throw new Error(error)
+    }
+}
 
 
-exports.findDocumentsByQuery = findDocumentsByQuery;
-exports.findDocumentsByQueryFilter = findDocumentsByQueryFilter;
-exports.countDocumentsByQuery = countDocumentsByQuery;
-exports.updateField = updateField;
+const findDocumentsById = async (modelObject, documentId) => {
+    try {
+        return response = await modelObject.findById(documentId)
+    } catch (error) {
+        console.log('error while getting documet by id')
+        throw new Error(error)
+    }
+}
 
+
+module.exports = {
+    findDocumentsByQuery: findDocumentsByQuery,
+    findDocumentsByQueryFilter: findDocumentsByQueryFilter,
+    countDocumentsByQuery: countDocumentsByQuery,
+    updateField: updateField,
+    createDocument: createDocument,
+    findDocumets: findDocumets,
+    findDocumentsById: findDocumentsById,
+}

@@ -3,10 +3,13 @@ const Schema = mongoose.Schema;
 
 const reviewSchema = new Schema({
     userId: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
     },
     rating: {
         type: Number
+    },
+    header: {
+        type: String
     },
     comment: {
         type: String
@@ -17,7 +20,7 @@ const reviewSchema = new Schema({
             type: Date,
             default: Date.now
         }
-    }
+    },
 )
 
 module.exports = reviewSchema

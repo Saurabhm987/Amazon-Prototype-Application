@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import {Dropdown} from "semantic-ui-react";
 import {connect} from "react-redux";
 import {productCategories} from '../../actions/product';
+import AddProduct from './addProductModel'
 
 class ProductCategoryDropdown extends Component{
     constructor() {

@@ -13,4 +13,4 @@ const productCatSchema = new mongoose.Schema({
 });
 
 
-module.exports = productCatagory = mongoose.model('productCatagory', productCatSchema);
+module.exports = productCatagory = mongoose.model('productCategory', productCatSchema);
