@@ -40,6 +40,7 @@ const productSchema = new mongoose.Schema({
         type: Number
     },
     review: [{
+        _id: false,
         type: reviewSchema
     }],
     removed: {

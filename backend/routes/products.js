@@ -79,6 +79,57 @@ router.post('/addproduct' ,uploadMultiple, async (request, response) => {
     }   
 })
 
+router.post('/addreview/:product_id', async (request, response) => {
+    try{
+        const requestBody = { body:request.body, params: request.params }
+        console.log('request body - ', requestBody)
+    
+        const result = await productServices.addReview(requestBody)
+
+        response.json(result)
+
+    }catch(error){
+
+        if(error.message)
+            message = error.message
+        else
+            message = 'Error while adding product'
+
+        if(error.status)
+            status = error.status
+        else
+            status = 500
+
+        response.status(status).json({'error':message})
+    }
+})
+
+
+router.post('/addcategory', async (request, response) => {
+    try{
+        const requestBody = { body: request.body }
+
+        const res = await productServices.addCategory(requestBody)
+
+        response.status(res.status).json(res.body)
+
+    }catch(error){
+
+        if(error.message)
+            message = error.message
+        else
+            message = 'Error while adding product'
+
+        if(error.status)
+            status = error.status
+        else
+            status = 500
+
+        response.status(status).json({'error':message})
+    }   
+})
+
+
 /* 
     update product information 
     request_body = {
@@ -162,16 +213,31 @@ router.get('/:product_id', async (req, res, next) => {
         [...seller_product]
     }
 */
-router.get('/sellerproduct/:seller_id', async (req, res) => {
+router.get('/sellerproduct/:seller_id', async (request, response) => {
 
-    const _id = req.params.seller_id
-    console.log('id - ', _id)
+    // const _id = req.params.seller_id
 
     try{
-        const result = await productDao.getsellerProduct(_id)
-        res.json(result)
-    }catch{
-        res.status(500).send({'error':'something went wrong'})
+
+        const requestBody = { params : request.params }
+
+        const res = await productServices.getsellerProduct(requestBody)
+
+        response.status(res.status).json(res.body)
+
+    }catch(error){
+
+        if(error.message)
+        message = error.message
+        else
+            message = 'Error while adding product'
+
+        if(error.status)
+            status = error.status
+        else
+            status = 500
+
+        response.status(status).json({'error':message})
     }
 })
 
@@ -190,29 +256,6 @@ router.get('/productcategories', async (req, res) => {
     }catch{
         res.status(500).send({'error': 'something went wrong while getting categories!'})
     }
-})
-
-
-/*
-    Delete product 
-    request_params = {
-        product_id
-    }
-    response_body = {
-        success or error
-    }
-*/
-router.delete('/deleteproduct/:product_id', async (req, res) => {
-
-    try{
-        const _id = req.params.product_id
-        const result = await productDao.deleteProduct(_id)
-        res.json(result)
-    }
-    catch{
-        res.status(500).send({'error': 'something went wrong'})
-    }
-
 })
 
 
@@ -250,6 +293,32 @@ router.get('/search', async (request, response) => {
     }
 
   });
+
+
+
+
+/*
+    Delete product 
+    request_params = {
+        product_id
+    }
+    response_body = {
+        success or error
+    }
+*/
+router.delete('/deleteproduct/:product_id', async (req, res) => {
+
+    try{
+        const _id = req.params.product_id
+        const result = await productDao.deleteProduct(_id)
+        res.json(result)
+    }
+    catch{
+        res.status(500).send({'error': 'something went wrong'})
+    }
+
+})
+
 
 
 module.exports = router

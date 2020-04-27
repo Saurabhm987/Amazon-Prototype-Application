@@ -50,7 +50,7 @@ const updateField = async (modelObject, filters, update) => {
     }
 }
 
-const addProduct =  async (modelObject, data) => {
+const createDocument =  async (modelObject, data) => {
     try{
         const newData = await new modelObject(data)
         return response = await newData.save()
@@ -60,12 +60,22 @@ const addProduct =  async (modelObject, data) => {
     }
 }
 
+const findDocumetsById = async (modelObject, findQuery) => {
+    try{
+        return response = await modelObject.findDocumetById(findQuery)
+    }catch{
+        console.log('error while getting seller document')
+        throw new Error(error)
+    }
+}
+
 module.exports ={
     findDocumentsByQuery:findDocumentsByQuery,
     findDocumentsByQueryFilter:findDocumentsByQueryFilter,
     countDocumentsByQuery:countDocumentsByQuery,
     updateField:updateField,
-    addProduct:addProduct,
+    createDocument:createDocument,
+    findDocumetsById:findDocumetsById,
 }
 
 

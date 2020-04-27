@@ -1,5 +1,6 @@
 const queries = require('../queries/mongoQueries')
       products = require('../dbModels/product')
+      productCategory = require('../dbModels/productCategory')
       mongoose = require('mongoose')
 
 const getProductsforCustomer = async (request) => {
@@ -32,7 +33,7 @@ const getProductsforCustomer = async (request) => {
         console.log(sortBy)
         console.log(offset)
         // const cate = await queries.findDocumentsByQuery(productCategory, {}, { _id: 0 }, {})
-        const resp = await queries.findDocumentsByQueryFilter(products, query, { _id: 1, name: 1, price: 1, overallRating: 1, images: 1, "seller.name": 1 }, { skip: Number(offset) - 1, limit: 50, sort: sortBy })
+        const resp = await queries.findDocumentsByQueryFilter(products, query, { _id: 1, name: 1, price: 1, overallRating: 1, images: 1, "seller": 1 }, { skip: Number(offset) - 1, limit: 50, sort: sortBy })
         const count = await queries.countDocumentsByQuery(products, query)
         console.log(resp)
         console.log(count)
@@ -71,7 +72,7 @@ const addProduct = async (request) => {
 
         product.images = productImages
         product.seller._id = new mongoose.Types.ObjectId()    
-        const result = await queries.addProduct( products ,product)
+        const result = await queries.createDocument( products ,product)
 
         return {status:200, body:result}
     
@@ -139,19 +140,49 @@ const updateProduct = async (request) => {
     }
 }
 
-const addComment = async (request) => {
+const addReview = async (request) => {
 
     try{
         const { body, params } = request
 
-        let comment = body.comment
-        let _id = params.comment_id
+        const {
+            userId,
+            comment,
+            rating,
+            header,
+        }=body
 
-        upadateQuery = {
-            
+        let _id = mongoose.Types.ObjectId(params.product_id)
+
+        //currently no user id 
+        // userId = new mongoose.Types.ObjectId(userId)
+
+        let findQuery = {
+            _id : _id
         }
 
-    }catch{
+        let upadateQuery = {
+
+            '$push': 
+            {
+                'review': 
+                {
+                    userId: new mongoose.Types.ObjectId(),
+                    comment: comment,
+                    rating: rating,
+                    header: header,
+                }
+            }
+        }
+
+        console.log('findQuer - ', findQuery)
+        console.log('updateQuery -', upadateQuery)
+
+        const result = await queries.updateField(products,findQuery, upadateQuery)
+    
+        return {status:200, body:result}
+
+    }catch(error){
         if (error.message)
         message = error.message
         else
@@ -166,9 +197,64 @@ const addComment = async (request) => {
     }   
 }
 
+
+const addCategory = async (request) => {
+
+    try{
+
+        const { body } = request
+        let category = {name : body.category}        
+        const result = await queries.createDocument(productCategory, category)
+        return {status:200, body:result}
+
+    }catch(error){
+
+        if (error.message)
+        message = error.message
+        else
+            message = 'Error while adding product'
+        
+        if (error.statusCode)
+            code = error.statusCode
+        else
+            code = 500
+
+        return { "status": code, body: { message } }
+    }
+}
+
+const getsellerProduct = async (request) => {
+    try{
+
+        const { params } = request
+        let _id = params.seller_id 
+        let findQuery = {'seller.sellerId' : _id}     
+        console.log('findQuery - ', findQuery)
+
+        const result = await queries.findDocumetsById( products, findQuery )
+        return {status:200, body:result}
+
+    }catch(error){
+
+        if (error.message)
+        message = error.message
+        else
+            message = 'Error while adding product'
+        
+        if (error.statusCode)
+            code = error.statusCode
+        else
+            code = 500
+
+        return { "status": code, body: { message } }
+    }
+}
+
 module.exports ={
     addProduct:addProduct,
     updateProduct:updateProduct,
     getProductsforCustomer:getProductsforCustomer,
-    addComment: addComment
+    addReview: addReview,
+    addCategory:addCategory,
+    getsellerProduct:getsellerProduct,
 }
