@@ -1,7 +1,7 @@
 const queries = require('../queries/mongoQueries')
-      products = require('../dbModels/product')
-      productCategory = require('../dbModels/productCategory')
-      mongoose = require('mongoose')
+products = require('../dbModels/product')
+productCategory = require('../dbModels/productCategory')
+mongoose = require('mongoose')
 
 const getProductsforCustomer = async (request) => {
     try {
@@ -17,8 +17,10 @@ const getProductsforCustomer = async (request) => {
                 { 'seller.name': { $regex: searchText, $options: 'i' }, 'removed': false }]
             };
         } else {
-            query = {$or: [{ 'name': { $regex: searchText, $options: 'i' }, 'category': filterText, 'removed': false },
-            { 'seller.name': { $regex: searchText, $options: 'i' }, 'category': filterText, 'removed': false }]};
+            query = {
+                $or: [{ 'name': { $regex: searchText, $options: 'i' }, 'category': filterText, 'removed': false },
+                { 'seller.name': { $regex: searchText, $options: 'i' }, 'category': filterText, 'removed': false }]
+            };
         }
         if (sortType === 'PriceLowtoHigh') {
             sortBy = { price: 1 }
@@ -39,16 +41,16 @@ const getProductsforCustomer = async (request) => {
         console.log(count)
 
         // let res = {Products:resp,Categories:cate,Count:count}
-        let res = {Products:resp,Count:count}
+        let res = { Products: resp, Count: count }
 
         return { "status": 200, body: res }
-    } 
+    }
     catch (error) {
         if (error.message)
             message = error.message
         else
             message = 'Error while fetching products'
-        
+
         if (error.statusCode)
             code = error.statusCode
         else
@@ -60,28 +62,28 @@ const getProductsforCustomer = async (request) => {
 
 
 const addProduct = async (request) => {
-    try{
-        const {body, files} = request
+    try {
+        const { body, files } = request
         var product = JSON.parse(body.productInfo)
 
         let productImages = []
-    
-        files.map( file => {
+
+        files.map(file => {
             productImages.push(file.location)
         })
 
         product.images = productImages
-        product.seller._id = new mongoose.Types.ObjectId()    
-        const result = await queries.createDocument( products ,product)
+        product.seller._id = new mongoose.Types.ObjectId()
+        const result = await queries.createDocument(products, product)
 
-        return {status:200, body:result}
-    
-    }catch (error){
+        return { status: 200, body: result }
+
+    } catch (error) {
         if (error.message)
             message = error.message
         else
             message = 'Error while adding product'
-        
+
         if (error.statusCode)
             code = error.statusCode
         else
@@ -92,15 +94,15 @@ const addProduct = async (request) => {
 }
 
 const updateProduct = async (request) => {
-    try{
+    try {
 
-        const {body, params} = request
+        const { body, params } = request
 
         const _id = params.product_id
 
         const {
-            name, 
-            category, 
+            name,
+            category,
             quantity,
             price,
             description,
@@ -108,29 +110,29 @@ const updateProduct = async (request) => {
         } = body
 
         let upadateQuery = {
-            $set : 
+            $set:
             {
-                name:name,
-                category:category,
-                quantity:quantity,
+                name: name,
+                category: category,
+                quantity: quantity,
                 price: price,
                 description: description,
                 giftPrice: giftPrice
             }
         }
 
-        let findQuery = {_id : mongoose.Types.ObjectId(_id)}
-          
-        const result = await queries.updateField(products,findQuery, upadateQuery)
-    
-        return {status:200, body:result}
-    
-    }catch (error){
+        let findQuery = { _id: mongoose.Types.ObjectId(_id) }
+
+        const result = await queries.updateField(products, findQuery, upadateQuery)
+
+        return { status: 200, body: result }
+
+    } catch (error) {
         if (error.message)
             message = error.message
         else
             message = 'Error while adding product'
-        
+
         if (error.statusCode)
             code = error.statusCode
         else
@@ -142,7 +144,7 @@ const updateProduct = async (request) => {
 
 const addReview = async (request) => {
 
-    try{
+    try {
         const { body, params } = request
 
         const {
@@ -150,7 +152,7 @@ const addReview = async (request) => {
             comment,
             rating,
             header,
-        }=body
+        } = body
 
         let _id = mongoose.Types.ObjectId(params.product_id)
 
@@ -158,14 +160,14 @@ const addReview = async (request) => {
         // userId = new mongoose.Types.ObjectId(userId)
 
         let findQuery = {
-            _id : _id
+            _id: _id
         }
 
         let upadateQuery = {
 
-            '$push': 
+            '$push':
             {
-                'review': 
+                'review':
                 {
                     userId: new mongoose.Types.ObjectId(),
                     comment: comment,
@@ -178,42 +180,44 @@ const addReview = async (request) => {
         console.log('findQuer - ', findQuery)
         console.log('updateQuery -', upadateQuery)
 
-        const result = await queries.updateField(products,findQuery, upadateQuery)
-    
-        return {status:200, body:result}
+        const result = await queries.updateField(products, findQuery, upadateQuery)
 
-    }catch(error){
+        return { status: 200, body: result }
+
+    } catch (error) {
         if (error.message)
-        message = error.message
+            message = error.message
         else
-            message = 'Error while adding product'
-        
+            message = 'Error while adding review'
+
         if (error.statusCode)
             code = error.statusCode
         else
             code = 500
 
         return { "status": code, body: { message } }
-    }   
+    }
 }
 
 
 const addCategory = async (request) => {
 
-    try{
+    try {
 
         const { body } = request
-        let category = {name : body.category}        
-        const result = await queries.createDocument(productCategory, category)
-        return {status:200, body:result}
+        let category = { name: body.category }
 
-    }catch(error){
+        const result = await queries.createDocument(productCategory, category)
+
+        return { status: 200, body: result }
+
+    } catch (error) {
 
         if (error.message)
-        message = error.message
+            message = error.message
         else
-            message = 'Error while adding product'
-        
+            message = 'Error while adding category'
+
         if (error.statusCode)
             code = error.statusCode
         else
@@ -224,23 +228,24 @@ const addCategory = async (request) => {
 }
 
 const getsellerProduct = async (request) => {
-    try{
+
+    try {
 
         const { params } = request
-        let _id = params.seller_id 
-        let findQuery = {'seller.sellerId' : _id}     
-        console.log('findQuery - ', findQuery)
+        let _id = params.seller_id
+        let findQuery = { 'seller._id': _id }
 
-        const result = await queries.findDocumetsById( products, findQuery )
-        return {status:200, body:result}
+        const result = await queries.findDocumets(products, findQuery)
 
-    }catch(error){
+        return { status: 200, body: result }
+
+    } catch (error) {
 
         if (error.message)
-        message = error.message
+            message = error.message
         else
-            message = 'Error while adding product'
-        
+            message = 'Error while getting seller product'
+
         if (error.statusCode)
             code = error.statusCode
         else
@@ -250,11 +255,93 @@ const getsellerProduct = async (request) => {
     }
 }
 
-module.exports ={
-    addProduct:addProduct,
-    updateProduct:updateProduct,
-    getProductsforCustomer:getProductsforCustomer,
+const getProduct = async (product_id) => {
+
+    try {
+
+        let findId = product_id
+        const result = await queries.findDocumentsById(products, findId)
+
+        return { status: 200, body: result }
+
+    } catch (error) {
+
+        if (error.message)
+            message = error.message
+        else
+            message = 'Error while getting product'
+
+        if (error.statusCode)
+            code = error.statusCode
+        else
+            code = 500
+
+        return { "status": code, body: { message } }
+    }
+}
+
+const getallcategories = async () => {
+
+    try {
+
+        const findQuery = {}
+        const result = await queries.findDocumets(productCategory, findQuery)
+        return { status: 200, body: result }
+
+    } catch (error) {
+
+        if (error.message)
+            message = error.message
+        else
+            message = 'Error while getting product'
+
+        if (error.statusCode)
+            code = error.statusCode
+        else
+            code = 500
+
+        return { "status": code, body: { message } }
+    }
+}
+
+const deleteProduct = async (request) => {
+    try {
+
+        const { params } = request
+        let product_id = params.product_id
+
+        let findQuery = {_id : product_id}
+        
+        let updateQuery = { $set : { removed : true}}
+
+        const result = await queries.updateField(products, findQuery, updateQuery)
+
+        return { status: 200, body: result }
+
+    } catch (error) {
+
+        if (error.message)
+            message = error.message
+        else
+            message = 'Error while getting product'
+
+        if (error.statusCode)
+            code = error.statusCode
+        else
+            code = 500
+
+        return { "status": code, body: { message } }
+    }
+}
+
+module.exports = {
+    addProduct: addProduct,
+    updateProduct: updateProduct,
+    getProductsforCustomer: getProductsforCustomer,
     addReview: addReview,
-    addCategory:addCategory,
-    getsellerProduct:getsellerProduct,
+    addCategory: addCategory,
+    getsellerProduct: getsellerProduct,
+    getProduct: getProduct,
+    getallcategories: getallcategories,
+    deleteProduct: deleteProduct
 }

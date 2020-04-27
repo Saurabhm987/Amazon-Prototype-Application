@@ -1,42 +1,42 @@
 const keys = require('../config/keys'),
-      AWS = require('aws-sdk'),
-      express = require('express'),
-      router = express.Router(),
-      uuidv4 = require('uuid/v4'),
-      multer = require('multer'),
-      multerS3 = require('multer-s3'),
-      mongoose = require('mongoose'),
-      productServices = require('../services/products')
+    AWS = require('aws-sdk'),
+    express = require('express'),
+    router = express.Router(),
+    uuidv4 = require('uuid/v4'),
+    multer = require('multer'),
+    multerS3 = require('multer-s3'),
+    mongoose = require('mongoose'),
+    productServices = require('../services/products')
 
 AWS.config.update({
-accessKeyId: keys.iam_access_id,
-secretAccessKey: keys.iam_secret,
-region: 'us-west-1'
+    accessKeyId: keys.iam_access_id,
+    secretAccessKey: keys.iam_secret,
+    region: 'us-west-1'
 });
 
-var s3= new AWS.S3();
+var s3 = new AWS.S3();
 
 const storage = multerS3({
-    s3:s3,
+    s3: s3,
     bucket: keys.bucket_name,
     acl: 'public-read',
-    key: function(req, file, cb){
+    key: function (req, file, cb) {
         const fileName = file.originalname.toLocaleLowerCase().split(' ').join('-')
-        cb(null, uuidv4()+'-'+fileName)
+        cb(null, uuidv4() + '-' + fileName)
     }
 })
 
 var uploadMultiple = multer({
     storage: storage,
     fileFilter: (req, file, cb) => {
-        if(file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg"){
+        if (file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg") {
             cb(null, true)
-        }else{
+        } else {
             cb(null, false)
             return cb(new Error('Only .png, .jpg and .jpeg format allowed !'));
         }
     }
-}).array('images', 2)
+}).array('images', 5)
 
 
 /* 
@@ -50,11 +50,11 @@ var uploadMultiple = multer({
       success message
   }
 */
-router.post('/addproduct' ,uploadMultiple, async (request, response) => {
-    try{
+router.post('/addproduct', uploadMultiple, async (request, response) => {
+    try {
         const requestBody = {
             body: request.body,
-            files:request.files,
+            files: request.files,
         }
 
         const res = await productServices.addProduct(requestBody)
@@ -63,70 +63,86 @@ router.post('/addproduct' ,uploadMultiple, async (request, response) => {
 
         response.status(res.status).json(res.body)
 
-    }catch(error){
+    } catch (error) {
 
-        if(error.message)
+        if (error.message)
             message = error.message
         else
             message = 'Error while adding product'
 
-        if(error.status)
+        if (error.status)
             status = error.status
         else
             status = 500
 
-        response.status(status).json({'error':message})
-    }   
+        response.status(status).json({ 'error': message })
+    }
 })
 
+
+/*
+    add review about product
+    request_body = {
+        header,
+        comment,
+        rating,
+    }
+    requst_params = {
+        product_id
+    }
+    response = {
+        {...product with review added}
+    }
+
+*/
 router.post('/addreview/:product_id', async (request, response) => {
-    try{
-        const requestBody = { body:request.body, params: request.params }
+    try {
+        const requestBody = { body: request.body, params: request.params }
         console.log('request body - ', requestBody)
-    
+
         const result = await productServices.addReview(requestBody)
 
         response.json(result)
 
-    }catch(error){
+    } catch (error) {
 
-        if(error.message)
+        if (error.message)
             message = error.message
         else
             message = 'Error while adding product'
 
-        if(error.status)
+        if (error.status)
             status = error.status
         else
             status = 500
 
-        response.status(status).json({'error':message})
+        response.status(status).json({ 'error': message })
     }
 })
 
 
 router.post('/addcategory', async (request, response) => {
-    try{
+    try {
         const requestBody = { body: request.body }
 
         const res = await productServices.addCategory(requestBody)
 
         response.status(res.status).json(res.body)
 
-    }catch(error){
+    } catch (error) {
 
-        if(error.message)
+        if (error.message)
             message = error.message
         else
             message = 'Error while adding product'
 
-        if(error.status)
+        if (error.status)
             status = error.status
         else
             status = 500
 
-        response.status(status).json({'error':message})
-    }   
+        response.status(status).json({ 'error': message })
+    }
 })
 
 
@@ -144,28 +160,27 @@ router.post('/addcategory', async (request, response) => {
 */
 router.put('/updateproduct/:product_id', async (request, response) => {
 
-    try{
-        console.log('hitting.......')
-        const requestBody = { body:request.body, params: request.params }
-        console.log('request body - ', requestBody)
-    
+    try {
+
+        const requestBody = { body: request.body, params: request.params }
+
         const result = await productServices.updateProduct(requestBody)
 
         response.json(result)
 
-    }catch(error){
+    } catch (error) {
 
-        if(error.message)
+        if (error.message)
             message = error.message
         else
             message = 'Error while adding product'
 
-        if(error.status)
+        if (error.status)
             status = error.status
         else
             status = 500
 
-        response.status(status).json({'error':message})
+        response.status(status).json({ 'error': message })
     }
 })
 
@@ -185,19 +200,33 @@ router.put('/updateproduct/:product_id', async (request, response) => {
 */
 router.get('/:product_id', async (req, res, next) => {
 
-    const _id = req.params.product_id
+    const product_id = req.params.product_id
 
-    if(_id === "getallproduct" || _id ==="productcategories" || _id === 'updateproduct'|| _id === 'search' ){ 
+    if (product_id === 'getallproduct' || product_id === 'productcategories' || product_id === 'updateproduct' || product_id === 'search' || product_id === 'getcategories') {
         return next()
     }
 
-    try{
-        const result = await productDao.getProduct(_id)
+    try {
+
+        const result = await productServices.getProduct(product_id)
+
         res.json(result)
-    }catch{
-        res.status(500).send({'error':'something went wrong'})
+
+    } catch (error) {
+
+        if (error.message)
+            message = error.message
+        else
+            message = 'Error while adding product'
+
+        if (error.status)
+            status = error.status
+        else
+            status = 500
+
+        response.status(status).json({ 'error': message })
     }
-   
+
 })
 
 
@@ -217,27 +246,29 @@ router.get('/sellerproduct/:seller_id', async (request, response) => {
 
     // const _id = req.params.seller_id
 
-    try{
+    try {
 
-        const requestBody = { params : request.params }
+        const requestBody = { params: request.params }
 
         const res = await productServices.getsellerProduct(requestBody)
 
+        console.log('result - ', res)
+
         response.status(res.status).json(res.body)
 
-    }catch(error){
+    } catch (error) {
 
-        if(error.message)
-        message = error.message
+        if (error.message)
+            message = error.message
         else
             message = 'Error while adding product'
 
-        if(error.status)
+        if (error.status)
             status = error.status
         else
             status = 500
 
-        response.status(status).json({'error':message})
+        response.status(status).json({ 'error': message })
     }
 })
 
@@ -249,12 +280,25 @@ router.get('/sellerproduct/:seller_id', async (request, response) => {
         [...{category}]
     }
 */
-router.get('/productcategories', async (req, res) => {
-    try{
-        const result = await productDao.productCategories()
-        res.json(result)
-    }catch{
-        res.status(500).send({'error': 'something went wrong while getting categories!'})
+router.get('/getcategories', async (request, response) => {
+    try {
+
+        const res = await productServices.getallcategories()
+        response.status(res.status).json(res.body)
+
+    } catch (error) {
+
+        if (error.message)
+            message = error.message
+        else
+            message = 'Error while fetching products'
+
+        if (error.statusCode)
+            code = error.statusCode
+        else
+            code = 500
+
+        return response.status(code).json({ message });
     }
 })
 
@@ -266,24 +310,24 @@ router.get('/search', async (request, response) => {
     console.log('hitting')
 
     try {
-      console.log(request.query)
-      console.log("aa")
+        console.log(request.query)
+        console.log("aa")
 
-      const data = {
-        "body": request.body,
-        "params": request.params,
-        "query": request.query,
-      }
-       let res =await productServices.getProductsforCustomer(data);
-      response.status(res.status).json(res.body);
+        const data = {
+            "body": request.body,
+            "params": request.params,
+            "query": request.query,
+        }
+        let res = await productServices.getProductsforCustomer(data);
+        response.status(res.status).json(res.body);
 
-    } 
+    }
     catch (error) {
         if (error.message)
             message = error.message
         else
             message = 'Error while fetching products'
-        
+
         if (error.statusCode)
             code = error.statusCode
         else
@@ -292,7 +336,7 @@ router.get('/search', async (request, response) => {
         return response.status(code).json({ message });
     }
 
-  });
+});
 
 
 
@@ -306,17 +350,30 @@ router.get('/search', async (request, response) => {
         success or error
     }
 */
-router.delete('/deleteproduct/:product_id', async (req, res) => {
+router.put('/deleteproduct/:product_id', async (request, response) => {
 
-    try{
-        const _id = req.params.product_id
-        const result = await productDao.deleteProduct(_id)
-        res.json(result)
+    try {
+        
+        const requestBody = { params : request.params }
+
+        const res = await productServices.deleteProduct(requestBody)
+
+        response.status(res.status).json(res.body)
     }
     catch{
-        res.status(500).send({'error': 'something went wrong'})
-    }
 
+        if (error.message)
+            message = error.message
+        else
+            message = 'Error while fetching products'
+
+        if (error.statusCode)
+            code = error.statusCode
+        else
+            code = 500
+
+        return response.status(code).json({ message });
+    }
 })
 
 
