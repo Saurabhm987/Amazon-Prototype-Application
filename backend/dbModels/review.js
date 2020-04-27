@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const reviewSchema = new Schema({
     userId: {
-        type: Schema.Types.ObjectID,
+        type: mongoose.Schema.Types.ObjectId,
     },
     rating: {
         type: Number

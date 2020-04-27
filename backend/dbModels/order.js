@@ -33,6 +33,10 @@ const deliveryAddress = new mongoose.Schema({
 }),
 
 const billingAddress = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
     street1: {
         type: String,
         required: true
@@ -65,15 +69,15 @@ const billingAddress = new mongoose.Schema({
 
 productSchema = new mongoose.Schema ({
     productId: {
-        type: Schema.Types.ObjectID,
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
     },
     trackingId: {
-        type: Schema.Types.ObjectID,
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
     },
     sellerId: {
-        type: Schema.Types.ObjectID,
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
     },
     name: {
@@ -85,13 +89,21 @@ productSchema = new mongoose.Schema ({
         required: true,
     },
     update: [{
-
+        updatedDate: {
+            type: Date
+        },
+        status: {
+            type: String
+        },
+        location: {
+            type: String
+        }
     }]
 }),
 
 const orderSchema = new mongoose.Schema({
     buyerId: {
-        type: Schema.Types.ObjectID,
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
     },
     deliveryAddress: {
