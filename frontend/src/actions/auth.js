@@ -115,7 +115,7 @@ export const registerUser = (userFormData, userType) => async dispatch => {
         console.log('actions/auth/registerUser', err);
         dispatch(setAlert(err.body.error, 'danger'));
         dispatch({
-            type: AUTH_ERROR
+            type: REGISTER_FAIL
         });
     }
 };
