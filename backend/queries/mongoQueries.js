@@ -42,7 +42,11 @@ const findDocumentsByQuery = async (modelObject, query, options) => {
 }
 
 const updateField = async (modelObject, filters, update) => {
-    try {
+    try {        
+        // console.log(update)
+        // console.log(modelObject)
+        // console.log(filters)
+
         return await modelObject.findOneAndUpdate(filters, update, { useFindAndModify: false, new: true });        
     } catch (error) {
         console.log("Error while fetching data:" + error)
@@ -77,6 +81,3 @@ module.exports ={
     createDocument:createDocument,
     findDocumetsById:findDocumetsById,
 }
-
-
-
