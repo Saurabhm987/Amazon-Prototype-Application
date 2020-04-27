@@ -36,12 +36,13 @@ const addressSchema = new mongoose.Schema({
 
 const commentSchema = new mongoose.Schema ({
     productId: {
-        type: mongoose.Schema.Types.ObjectID,
-        required: true
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: "product" 
     },
     
     commentId: {
-        type: mongoose.Schema.Types.ObjectID,
+        type: mongoose.Schema.Types.ObjectId,
         required: true
     },
 });
@@ -49,7 +50,7 @@ const commentSchema = new mongoose.Schema ({
 const cartSchema = new mongoose.Schema ({
     productId: 
     {   type: mongoose.Schema.Types.ObjectId, 
-        ref: "products" 
+        ref: "product" 
     },
 
     quantity: {
@@ -67,7 +68,7 @@ const cartSchema = new mongoose.Schema ({
 const saveForLaterSchema = new mongoose.Schema ({
     productId: 
     {   type: mongoose.Schema.Types.ObjectId, 
-        ref: "products"
+        ref: "product"
     },
 
     SavedQuantity: {
@@ -79,8 +80,7 @@ const saveForLaterSchema = new mongoose.Schema ({
 const buyerSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: true,
-        unique: true
+        required: true
     },
     email: {
         type: String,
@@ -98,8 +98,7 @@ const buyerSchema = new mongoose.Schema({
         type: commentSchema
     }],
     address: [{
-        type: addressSchema,
-        required: true
+        type: addressSchema
     }],
     card: [{
         type: cardSchema
@@ -107,11 +106,12 @@ const buyerSchema = new mongoose.Schema({
     cart: [{
         type: cartSchema
     }],
+
     saveForLater: [{
         type: saveForLaterSchema
     }],
     orders: [{
-        type: mongoose.Schema.Types.ObjectID,
+        type: mongoose.Schema.Types.ObjectId,
     }]
 });
 

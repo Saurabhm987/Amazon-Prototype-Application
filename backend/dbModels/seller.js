@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const cardSchema = required('./card')
+const uniqueValidator = require('mongoose-unique-validator');
 
 const addressSchema = new mongoose.Schema({
     street1: {
@@ -55,12 +56,13 @@ const sellerSchema = new mongoose.Schema({
         required: true
     },
     products: [{
-        type: Schema.Types.ObjectID
+        id:{type:  mongoose.Schema.Types.ObjectId}
     }],
     orders: [{
-        type: Schema.Types.ObjectID
+        id:{type:  mongoose.Schema.Types.ObjectId}
     }]
 });
 
+sellerSchema.plugin(uniqueValidator);
 
 module.exports = seller = mongoose.model('seller', sellerSchema);
