@@ -64,7 +64,9 @@ const getProductsforCustomer = async (request) => {
 const addProduct = async (request) => {
     try {
         const { body, files } = request
-        var product = JSON.parse(body.productInfo)
+        var product = body
+
+        console.log('product - ', product)
 
         let productImages = []
 
@@ -227,13 +229,17 @@ const addCategory = async (request) => {
     }
 }
 
+// don't need to create mongoID to find in subdoc
+// let _id = mongoose.Types.ObjectId(params.seller_id)
+
 const getsellerProduct = async (request) => {
 
     try {
 
         const { params } = request
+        console.log('seller_id : ', params.seller_id)
         let _id = params.seller_id
-        let findQuery = { 'seller._id': _id }
+        let findQuery = { 'seller._id': _id, 'removed': false }
 
         const result = await queries.findDocumets(products, findQuery)
 

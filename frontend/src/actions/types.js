@@ -14,5 +14,6 @@ export const REMOVE_ALERT = 'REMOVE_ALERT';
 
 //product actions
 export const LOAD_CATEGORY = 'LOAD_CATEGORY';
+export const ADD_PRODUCT = 'ADD_PRODUCT';
 
 // ...add a new action type

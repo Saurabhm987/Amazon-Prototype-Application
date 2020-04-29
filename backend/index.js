@@ -10,6 +10,11 @@ const morgan = require('morgan');
 
 const mongoPool = require('./database/mongoDbConnection')
 const mysqlPool = require('./database/mySqlConnection')
+
+const redis = require('redis')
+const REDIS_PORT =  process.env.PORT || 6379
+module.exports = client = redis.createClient(REDIS_PORT)
+
 const app = express();
 
 app.use(function(req, res, next) {

@@ -5,8 +5,11 @@ const keys = require('../config/keys'),
     uuidv4 = require('uuid/v4'),
     multer = require('multer'),
     multerS3 = require('multer-s3'),
-    mongoose = require('mongoose'),
-    productServices = require('../services/products')
+    productServices = require('../services/products'),
+    cachedcategories = require('../redis/getcategories'),
+    redis = require('redis'),
+    client = require('../index')
+
 
 AWS.config.update({
     accessKeyId: keys.iam_access_id,
@@ -51,15 +54,17 @@ var uploadMultiple = multer({
   }
 */
 router.post('/addproduct', uploadMultiple, async (request, response) => {
+
+    let data = JSON.parse(JSON.stringify(request.body))
+
     try {
+
         const requestBody = {
-            body: request.body,
+            body: data,
             files: request.files,
         }
 
         const res = await productServices.addProduct(requestBody)
-
-        console.log('response - ', res)
 
         response.status(res.status).json(res.body)
 
@@ -98,7 +103,6 @@ router.post('/addproduct', uploadMultiple, async (request, response) => {
 router.post('/addreview/:product_id', async (request, response) => {
     try {
         const requestBody = { body: request.body, params: request.params }
-        console.log('request body - ', requestBody)
 
         const result = await productServices.addReview(requestBody)
 
@@ -109,7 +113,7 @@ router.post('/addreview/:product_id', async (request, response) => {
         if (error.message)
             message = error.message
         else
-            message = 'Error while adding product'
+            message = 'Error while adding review'
 
         if (error.status)
             status = error.status
@@ -134,7 +138,7 @@ router.post('/addcategory', async (request, response) => {
         if (error.message)
             message = error.message
         else
-            message = 'Error while adding product'
+            message = 'Error while adding category'
 
         if (error.status)
             status = error.status
@@ -173,7 +177,7 @@ router.put('/updateproduct/:product_id', async (request, response) => {
         if (error.message)
             message = error.message
         else
-            message = 'Error while adding product'
+            message = 'Error while updating product'
 
         if (error.status)
             status = error.status
@@ -186,48 +190,41 @@ router.put('/updateproduct/:product_id', async (request, response) => {
 
 
 
-/*
-    seller and user can see the proudct details
-
-    request_body = {
-        product_id
-    }
-    
+/* 
+    Get product categories
+    request_body ={}
     response_body = {
-        product_info_object
+        [...{category}]
     }
-
 */
-router.get('/:product_id', async (req, res, next) => {
 
-    const product_id = req.params.product_id
-
-    if (product_id === 'getallproduct' || product_id === 'productcategories' || product_id === 'updateproduct' || product_id === 'search' || product_id === 'getcategories') {
-        return next()
-    }
-
+router.get('/getcategories',cachedcategories, async (request, response, next) => {
     try {
 
-        const result = await productServices.getProduct(product_id)
+        console.log('fetching data from db....')
 
-        res.json(result)
+        const res = await productServices.getallcategories()
+
+        client.set('categories', JSON.stringify(res))
+
+        response.status(res.status).json(res.body)
 
     } catch (error) {
 
         if (error.message)
             message = error.message
         else
-            message = 'Error while adding product'
+            message = 'Error while fetching categories'
 
-        if (error.status)
-            status = error.status
+        if (error.statusCode)
+            code = error.statusCode
         else
-            status = 500
+            code = 500
 
-        response.status(status).json({ 'error': message })
+        return response.status(code).json({ message });
     }
-
 })
+
 
 
 
@@ -246,6 +243,8 @@ router.get('/sellerproduct/:seller_id', async (request, response) => {
 
     // const _id = req.params.seller_id
 
+    console.log('hittin sellerprodcut')
+
     try {
 
         const requestBody = { params: request.params }
@@ -261,7 +260,7 @@ router.get('/sellerproduct/:seller_id', async (request, response) => {
         if (error.message)
             message = error.message
         else
-            message = 'Error while adding product'
+            message = 'Error while getting seller product'
 
         if (error.status)
             status = error.status
@@ -269,36 +268,6 @@ router.get('/sellerproduct/:seller_id', async (request, response) => {
             status = 500
 
         response.status(status).json({ 'error': message })
-    }
-})
-
-
-/* 
-    Get product categories
-    request_body ={}
-    response_body = {
-        [...{category}]
-    }
-*/
-router.get('/getcategories', async (request, response) => {
-    try {
-
-        const res = await productServices.getallcategories()
-        response.status(res.status).json(res.body)
-
-    } catch (error) {
-
-        if (error.message)
-            message = error.message
-        else
-            message = 'Error while fetching products'
-
-        if (error.statusCode)
-            code = error.statusCode
-        else
-            code = 500
-
-        return response.status(code).json({ message });
     }
 })
 
@@ -353,8 +322,8 @@ router.get('/search', async (request, response) => {
 router.put('/deleteproduct/:product_id', async (request, response) => {
 
     try {
-        
-        const requestBody = { params : request.params }
+
+        const requestBody = { params: request.params }
 
         const res = await productServices.deleteProduct(requestBody)
 
@@ -374,6 +343,53 @@ router.put('/deleteproduct/:product_id', async (request, response) => {
 
         return response.status(code).json({ message });
     }
+})
+
+
+
+/*
+    seller and user can see the proudct details
+
+    request_body = {
+        product_id
+    }
+    
+    response_body = {
+        product_info_object
+    }
+
+*/
+router.get('/:product_id', async (req, res, next) => {
+
+    console.log('hitting product route')
+
+    const product_id = req.params.product_id
+
+    if (product_id === 'updateproduct') {
+        return next()
+    }
+
+    try {
+
+        const result = await productServices.getProduct(product_id)
+
+        res.json(result)
+
+    } catch (error) {
+
+        if (error.message)
+            message = error.message
+        else
+            message = 'Error while getting product'
+
+        if (error.status)
+            status = error.status
+        else
+            status = 500
+
+        response.status(status).json({ 'error': message })
+    }
+
 })
 
 
