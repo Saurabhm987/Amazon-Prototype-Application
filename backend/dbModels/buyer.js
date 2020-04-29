@@ -69,12 +69,12 @@ const saveForLaterSchema = new mongoose.Schema ({
     productId: 
     {   type: mongoose.Schema.Types.ObjectId, 
         ref: "product"
-    },
-
-    SavedQuantity: {
-        type: Number,
-        required: true
-    },
+    }
+    // ,
+    // SavedQuantity: {
+    //     type: Number,
+    //     required: true
+    // }
 });
 
 const buyerSchema = new mongoose.Schema({
