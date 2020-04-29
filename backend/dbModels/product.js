@@ -29,7 +29,6 @@ const productSchema = new mongoose.Schema({
     },
     images: [{
         type: String,
-        required: true
     }],
     quantity: {
         type: Number,
@@ -43,6 +42,7 @@ const productSchema = new mongoose.Schema({
         type: Number
     },
     review: [{
+        _id: false,
         type: reviewSchema
     }],
     removed: {
