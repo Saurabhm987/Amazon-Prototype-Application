@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const cardSchema = require('./card');
+const cardSchema = required('./card')
 
 const deliveryAddress = new mongoose.Schema({
     street1: {
@@ -30,7 +30,7 @@ const deliveryAddress = new mongoose.Schema({
         required: true
     },
 
-});
+}),
 
 const billingAddress = new mongoose.Schema({
     name: {
@@ -64,7 +64,8 @@ const billingAddress = new mongoose.Schema({
         type: String,
         required: true
     },
-});
+
+}),
 
 productSchema = new mongoose.Schema ({
     productId: {
@@ -98,57 +99,50 @@ productSchema = new mongoose.Schema ({
             type: String
         }
     }]
-});
+}),
 
-const statusSchema = new mongoose.Schema({
+const statusHistorySchema = new mongoose.Schema({
     status: {
-        type: String,
-        required: true
+        type: String
     },
     updatedAt: {
         type: Date,
         default: Date.now
-    },
-    timestamps: { //to get updated timestamp for each update
-        type: Date,
-        default: Date.now
-    },
-    location: {
-        type: String
     }
 });
 
 const orderSchema = new mongoose.Schema({
     orderId: { // Not unique - uuid()
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectID,
         required: true,
     },
     buyerId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'seller',
         required: true,
     },
     sellerId: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectID,
         required: true,
     },
-    productId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'product',
-        required: true
+    sellerName: {
+        type: String,
+        required: true,
     },
     deliveryAddress: {
         type: deliveryAddress,
         required: true
     },
-    paymentDetails: {
-        type: String
-    },
     billingAddress: {
         type: billingAddress,
         required: true
     },
-    
+    product: {
+        type: productSchema,
+        required: true
+    },
+    paymentDetails: {
+        type: cardSchema
+    },
     totalAmount: {
         type: Number
     },
@@ -161,10 +155,10 @@ const orderSchema = new mongoose.Schema({
         default: Date.now
     },
     status: {
-        type: statusSchema,
+        type: statusHistorySchema,
         required: true
     },
-    statusHistory: [statusSchema]    
+    statusHistory: [statusHistorySchema]    
 });
 
 

@@ -7,11 +7,9 @@ const countDocumentsByQuery = async (modelObject, query, options) => {
     }
 }
 
-//todo the parameters should be sent as a single object and be retireved individually within the func
-//misses cases where middle parameters are to be skipped, requires ...Array(number),
-// see usage in paginated Result Function in order service.
+
 const findDocumentsByQueryFilter = async (modelObject, query, projection, filter, options) => {
-    console.log("in filter query ");
+    console.log("in filter query")
 
     try {
         console.log("in filter query")
@@ -68,15 +66,11 @@ const createDocument = async (modelObject, data) => {
 
 const findDocumets = async (modelObject, findQuery) => {
     try {
-        const response = await modelObject.find(findQuery);
-        if(response.length>0){
-            return response;
-        }
-        else{
-            throw ("Record not found");
-        }
+        const response = await modelObject.find(findQuery)
+        return response
 
     } catch (error) {
+        console.log('error while getting document')
         throw new Error(error)
     }
 }

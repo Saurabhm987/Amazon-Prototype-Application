@@ -27,6 +27,7 @@
     "faker": "^4.1.0",
     "formidable": "^1.2.2",
     "jsonwebtoken": "^8.5.1",
+    "kafka-node": "^5.0.0",
     "mdbreact": "^4.25.2",
     "mongoose": "^5.9.5",
     "mongoose-unique-validator": "^2.0.3",

@@ -48,12 +48,12 @@ app.use('/saveForLater', require('./routes/saveForLater'))
 app.use('/signUp', require('./routes/signUp'));
 app.use('/signin', require('./routes/signin'));
 app.use('/createOrder', require('./routes/customerOrder')); // temp name, must be changed
+app.use('/order', require('./routes/order'));
 
 //redis connection
 client.on("connect", () => {
   console.log('Your are connected to Redis');
 });
-
 
 // app.use('/customer', require('./routes/cart'))
 app.listen(3001);
