@@ -47,6 +47,7 @@ app.use('/user', require('./routes/cart'))
 app.use('/saveForLater', require('./routes/saveForLater'))
 app.use('/signUp', require('./routes/signUp'));
 app.use('/signin', require('./routes/signin'));
+app.use('/createOrder', require('./routes/customerOrder')); // temp name, must be changed
 
 
 //redis connection
