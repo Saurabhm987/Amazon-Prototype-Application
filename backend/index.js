@@ -41,7 +41,7 @@ app.use('/product', require('./routes/products'))
 app.use('/user', require('./routes/cart'))
 app.use('/saveForLater', require('./routes/saveForLater'))
 
-app.use('/product', require('./routes/apicontroller/products'))
+// app.use('/product', require('./routes/apicontroller/products'))
 app.use('/signUp', require('./routes/signUp'));
 app.use('/signin', require('./routes/signin'));
 
