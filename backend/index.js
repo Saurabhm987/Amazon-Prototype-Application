@@ -49,7 +49,6 @@ app.use('/signUp', require('./routes/signUp'));
 app.use('/signin', require('./routes/signin'));
 app.use('/createOrder', require('./routes/customerOrder')); // temp name, must be changed
 
-
 //redis connection
 client.on("connect", () => {
   console.log('Your are connected to Redis');
