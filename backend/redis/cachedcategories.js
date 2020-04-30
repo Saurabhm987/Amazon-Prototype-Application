@@ -1,11 +1,9 @@
 const client = require('../index')
 
-client.on("connect", () => {
-    console.log('Your are connected to Redis');
-});
-
 module.exports = cachedcategories = (req, res, next) => {
-  
+    
+    console.log('cache category call.....')
+
     client.get('categories', (error, data) => {
         if(error) throw error;
 

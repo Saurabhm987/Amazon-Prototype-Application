@@ -6,9 +6,10 @@ const keys = require('../config/keys'),
     multer = require('multer'),
     multerS3 = require('multer-s3'),
     productServices = require('../services/products'),
-    cachedcategories = require('../redis/getcategories'),
-    redis = require('redis'),
-    client = require('../index')
+    cachedcategories = require('../redis/cachedcategories'),
+    cachedsearch = require('../redis/cachedsearch'),
+    client = require('../index'),
+    fakeproduct = require('../config/faker')
 
 
 AWS.config.update({
@@ -59,6 +60,13 @@ router.post('/addproduct', uploadMultiple, async (request, response) => {
 
     try {
 
+        // let data = await fakeproduct()
+        // console.log('data - ', data)
+        // for(let i = 0; i < 4000; i ++){
+        // let data = await fakeproduct()
+        // console.log('adding ...', i)
+        // }
+
         const requestBody = {
             body: data,
             files: request.files,
@@ -66,7 +74,31 @@ router.post('/addproduct', uploadMultiple, async (request, response) => {
 
         const res = await productServices.addProduct(requestBody)
 
-        response.status(res.status).json(res.body)
+        if (res.body) {
+
+            await client.exists('products', async (error, reply) => {
+                if(error) throw error
+
+                if(reply){
+                    await client.del('products',(error, reply) => {
+                        if(error) throw error
+
+                        if(reply){
+                            console.log('cache has been cleared!')
+                        }
+                    })
+                }
+            })
+
+            const { category, quantity } = res.body
+
+            var result = await productServices.incproductCount(category, quantity)
+        }
+
+        if (result.status === 200)
+            response.status(res.status).json(res.body)
+        else
+            response.status(500).json('cannot increment quantity')
 
     } catch (error) {
 
@@ -123,6 +155,20 @@ router.post('/addreview/:product_id', async (request, response) => {
         response.status(status).json({ 'error': message })
     }
 })
+
+
+/* 
+    request_body = {
+        name,
+        quantity,
+    }
+
+    response = {
+        name: ''
+        quantit: '',
+    }
+
+*/
 
 
 router.post('/addcategory', async (request, response) => {
@@ -198,14 +244,14 @@ router.put('/updateproduct/:product_id', async (request, response) => {
     }
 */
 
-router.get('/getcategories',cachedcategories, async (request, response, next) => {
+router.get('/getcategories', async (request, response) => {
     try {
 
-        console.log('fetching data from db....')
+        console.log('getting categories')
 
         const res = await productServices.getallcategories()
 
-        client.set('categories', JSON.stringify(res))
+        // client.set('categories', JSON.stringify(res))
 
         response.status(res.status).json(res.body)
 
@@ -243,8 +289,6 @@ router.get('/sellerproduct/:seller_id', async (request, response) => {
 
     // const _id = req.params.seller_id
 
-    console.log('hittin sellerprodcut')
-
     try {
 
         const requestBody = { params: request.params }
@@ -274,9 +318,9 @@ router.get('/sellerproduct/:seller_id', async (request, response) => {
 
 // /user/search?searchText=${searchText}&filterText=${filterText}&offset=${offset}&sortType=${sortType}`)
 
-router.get('/search', async (request, response) => {
+router.get('/search', cachedsearch, async (request, response) => {
 
-    console.log('hitting')
+    console.log('api call....')
 
     try {
         console.log(request.query)
@@ -288,6 +332,9 @@ router.get('/search', async (request, response) => {
             "query": request.query,
         }
         let res = await productServices.getProductsforCustomer(data);
+
+        client.set('products', JSON.stringify(res.body))
+
         response.status(res.status).json(res.body);
 
     }
@@ -327,7 +374,15 @@ router.put('/deleteproduct/:product_id', async (request, response) => {
 
         const res = await productServices.deleteProduct(requestBody)
 
-        response.status(res.status).json(res.body)
+        if (res.body) {
+            const { category, quantity } = res.body
+            var result = await productServices.dcrproductCount(category, quantity)
+        }
+
+        if (result.status === 200)
+            response.status(res.status).json(res.body)
+        else
+            response.status(500).json('Product has been deleted!')
     }
     catch{
 
@@ -365,7 +420,7 @@ router.get('/:product_id', async (req, res, next) => {
 
     const product_id = req.params.product_id
 
-    if (product_id === 'updateproduct') {
+    if (product_id === 'updateproduct' || product_id === 'testroute') {
         return next()
     }
 
@@ -373,7 +428,7 @@ router.get('/:product_id', async (req, res, next) => {
 
         const result = await productServices.getProduct(product_id)
 
-        res.json(result)
+        res.status(result.status).json(result.body)
 
     } catch (error) {
 

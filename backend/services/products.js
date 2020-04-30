@@ -63,22 +63,24 @@ const getProductsforCustomer = async (request) => {
 
 const addProduct = async (request) => {
     try {
-        const { body, files } = request
+        // const { body, files } = request
+        const { body } = request
+
         var product = body
-
-        console.log('product - ', product)
-
         let productImages = []
 
-        files.map(file => {
-            productImages.push(file.location)
-        })
-
+        // if(files){
+        //     files.map(file => {
+        //         productImages.push(file.location)
+        //     })
+        // }
+        
         product.images = productImages
         product.seller._id = new mongoose.Types.ObjectId()
+
         const result = await queries.createDocument(products, product)
 
-        return { status: 200, body: result }
+        return { status: 200, body: result.toObject() }
 
     } catch (error) {
         if (error.message)
@@ -179,9 +181,6 @@ const addReview = async (request) => {
             }
         }
 
-        console.log('findQuer - ', findQuery)
-        console.log('updateQuery -', upadateQuery)
-
         const result = await queries.updateField(products, findQuery, upadateQuery)
 
         return { status: 200, body: result }
@@ -237,8 +236,8 @@ const getsellerProduct = async (request) => {
     try {
 
         const { params } = request
-        console.log('seller_id : ', params.seller_id)
         let _id = params.seller_id
+        
         let findQuery = { 'seller._id': _id, 'removed': false }
 
         const result = await queries.findDocumets(products, findQuery)
@@ -340,6 +339,66 @@ const deleteProduct = async (request) => {
     }
 }
 
+const incproductCount = async (category, quantity) => {
+    try {
+
+        let findQuery = { name: category}
+        let updateQuery = { $inc : { numOfProducts : quantity}}
+
+        await queries.updateField(productCategory, findQuery, updateQuery)
+
+        return { status: 200 }
+
+
+    } catch (error) {
+
+         if (error.message)
+            message = error.message
+        else
+            message = 'Error while increamenting product quantity'
+
+        if (error.statusCode)
+            code = error.statusCode
+        else
+            code = 500
+
+        return { "status": code, body: { message } }
+    }
+}
+
+const dcrproductCount = async (category, quantity) => {
+    try {
+
+        let findQuery = { name: category, numOfProducts:{ $gt : 0 }}
+        let updateQuery = { $inc : { numOfProducts : -quantity}}
+
+        const result = queries.updateField(productCategory, findQuery, updateQuery)
+
+        if (result.modifiedCount === 1)
+            status = 200
+        else
+            status = 500
+        
+        return { status: status }
+
+
+    } catch (error) {
+
+         if (error.message)
+            message = error.message
+        else
+            message = 'Error while decreamenting product quantity'
+
+        if (error.statusCode)
+            code = error.statusCode
+        else
+            code = 500
+
+        return { "status": code, body: { message } }
+    }
+}
+
+
 module.exports = {
     addProduct: addProduct,
     updateProduct: updateProduct,
@@ -349,5 +408,7 @@ module.exports = {
     getsellerProduct: getsellerProduct,
     getProduct: getProduct,
     getallcategories: getallcategories,
-    deleteProduct: deleteProduct
+    deleteProduct: deleteProduct,
+    incproductCount:incproductCount,
+    dcrproductCount:dcrproductCount,
 }
