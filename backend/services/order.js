@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const order = require('../dbModels/order');
 const { orderStatus } = require('../config/types');
 const {findDocumets,updateField}= require('../queries/mongoQueries');
+const {USER_CUSTOMER,USER_SELLER} = require('../config/types');
+
 
 exports.createNewOrder = async (req) => {
     try{
@@ -80,6 +82,32 @@ exports.updateOrderStatus= async (data)=>{
         let updatedOrderStatus= await updateField(order, findQuery, updateStatusQuery);
         //console.log("updatedOrderStatus ::",updatedOrderStatus);
         return updatedOrderStatus;
+    }
+    catch (error) {
+        //console.log("error caught in service ::::::::::::::::",error);
+        throw error;
+    }
+
+}
+
+exports.getUserOrders= async (data)=>{
+        console.log("data getUserOrders service", data);
+        const userId=mongoose.Types.ObjectId(data.userId);
+    try{
+        if(data.userType===USER_CUSTOMER){
+
+            console.log("finding customer oder ", userId);
+            const findQuery={buyerId:userId};
+            return await findDocumets(order, findQuery);
+        }
+        else if(data.userType===USER_SELLER){
+            console.log("finding seller oder ",userId);
+            const findQuery={sellerId:userId};
+            return await findDocumets(order, findQuery);
+        }
+        else{
+            throw new Error("User is not authenticated for this information");
+        }
     }
     catch (error) {
         //console.log("error caught in service ::::::::::::::::",error);
