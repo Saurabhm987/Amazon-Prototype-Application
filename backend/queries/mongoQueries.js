@@ -66,11 +66,15 @@ const createDocument = async (modelObject, data) => {
 
 const findDocumets = async (modelObject, findQuery) => {
     try {
-        const response = await modelObject.find(findQuery)
-        return response
+        const response = await modelObject.find(findQuery);
+        if(response.length>0){
+            return response;
+        }
+        else{
+            throw ("Record not found");
+        }
 
     } catch (error) {
-        console.log('error while getting document')
         throw new Error(error)
     }
 }

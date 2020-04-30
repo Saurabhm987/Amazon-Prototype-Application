@@ -109,6 +109,10 @@ const statusSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    timestamps: { //to get updated timestamp for each update
+        type: Date,
+        default: Date.now
+    },
     location: {
         type: String
     }

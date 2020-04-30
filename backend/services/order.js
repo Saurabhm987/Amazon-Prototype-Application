@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const order = require('../dbModels/order');
 const { orderStatus } = require('../config/types');
+const {findDocumets,updateField}= require('../queries/mongoQueries');
 
 exports.createNewOrder = async (req) => {
     try{
@@ -37,4 +38,52 @@ exports.createNewOrder = async (req) => {
 
         return { "status": code, body: { message } }
     }
+}
+
+exports.updateOrderStatus= async (data)=>{
+
+
+    try{
+        const findQuery ={orderId: mongoose.Types.ObjectId(data.orderId),
+            productId: mongoose.Types.ObjectId(data.productId)};
+        const updatedStatus = data.updatedStatus;
+
+        let currentOrder= await findDocumets(order,findQuery);
+        //console.log("currentOrder :: ",currentOrder);
+
+        /*
+        Step 1
+        update the status history
+        */
+        const statusHistory= currentOrder[0].statusHistory;
+        const currentStatus=currentOrder[0].status;
+        //console.log("status hostory status:: ",statusHistory);
+        const updatedHistoryQuery = {
+            $push:
+                {
+                    statusHistory:currentStatus
+                }
+        }
+        let updatedOrderStatusHistory= await updateField(order, findQuery, updatedHistoryQuery);
+
+        //console.log("updatedOrderStatusHistory ::",updatedOrderStatusHistory);
+        /*
+        Step 2
+        update the status
+        */
+        const updateStatusQuery = {
+            $set:
+                {
+                    "status.status":updatedStatus
+                }
+        }
+        let updatedOrderStatus= await updateField(order, findQuery, updateStatusQuery);
+        //console.log("updatedOrderStatus ::",updatedOrderStatus);
+        return updatedOrderStatus;
+    }
+    catch (error) {
+        //console.log("error caught in service ::::::::::::::::",error);
+        throw error;
+    }
+
 }
