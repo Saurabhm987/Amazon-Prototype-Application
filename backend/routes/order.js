@@ -5,7 +5,7 @@ const checkAuth = require('../config/passport');
 const order = require('../dbModels/order');
 const { orderStatus } = require('../config/types');
 const orderServices = require('../services/order');
-const {updateOrderStatus,getUserOrders} = require ('../services/order');
+const {updateOrderStatus,getUserOrders,paginatedResults} = require ('../services/order');
 
 //updates the status per order per product
 // todo add checkAuth,
@@ -70,4 +70,13 @@ router.get('/getUserOrder/:userId',async(req,res)=>{ // todo add checkAuth,
     }
 
 });
+
+//?page=page&limit=limit
+router.get('/getAllOrders/',paginatedResults(order),(req,res)=>{ // todo add checkAuth
+    //console.log("req.query", req.query);
+    //console.log("req.params", req.params);//?page=x&limit=y
+    //console.log("res.paginatedResults ",res.paginatedResults);
+    res.json(res.paginatedResults);
+});
+
 module.exports = router;

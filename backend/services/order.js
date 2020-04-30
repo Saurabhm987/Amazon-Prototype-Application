@@ -1,9 +1,49 @@
 const mongoose = require('mongoose');
 const order = require('../dbModels/order');
 const { orderStatus } = require('../config/types');
-const {findDocumets,updateField}= require('../queries/mongoQueries');
+const {findDocumets,updateField,countDocumentsByQuery,findDocumentsByQueryFilter}= require('../queries/mongoQueries');
 const {USER_CUSTOMER,USER_SELLER} = require('../config/types');
 
+exports.paginatedResults = (model,data)=>{
+    return async (req, res, next) => {
+        const data = {
+            pageNum: req.query.page,
+            limit: req.query.limit
+        }
+        const page = parseInt(data.pageNum);
+        const limit = parseInt(data.limit);
+        const startIndex = (page - 1) * limit;
+        const endIndex = page * limit;
+
+        const results = {};
+        try {
+            if (endIndex < await countDocumentsByQuery(order)) {
+                results.next = {
+                    page: page + 1,
+                    limit: limit
+                }
+            };
+            if (startIndex > 0) {
+                results.previous = {
+                    page: page - 1,
+                    limit: limit
+                }
+            };
+            const filter={
+                            skip:startIndex,
+                            limit:limit
+                        };
+
+            //console.log("filter to be sent to query in pagianted funcion", filter);
+            results.results = await findDocumentsByQueryFilter(order,...Array(2),filter);
+            res.paginatedResults = results;
+            //console.log("res pagiintaed resutls ",res.paginatedResults);
+            next();
+        } catch (error) {
+            throw error;
+        }
+    }
+  };
 
 exports.createNewOrder = async (req) => {
     try{
