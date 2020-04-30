@@ -44,7 +44,7 @@ app.use('/saveForLater', require('./routes/saveForLater'))
 app.use('/product', require('./routes/apicontroller/products'))
 app.use('/signUp', require('./routes/signUp'));
 app.use('/signin', require('./routes/signin'));
-
+app.use('/createOrder', require('./routes/customerOrder')); // temp name, must be changed
 // app.use('/customer', require('./routes/cart'))
 app.listen(3001);
 console.log("Server Listening on port 3001")
