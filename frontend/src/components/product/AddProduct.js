@@ -27,7 +27,7 @@ class AddProduct extends Component {
       quantity: '',
       price: '',
       giftPrice: '',
-      selectedFile: null,
+      // selectedFile: null,
       files: []
     }
 
@@ -37,12 +37,13 @@ class AddProduct extends Component {
 
   }
 
-  hanldeFileChange = (e) => {
+  hanldeFileChange = async (e) => {
     e.preventDefault()
-    this.setState({
-      selectedFile: e.target.files,
+    await this.setState({
+      // selectedFile: e.target.files,
       files: [...this.state.files, ...e.target.files],
     });
+
   }
 
 
@@ -54,13 +55,12 @@ class AddProduct extends Component {
 
   addproduct = async () => {
 
-
     const formdata = new FormData()
 
-    console.log('length - ', this.state.selectedFile.length)
+    console.log('length - ', this.state.files.length)
 
-    for (var x = 0; x < this.state.selectedFile.length; x++) {
-      formdata.append('images', this.state.selectedFile[x])
+    for (var x = 0; x < this.state.files.length; x++) {
+      formdata.append('images', this.state.files[x])
     }
 
     for (var pair of formdata.entries()) {
@@ -86,7 +86,7 @@ class AddProduct extends Component {
       console.log(pair[0] + ', ' + pair[1]);
     }
 
-    await this.props.addProduct(formdata).then((response) => console.log('response - ', response)).catch(error => console.log('error : ', error))
+    await this.props.addProduct(formdata)
 
   }
 
@@ -133,7 +133,7 @@ class AddProduct extends Component {
                           <label>Category Options</label>
                           <ProductCategoryDropdown />
                         </Form.Field>
-                        <Form.Field style={{float:'right'}}>
+                        <Form.Field>
                           <Form.Button color='teal' type='submit'>Add Product </Form.Button>
                         </Form.Field>
                       </Segment>

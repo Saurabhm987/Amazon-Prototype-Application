@@ -63,17 +63,17 @@ const getProductsforCustomer = async (request) => {
 
 const addProduct = async (request) => {
     try {
-        // const { body, files } = request
-        const { body } = request
+        const { body, files } = request
+        // const { body } = request
 
         var product = body
         let productImages = []
 
-        // if(files){
-        //     files.map(file => {
-        //         productImages.push(file.location)
-        //     })
-        // }
+        if(files){
+            files.map(file => {
+                productImages.push(file.location)
+            })
+        }
         
         product.images = productImages
         product.seller._id = new mongoose.Types.ObjectId()

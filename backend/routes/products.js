@@ -69,6 +69,8 @@ router.post('/addproduct', uploadMultiple, async (request, response) => {
         // console.log('adding ...', i)
         // }
 
+        console.log('upload files - ', request.files)
+
         const requestBody = {
             body: data,
             files: request.files,
@@ -117,13 +119,13 @@ router.post('/addproduct', uploadMultiple, async (request, response) => {
         response.status(status).json({ 'error': message })
     }
 })
-router.get('/searchWithKafka', async (request, response) => {
 
-    console.log('hitting search Kafka')
+
+router.get('/searchWithKafka', cachedsearch, async (request, response) => {
+
+    console.log('Kafka search api call')
 
     try {
-        console.log(request.query)
-        console.log("aa")
 
         const data = {
             "body": request.body,
@@ -131,8 +133,13 @@ router.get('/searchWithKafka', async (request, response) => {
             "query": request.query,
             "type":"ProductSearchResults"
         }
+
+        // params = { topic_name, request_body, callback}
         await kafka.make_request('product', data, function (err, data) {
             if (err) throw new Error(err)
+
+            client.set('products', JSON.stringify(data.body))
+
             response.status(data.status).json(data.body);
         });
 
@@ -155,6 +162,7 @@ router.get('/searchWithKafka', async (request, response) => {
     }
 
 });
+
 
 
 /*
@@ -335,8 +343,6 @@ router.get('/sellerproduct/:seller_id', async (request, response) => {
 
         const res = await productServices.getsellerProduct(requestBody)
 
-        console.log('result - ', res)
-
         response.status(res.status).json(res.body)
 
     } catch (error) {
@@ -358,13 +364,11 @@ router.get('/sellerproduct/:seller_id', async (request, response) => {
 
 // /user/search?searchText=${searchText}&filterText=${filterText}&offset=${offset}&sortType=${sortType}`)
 
-router.get('/search', cachedsearch, async (request, response) => {
+router.get('/search',cachedsearch, async (request, response) => {
 
-    console.log('api call....')
+    console.log('search api call....')
 
     try {
-        console.log(request.query)
-        console.log("aa")
 
         const data = {
             "body": request.body,
