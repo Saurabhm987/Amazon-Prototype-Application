@@ -7,8 +7,12 @@ const keys = require('../config/keys'),
     uuidv4 = require('uuid/v4'),
     multer = require('multer'),
     multerS3 = require('multer-s3'),
-    mongoose = require('mongoose'),
-    productServices = require('../services/products')
+    productServices = require('../services/products'),
+    cachedcategories = require('../redis/cachedcategories'),
+    cachedsearch = require('../redis/cachedsearch'),
+    client = require('../index'),
+    fakeproduct = require('../config/faker')
+
 
 AWS.config.update({
     accessKeyId: keys.iam_access_id,
@@ -53,17 +57,52 @@ var uploadMultiple = multer({
   }
 */
 router.post('/addproduct', uploadMultiple, async (request, response) => {
+
+    let data = JSON.parse(JSON.stringify(request.body))
+
     try {
+
+        // let data = await fakeproduct()
+        // console.log('data - ', data)
+        // for(let i = 0; i < 4000; i ++){
+        // let data = await fakeproduct()
+        // console.log('adding ...', i)
+        // }
+
+        console.log('upload files - ', request.files)
+
         const requestBody = {
-            body: request.body,
+            body: data,
             files: request.files,
         }
 
         const res = await productServices.addProduct(requestBody)
 
-        console.log('response - ', res)
+        if (res.body) {
 
-        response.status(res.status).json(res.body)
+            await client.exists('products', async (error, reply) => {
+                if(error) throw error
+
+                if(reply){
+                    await client.del('products',(error, reply) => {
+                        if(error) throw error
+
+                        if(reply){
+                            console.log('cache has been cleared!')
+                        }
+                    })
+                }
+            })
+
+            const { category, quantity } = res.body
+
+            var result = await productServices.incproductCount(category, quantity)
+        }
+
+        if (result.status === 200)
+            response.status(res.status).json(res.body)
+        else
+            response.status(500).json('cannot increment quantity')
 
     } catch (error) {
 
@@ -80,13 +119,13 @@ router.post('/addproduct', uploadMultiple, async (request, response) => {
         response.status(status).json({ 'error': message })
     }
 })
-router.get('/searchWithKafka', async (request, response) => {
 
-    console.log('hitting search Kafka')
+
+router.get('/searchWithKafka', cachedsearch, async (request, response) => {
+
+    console.log('Kafka search api call')
 
     try {
-        console.log(request.query)
-        console.log("aa")
 
         const data = {
             "body": request.body,
@@ -94,8 +133,13 @@ router.get('/searchWithKafka', async (request, response) => {
             "query": request.query,
             "type":"ProductSearchResults"
         }
+
+        // params = { topic_name, request_body, callback}
         await kafka.make_request('product', data, function (err, data) {
             if (err) throw new Error(err)
+
+            client.set('products', JSON.stringify(data.body))
+
             response.status(data.status).json(data.body);
         });
 
@@ -120,6 +164,7 @@ router.get('/searchWithKafka', async (request, response) => {
 });
 
 
+
 /*
     add review about product
     request_body = {
@@ -138,7 +183,6 @@ router.get('/searchWithKafka', async (request, response) => {
 router.post('/addreview/:product_id', async (request, response) => {
     try {
         const requestBody = { body: request.body, params: request.params }
-        console.log('request body - ', requestBody)
 
         const result = await productServices.addReview(requestBody)
 
@@ -149,7 +193,7 @@ router.post('/addreview/:product_id', async (request, response) => {
         if (error.message)
             message = error.message
         else
-            message = 'Error while adding product'
+            message = 'Error while adding review'
 
         if (error.status)
             status = error.status
@@ -159,6 +203,20 @@ router.post('/addreview/:product_id', async (request, response) => {
         response.status(status).json({ 'error': message })
     }
 })
+
+
+/* 
+    request_body = {
+        name,
+        quantity,
+    }
+
+    response = {
+        name: ''
+        quantit: '',
+    }
+
+*/
 
 
 router.post('/addcategory', async (request, response) => {
@@ -174,7 +232,7 @@ router.post('/addcategory', async (request, response) => {
         if (error.message)
             message = error.message
         else
-            message = 'Error while adding product'
+            message = 'Error while adding category'
 
         if (error.status)
             status = error.status
@@ -213,7 +271,7 @@ router.put('/updateproduct/:product_id', async (request, response) => {
         if (error.message)
             message = error.message
         else
-            message = 'Error while adding product'
+            message = 'Error while updating product'
 
         if (error.status)
             status = error.status
@@ -226,48 +284,41 @@ router.put('/updateproduct/:product_id', async (request, response) => {
 
 
 
-/*
-    seller and user can see the proudct details
-
-    request_body = {
-        product_id
-    }
-    
+/* 
+    Get product categories
+    request_body ={}
     response_body = {
-        product_info_object
+        [...{category}]
     }
-
 */
-router.get('/:product_id', async (req, res, next) => {
 
-    const product_id = req.params.product_id
-
-    if (product_id === 'getallproduct' || product_id === 'productcategories' || product_id === 'updateproduct' || product_id === 'search' || product_id === 'getcategories') {
-        return next()
-    }
-
+router.get('/getcategories', async (request, response) => {
     try {
 
-        const result = await productServices.getProduct(product_id)
+        console.log('getting categories')
 
-        res.json(result)
+        const res = await productServices.getallcategories()
+
+        // client.set('categories', JSON.stringify(res))
+
+        response.status(res.status).json(res.body)
 
     } catch (error) {
 
         if (error.message)
             message = error.message
         else
-            message = 'Error while adding product'
+            message = 'Error while fetching categories'
 
-        if (error.status)
-            status = error.status
+        if (error.statusCode)
+            code = error.statusCode
         else
-            status = 500
+            code = 500
 
-        response.status(status).json({ 'error': message })
+        return response.status(code).json({ message });
     }
-
 })
+
 
 
 
@@ -292,8 +343,6 @@ router.get('/sellerproduct/:seller_id', async (request, response) => {
 
         const res = await productServices.getsellerProduct(requestBody)
 
-        console.log('result - ', res)
-
         response.status(res.status).json(res.body)
 
     } catch (error) {
@@ -301,7 +350,7 @@ router.get('/sellerproduct/:seller_id', async (request, response) => {
         if (error.message)
             message = error.message
         else
-            message = 'Error while adding product'
+            message = 'Error while getting seller product'
 
         if (error.status)
             status = error.status
@@ -313,45 +362,13 @@ router.get('/sellerproduct/:seller_id', async (request, response) => {
 })
 
 
-/* 
-    Get product categories
-    request_body ={}
-    response_body = {
-        [...{category}]
-    }
-*/
-router.get('/getcategories', async (request, response) => {
-    try {
-
-        const res = await productServices.getallcategories()
-        response.status(res.status).json(res.body)
-
-    } catch (error) {
-
-        if (error.message)
-            message = error.message
-        else
-            message = 'Error while fetching products'
-
-        if (error.statusCode)
-            code = error.statusCode
-        else
-            code = 500
-
-        return response.status(code).json({ message });
-    }
-})
-
-
 // /user/search?searchText=${searchText}&filterText=${filterText}&offset=${offset}&sortType=${sortType}`)
 
-router.get('/search', async (request, response) => {
+router.get('/search',cachedsearch, async (request, response) => {
 
-    console.log('hitting')
+    console.log('search api call....')
 
     try {
-        console.log(request.query)
-        console.log("aa")
 
         const data = {
             "body": request.body,
@@ -359,6 +376,9 @@ router.get('/search', async (request, response) => {
             "query": request.query,
         }
         let res = await productServices.getProductsforCustomer(data);
+
+        client.set('products', JSON.stringify(res.body))
+
         response.status(res.status).json(res.body);
 
     }
@@ -395,12 +415,20 @@ router.get('/search', async (request, response) => {
 router.put('/deleteproduct/:product_id', async (request, response) => {
 
     try {
-        
-        const requestBody = { params : request.params }
+
+        const requestBody = { params: request.params }
 
         const res = await productServices.deleteProduct(requestBody)
 
-        response.status(res.status).json(res.body)
+        if (res.body) {
+            const { category, quantity } = res.body
+            var result = await productServices.dcrproductCount(category, quantity)
+        }
+
+        if (result.status === 200)
+            response.status(res.status).json(res.body)
+        else
+            response.status(500).json('Product has been deleted!')
     }
     catch{
 
@@ -416,6 +444,53 @@ router.put('/deleteproduct/:product_id', async (request, response) => {
 
         return response.status(code).json({ message });
     }
+})
+
+
+
+/*
+    seller and user can see the proudct details
+
+    request_body = {
+        product_id
+    }
+    
+    response_body = {
+        product_info_object
+    }
+
+*/
+router.get('/:product_id', async (req, res, next) => {
+
+    console.log('hitting product route')
+
+    const product_id = req.params.product_id
+
+    if (product_id === 'updateproduct' || product_id === 'testroute') {
+        return next()
+    }
+
+    try {
+
+        const result = await productServices.getProduct(product_id)
+
+        res.status(result.status).json(result.body)
+
+    } catch (error) {
+
+        if (error.message)
+            message = error.message
+        else
+            message = 'Error while getting product'
+
+        if (error.status)
+            status = error.status
+        else
+            status = 500
+
+        response.status(status).json({ 'error': message })
+    }
+
 })
 
 

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Container, Grid, Segment, Menu, Header } from 'semantic-ui-react'
 import CentralHeader from '../header/CentralHeader'
+import AddProduct from '../product/AddProduct'
 
 class SellerCentral extends Component {
 
@@ -120,6 +121,7 @@ class SellerCentral extends Component {
                         <br></br>
                         <Segment textAlign='left'>
                             <Header as='h2'>Amazon Selling Coach</Header>
+                            <AddProduct />
                             <Grid columns={2}>
                                 <Grid.Column width={5}>
                                     <Menu pointing vertical>

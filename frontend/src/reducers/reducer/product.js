@@ -1,10 +1,12 @@
-// reducer holding authentication and user session data
 import {
-    LOAD_CATEGORY
+    LOAD_CATEGORY,
+    ADD_PRODUCT
 } from '../../actions/types';
+import { func } from 'prop-types';
 
 const initialState = {
     categoryList: [],
+    productList: [],
 };
 
 export default function(state = initialState, action) {
@@ -15,6 +17,12 @@ export default function(state = initialState, action) {
                 ...state,
                 categoryList: payload
             };
+
+        case ADD_PRODUCT:
+            return {
+                ...state,
+                productList: payload
+            }
 
         default:
             return state;
