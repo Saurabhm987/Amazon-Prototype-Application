@@ -134,7 +134,7 @@ const Signup = (props) => {
         </Segment>
       </Form>
       <Message>
-          Already have an account? <Link to='/'> Sign In</Link>
+          Already have an account? <Link to='/login'> Sign In</Link>
       </Message>
     </Grid.Column>
   </Grid>

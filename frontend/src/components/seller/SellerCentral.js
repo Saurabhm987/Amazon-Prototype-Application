@@ -2,17 +2,29 @@ import React, { Component } from 'react'
 import { Container, Grid, Segment, Menu, Header } from 'semantic-ui-react'
 import CentralHeader from '../header/CentralHeader'
 import AddProduct from '../product/AddProduct'
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types'
 
 class SellerCentral extends Component {
+    constructor(props) {
+        super(props);
 
-    state = { activeItem: 'Growth' }
+        this.state = { activeItem: 'Growth' }
+
+    }
+
+    componentDidMount = () => {
+        if(!this.props.isAuthenticated){
+            this.props.history.push('/login')
+        }
+    }
 
     handleItemClick = (e, { name }) => this.setState({ activeItem: name })
 
     render() {
         const { activeItem } = this.state
         return (
-            <Container>
+            <Container style={{marginBottom:'20px'}}>
                 <CentralHeader></CentralHeader>
                 <br></br>
                 <Grid columns={2}>
@@ -174,4 +186,12 @@ class SellerCentral extends Component {
     }
 }
 
-export default SellerCentral
+SellerCentral.propTypes = {
+    isAuthenticated: PropTypes.bool.isRequired
+}
+
+const mapStateToProps = state => ({
+    isAuthenticated: state.auth.isAuthenticated
+})
+
+export default connect(mapStateToProps, null)(SellerCentral)

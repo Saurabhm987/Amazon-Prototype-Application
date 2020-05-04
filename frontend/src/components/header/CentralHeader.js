@@ -10,7 +10,7 @@ export default class CentralHeader extends Component {
     const { activeItem } = this.state
 
     return (
-      <div>
+      <div style={{margin:'65px 0px 0px 0px'}}>
         <Menu pointing secondary>
           <Dropdown text='CATALOG' pointing className='link item'>
             <Dropdown.Menu>

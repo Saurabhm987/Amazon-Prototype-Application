@@ -69,8 +69,6 @@ router.post('/addproduct', uploadMultiple, async (request, response) => {
         // console.log('adding ...', i)
         // }
 
-        console.log('upload files - ', request.files)
-
         const requestBody = {
             body: data,
             files: request.files,
@@ -135,10 +133,10 @@ router.get('/searchWithKafka', cachedsearch, async (request, response) => {
         }
 
         // params = { topic_name, request_body, callback}
-        await kafka.make_request('product', data, function (err, data) {
+        await kafka.make_request('product', data, async (err, data) => {
             if (err) throw new Error(err)
 
-            client.set('products', JSON.stringify(data.body))
+            await client.set('products', JSON.stringify(data.body))
 
             response.status(data.status).json(data.body);
         });
@@ -364,7 +362,7 @@ router.get('/sellerproduct/:seller_id', async (request, response) => {
 
 // /user/search?searchText=${searchText}&filterText=${filterText}&offset=${offset}&sortType=${sortType}`)
 
-router.get('/search',cachedsearch, async (request, response) => {
+router.get('/search', async (request, response) => {
 
     console.log('search api call....')
 
@@ -379,7 +377,7 @@ router.get('/search',cachedsearch, async (request, response) => {
 
         client.set('products', JSON.stringify(res.body))
 
-        response.status(res.status).json(res.body);
+        response.status(res.status).json(res.body.Products);
 
     }
     catch (error) {
