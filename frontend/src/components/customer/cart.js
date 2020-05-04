@@ -4,7 +4,7 @@ import { getCustomerCart, updateCustomerCart, deleteProductInCart } from '../../
 import { Link } from 'react-router-dom';
 import './cart.css';
 import { Redirect } from 'react-router';
-import header from '../header/Header'
+// import header from '../header/Header'
 
 class Cart extends Component {
     constructor(props) {
@@ -19,7 +19,9 @@ class Cart extends Component {
         };
     }
     componentDidMount() {
-        this.props.getCustomerCart(sessionStorage.getItem("id"))
+        // 5ea6217130c53720685db7dd
+        this.props.getCustomerCart("5ea6217130c53720685db7dd")
+        // this.props.getCustomerCart(sessionStorage.getItem("id"))
     }
 
     componentWillReceiveProps(nextProps) {
@@ -36,15 +38,15 @@ class Cart extends Component {
         })
     }
 
-    onSubmit = (e) => {
-        e.preventDefault();
-        const data = {
-            persona: this.state.persona,
-            email: this.state.mail,
-            password: this.state.password,
-        }
-        this.props.login(data);
-    }
+    // onSubmit = (e) => {
+    //     e.preventDefault();
+    //     const data = {
+    //         persona: this.state.persona,
+    //         email: this.state.mail,
+    //         password: this.state.password,
+    //     }
+    //     this.props.login(data);
+    // }
 
     giftProduct = (product_id, gift, quantity) => {
         let changegift
@@ -56,7 +58,9 @@ class Cart extends Component {
             changegift = true
 
         data = {
-            customer_id: sessionStorage.getItem('id'),
+            
+            customer_id: '5ea6217130c53720685db7dd',
+            // customer_id: sessionStorage.getItem('id'),
             product_id: product_id,
             gift: changegift,
             quantity: quantity
@@ -65,20 +69,22 @@ class Cart extends Component {
         this.props.updateCustomerCart(data)
     }
     changeQuantity = (product_id, gift, quantity) => {
-
+        console.log(product_id)
         let data = {
-            customer_id: sessionStorage.getItem('id'),
+            customer_id: '5ea6217130c53720685db7dd',
+            // customer_id: sessionStorage.getItem('id'),
             product_id: product_id,
             gift: gift,
             quantity: quantity
         }
 
-        this.props.updateCustomerCart(data)
+        this.props.updateCustomerCart(data)// in backend services lookup to get product details///////////////
     }
 
     deleteProduct = (product_id, type) => {
         console.log(type)
-        this.props.deleteProductInCart({ customer_id: sessionStorage.getItem('id'), product_id: product_id, type: type })
+        this.props.deleteProductInCart({ customer_id: '5ea6217130c53720685db7dd', product_id: product_id, type: type })
+        // this.props.deleteProductInCart({ customer_id: sessionStorage.getItem('id'), product_id: product_id, type: type })
     }
 
     redirectToCheckout = () => {
@@ -96,6 +102,7 @@ class Cart extends Component {
         let redirectVar = null;
         customercart = this.state.cart;
 
+
         if (this.state.rendercheckout)
             redirectVar = <Redirect to={`/customer/${sessionStorage.getItem('id')}/checkout`} />
 
@@ -111,18 +118,20 @@ class Cart extends Component {
                         <div class='productConatiner'>
                             <div class='row'>
                                 <div class='col-md-3 imageContainer'>
-                                    <img class='productImage' src={cartitem.product.images[0]} alt={cartitem.product.name}></img>
+                                <img class='productImage'  alt={cartitem.productId.name}></img>
+
+                                    {/* <img class='productImage' src={cartitem.productId.images[0]} alt={cartitem.productId.name}></img> */}
                                 </div>
                                 <div class='col-md-7 detailsContainer'>
-                                    <Link class='productlink' to={"/product/" + cartitem.product._id}>
-                                        <div class='productTitle'>{cartitem.product.name}</div>
+                                    <Link class='productlink' to={"/product/" + cartitem.productId._id}>
+                                        <div class='productTitle'>{cartitem.productId.name}</div>
                                     </Link>
                                     <div class='stocklabel'>
                                         {/* Only {Math.ceil(Math.random() * 10)} left in stock - order soon. */}
                                         Only few left in stock - order soon.
                                     </div>
                                     <div class='checkboxContainer'>
-                                        <input type="checkbox" name="productgift" onChange={() => this.giftProduct(cartitem.product._id, cartitem.gift, cartitem.quantity)} checked={cartitem.gift} />
+                                        <input type="checkbox" name="productgift" onChange={() => this.giftProduct(cartitem.productId._id, cartitem.gift, cartitem.quantity)} checked={cartitem.gift} />
                                         <span class='giftlabel'>
                                             This is a gift
                                                 <span class='learnlabel'>
@@ -139,20 +148,20 @@ class Cart extends Component {
 
                                                 <ul className="dropdown-menu" role="menu" style={{ fontSize: "11px", minWidth: "max-content", cursor: "pointer", marginLeft: "-35px" }} >
                                                     {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(value => {
-                                                        return (<li ><a onClick={() => this.changeQuantity(cartitem.product._id, cartitem.gift, value)}>{value}</a></li>)
+                                                        return (<li ><a onClick={() => this.changeQuantity(cartitem.productId._id, cartitem.gift, value)}>{value}</a></li>)
                                                     })}
                                                 </ul>
 
                                             </div>
                                         </span>
                                         <span class="separator"></span>
-                                        <span class='deleteProduct' onClick={() => { this.deleteProduct(cartitem.product._id, "delete") }}>Delete</span>
+                                        <span class='deleteProduct' onClick={() => { this.deleteProduct(cartitem.productId._id, "delete") }}>Delete</span>
                                         <span class="separator"></span>
-                                        <span class='deleteProduct' onClick={() => { this.deleteProduct(cartitem.product._id, "saveforlater") }}>Save for later</span>
+                                        <span class='deleteProduct' onClick={() => { this.deleteProduct(cartitem.productId._id, "saveforlater") }}>Save for later</span>
                                     </div>
                                 </div>
                                 <div class='col-md-2 productprice'>
-                                    ${cartitem.gift ? (cartitem.product.discountedPrice * 110/100).toFixed(2) : cartitem.product.discountedPrice}
+                                    ${cartitem.gift ? (cartitem.productId.price * 110/100).toFixed(2) : cartitem.productId.price}
                                 </div>
 
 
@@ -196,7 +205,6 @@ class Cart extends Component {
         return (
             <div class="cartContainer">
                 {redirectVar}
-                <header/>
                 <div class='col-md-9 productsContainer'>
                     <h2 class='shoppingcart'>Shopping Cart</h2>
                     {(customercart.length === 0) ? <h2 class='shoppingcart'>Your Shopping Cart is empty</h2> :
@@ -227,9 +235,10 @@ class Cart extends Component {
 
 const mapStateToProps = state => {
     return {
-        // cart: state.cart.cartlist,
-        // cartsubtotal: state.cart.cartsubtotal,
-        // carttotalitems: state.cart.carttotalitems
+        cart: state.cart.cartlist,
+        cartsubtotal: state.cart.cartsubtotal,
+        carttotalitems: state.cart.carttotalitems
+      
     };
 };
 

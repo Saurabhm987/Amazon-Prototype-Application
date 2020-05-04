@@ -57,9 +57,12 @@ exports.updateProductInCart = async (request) => {
     try{
         console.log(request.params)
         update = {'cart.$.gift': request.body.gift,
-        'cart.$.giftMessage': request.body.giftMessage,
+        // 'cart.$.giftMessage': request.body.giftMessage,
             'cart.$.quantity': request.body.quantity}
         const resp = await queries.updateField(buyer,{ _id:request.params.customer_id,'cart.productId':request.params.product_id},update)
+
+        resp = await buyer.find({ _id: request.params.customer_id }).
+        populate('cart.productId', { name: 1, price: 1, _id: 1, images: 1, description: 1, removed: 1 })
         return { "status": 200, body: resp.cart }
     } 
     catch (error) {

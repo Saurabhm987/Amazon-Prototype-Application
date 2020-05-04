@@ -3,7 +3,7 @@ import {
     CUSTOMER_CART, ADD_TO_CART_PRODUCT_DETAIL_PAGE,CUSTOMER_CHECKOUT_DETAILS,
     CUSTOMER_CHECKOUT_SUBTOTAL, CUSTOMER_ORDER_SUMMARY
 }
-    from "../actions/types";
+    from "../../actions/types";
 const _ = require('lodash');
 
 const initialState = {
@@ -54,7 +54,18 @@ export default function (state = initialState, action) {
                 cartlist: action.payload
             };
         case CUSTOMER_CART:
-            let subtotal = _.sumBy(action.payload, function (item) { if (item.gift) { return (((item.product.discountedPrice * (110/100)).toFixed(2)) * item.quantity) } else { return (item.product.discountedPrice * item.quantity) } })
+            console.log(action.payload)
+            let subtotal = _.sumBy(action.payload, function (item) { 
+                console.log(item)
+                if (item.gift) 
+                { 
+                    return (((item.productId.price * (105/100)).toFixed(2)) * item.quantity) 
+                } 
+                else { 
+                    return (item.productId.price * item.quantity) 
+                } 
+            })
+            console.log(subtotal)
             return Object.assign({}, state, {
                 cartlist: action.payload,
                 cartsubtotal: subtotal.toFixed(2),
