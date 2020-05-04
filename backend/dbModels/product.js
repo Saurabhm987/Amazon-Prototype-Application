@@ -2,11 +2,11 @@ const mongoose = require('mongoose');
 const reviewSchema = require('./review')
 
 const productSchema = new mongoose.Schema({
-    seller: {
-        _id: String,
-        //////////need to be removed
-        name: String
-         //////////need to be removed
+    sellerName:{
+        type:String
+    },
+    sellerId:{
+        type:String
     },
     name: {
         type: String,

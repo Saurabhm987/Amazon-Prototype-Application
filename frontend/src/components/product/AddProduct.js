@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import ProductCategoryDropdown from './productCategoryDropdown'
 import PropTypes from 'prop-types'
 import { addProduct } from '../../actions/product'
-import FormData, { getHeaders } from 'form-data'
+import FormData from 'form-data'
+import { connect } from 'react-redux';
 
 import {
   Button,
@@ -14,7 +15,6 @@ import {
   Segment,
   Form,
 } from 'semantic-ui-react'
-import { connect } from 'react-redux';
 
 class AddProduct extends Component {
   constructor(props) {
@@ -27,11 +27,9 @@ class AddProduct extends Component {
       quantity: '',
       price: '',
       giftPrice: '',
-      // selectedFile: null,
+      modalOpen: false,
       files: []
     }
-
-
 
     this.handleInputChange = this.handleInputChange.bind(this)
 
@@ -40,10 +38,13 @@ class AddProduct extends Component {
   hanldeFileChange = async (e) => {
     e.preventDefault()
     await this.setState({
-      // selectedFile: e.target.files,
       files: [...this.state.files, ...e.target.files],
     });
 
+  }
+
+  handleClose = () => {
+    this.setState({ modalOpen: false })
   }
 
 
@@ -69,10 +70,9 @@ class AddProduct extends Component {
 
     const { name, description, quantity, price, category, giftPrice } = this.state
 
-    let seller = {
-      _id: 124,
-      name: 'sellerName'
-    }
+    const{ userId }  = this.props.user
+
+    console.log('userId', userId)
 
     formdata.append('name', name)
     formdata.append('description', description)
@@ -80,7 +80,8 @@ class AddProduct extends Component {
     formdata.append('price', price)
     formdata.append('category', category)
     formdata.append('giftPrice', giftPrice)
-    formdata.append('seller', seller)
+    formdata.append('sellerId', userId)
+    formdata.append('sellerName', 'selllerName1')
 
     for (var pair of formdata.entries()) {
       console.log(pair[0] + ', ' + pair[1]);
@@ -88,15 +89,17 @@ class AddProduct extends Component {
 
     await this.props.addProduct(formdata)
 
+    await this.setState({ modalOpen: false});
+
+    await alert('Product Added')
+
   }
 
   render() {
 
-    console.log('response data -', this.props.productList)
-
     return (
       <div>
-        <Modal trigger={<Button>Add Product</Button>} centered={false} closeIcon>
+        <Modal trigger={<Button onClick={ () => this.setState({modalOpen: true})}>Add Product</Button>} centered={false} open={this.state.modalOpen} onClose={this.handleClose} closeIcon>
           <Modal.Header>Add a product</Modal.Header>
           <Modal.Content image>
             <Grid.Column columns={2}>
@@ -106,7 +109,7 @@ class AddProduct extends Component {
                   <Grid.Row>
                     {this.state.files.map((item, index) =>
                       <Grid.Column>
-                        <Image wrapped size='medium' src={URL.createObjectURL(item)} key={index} alt="" style={{ width: "100px", height: "100px", margin: '5px' }} />
+                        <Image wrapped size='medium' src={URL.createObjectURL(item)} key={index} alt="Image Preview" style={{ width: "80px", height: "80px", margin: '5px'}} />
                       </Grid.Column>
                     )
                     }
@@ -156,7 +159,8 @@ AddProduct.propTypes = {
 }
 
 const mapStatToProps = state => ({
-  productList: state.productList
+  productList: state.productList,
+  user : state.auth.user
 })
 
 export default connect(mapStatToProps, { addProduct })(AddProduct)

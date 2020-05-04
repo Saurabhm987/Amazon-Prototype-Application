@@ -31,14 +31,14 @@ const getProductsforCustomer = async (request) => {
         } else {
             sortBy = {}
         }
-        console.log(query)
-        console.log(sortBy)
-        console.log(offset)
+        // console.log(query)
+        // console.log(sortBy)
+        // console.log(offset)
         // const cate = await queries.findDocumentsByQuery(productCategory, {}, { _id: 0 }, {})
         const resp = await queries.findDocumentsByQueryFilter(products, query, { _id: 1, name: 1, price: 1, overallRating: 1, images: 1, "seller": 1 }, { skip: Number(offset) - 1, limit: 50, sort: sortBy })
         const count = await queries.countDocumentsByQuery(products, query)
-        console.log(resp)
-        console.log(count)
+        // console.log(resp)
+        // console.log(count)
 
         // let res = {Products:resp,Categories:cate,Count:count}
         let res = { Products: resp, Count: count }
@@ -64,9 +64,10 @@ const getProductsforCustomer = async (request) => {
 const addProduct = async (request) => {
     try {
         const { body, files } = request
-        // const { body } = request
+        
+        var product = new Object()
+        product = JSON.parse(JSON.stringify(body))
 
-        var product = body
         let productImages = []
 
         if(files){
@@ -76,7 +77,8 @@ const addProduct = async (request) => {
         }
         
         product.images = productImages
-        product.seller._id = new mongoose.Types.ObjectId()
+
+        console.log('inserting product - ', product)
 
         const result = await queries.createDocument(products, product)
 
@@ -238,7 +240,7 @@ const getsellerProduct = async (request) => {
         const { params } = request
         let _id = params.seller_id
         
-        let findQuery = { 'seller._id': _id, 'removed': false }
+        let findQuery = { 'sellerId': _id, 'removed': false }
 
         const result = await queries.findDocumets(products, findQuery)
 
