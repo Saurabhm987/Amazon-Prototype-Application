@@ -13,6 +13,7 @@ async function handleTopicRequest(topic_name,fname){
     console.log('server is running ');
     await consumer.on('message',async function (message) {
         console.log('message received for ' + topic_name +" ", fname);
+
         console.log(JSON.stringify(message.value));
         var data = JSON.parse(message.value);
         
@@ -34,7 +35,7 @@ async function handleTopicRequest(topic_name,fname){
         
 }
 
-handleTopicRequest("product",product)
+handleTopicRequest("testB",product)
 
 
 

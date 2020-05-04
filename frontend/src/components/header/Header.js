@@ -1,4 +1,6 @@
 import React from 'react'
+import { Link } from 'react-router-dom';
+
 import {
   Container,
   Divider,
@@ -68,8 +70,10 @@ const FixedMenuLayout = (props) => {
         <Menu.Item as='a' header>
             Return &  Orders
         </Menu.Item>
-        <Menu.Item as='a' header>
-            Cart    
+        <Menu.Item as='a' header>    
+            <Link  to={"/cart"}>
+              Cart
+            </Link>  
         </Menu.Item>
     </Menu>
 

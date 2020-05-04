@@ -80,46 +80,47 @@ router.post('/addproduct', uploadMultiple, async (request, response) => {
         response.status(status).json({ 'error': message })
     }
 })
-router.get('/searchWithKafka', async (request, response) => {
+/////////////////////////////////////////////////////////////////////////////////////////////
+// router.get('/searchWithKafka', async (request, response) => {
 
-    console.log('hitting search Kafka')
+//     console.log('hitting search Kafka')
 
-    try {
-        console.log(request.query)
-        console.log("aa")
+//     try {
+//         console.log(request.query)
+//         console.log("aa")
 
-        const data = {
-            "body": request.body,
-            "params": request.params,
-            "query": request.query,
-            "type":"ProductSearchResults"
-        }
-        await kafka.make_request('product', data, function (err, data) {
-            if (err) throw new Error(err)
-            response.status(data.status).json(data.body);
-        });
+//         const data = {
+//             "body": request.body,
+//             "params": request.params,
+//             "query": request.query,
+//             "type":"ProductSearchResults"
+//         }
+//         await kafka.make_request('testB', data, function (err, data) {
+//             if (err) throw new Error(err)
+//             response.status(data.status).json(data.body);
+//         });
 
-        // let res = await productServices.getProductsforCustomer(data);
-        // response.status(res.status).json(res.body);
+//         // let res = await productServices.getProductsforCustomer(data);
+//         // response.status(res.status).json(res.body);
 
-    }
-    catch (error) {
-        if (error.message)
-            message = error.message
-        else
-            message = 'Error while fetching products'
+//     }
+//     catch (error) {
+//         if (error.message)
+//             message = error.message
+//         else
+//             message = 'Error while fetching products'
 
-        if (error.statusCode)
-            code = error.statusCode
-        else
-            code = 500
+//         if (error.statusCode)
+//             code = error.statusCode
+//         else
+//             code = 500
 
-        return response.status(code).json({ message });
-    }
+//         return response.status(code).json({ message });
+//     }
 
-});
+// });
 
-
+//////////////////////////////////////////////////////////////////////////////////////////
 /*
     add review about product
     request_body = {
