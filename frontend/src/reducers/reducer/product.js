@@ -1,12 +1,14 @@
 import {
     LOAD_CATEGORY,
-    ADD_PRODUCT
+    ADD_PRODUCT,
+    FETCH_PRODUCT,
+    PRODUCT_DETAIL,
 } from '../../actions/types';
-import { func } from 'prop-types';
 
 const initialState = {
     categoryList: [],
     productList: [],
+    productDetail:{},
 };
 
 export default function(state = initialState, action) {
@@ -22,6 +24,18 @@ export default function(state = initialState, action) {
             return {
                 ...state,
                 productList: payload
+            }
+        
+        case FETCH_PRODUCT:
+            return {
+                ...state,
+                productList: payload
+            }
+
+        case PRODUCT_DETAIL:
+            return {
+                ...state,
+                productDetail: payload
             }
 
         default:

@@ -1,4 +1,11 @@
-import React from 'react'
+import React, { Component, Fragment } from 'react';
+import './header.css'
+import { logout } from '../../actions/auth'
+import ProductCategoryDropdown from '../product/productCategoryDropdown'
+import { Redirect } from 'react-router-dom'
+import PropTypes from 'prop-types'
+import { fetchProduct, productCategories } from '../../actions/product';
+
 import {
   Container,
   Divider,
@@ -7,266 +14,197 @@ import {
   Header,
   Image,
   List,
-  Input,
   Menu,
   Segment,
-  Placeholder,
-  GridColumn
 } from 'semantic-ui-react';
-
-import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import { logout } from '../../actions/auth';
-import './header.css'
-import ProductCategoryDropdown from '../product/productCategoryDropdown';
 
 
-const FixedMenuLayout = (props) => {
-  if (!props.user) {
-    return <Redirect to = '/' />
+class AppHeader extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      loading: true,
+      searchText: '',
+    }
   }
-  return (
-  <div>
-    <Menu id="headerMenu" fixed='top' inverted>
 
-        <Menu.Item as='a' header>
+  componentDidMount = async () => { }
+
+  onLogout = async () => {
+    await this.props.logout()
+    await this.props.history.push('/login')
+  }
+
+
+  onChangeHandler = async (e) => {
+    e.preventDefault()
+    this.setState({ [e.target.name]: e.target.value });
+  }
+
+  onSearch = async () => {
+
+    const { searchText } = this.state   
+
+    await this.props.fetchProduct(searchText)
+
+    await this.props.history.push('/dashboard')
+
+  }
+
+  onProfileClick = async () => {
+
+    const { userId, userType } = this.props.user
+
+    if (userType === 'customer') {
+
+      this.props.history.push(`/customerprofile/?id=${userId}`)
+
+    } else if (userType === 'seller') {
+
+      this.props.history.push(`/sellerprofile/?id=${userId}`)
+
+    } else if (userType === 'admin') {
+
+      this.props.history.push(`/adminprofile/id?=${userId}`)
+
+    } else {
+      //unauthorized access
+      this.props.history.push('/login')
+    }
+  }
+
+  render() {
+
+    if (!this.props.user) {
+      return <Redirect to='/login' />
+    }
+
+    return (
+
+      <div>
+        <Menu id="headerMenu" fixed='top' inverted>
+          <Menu.Item as='a' header>
             <i className="align justify icon"></i>
-            <ProductCategoryDropdown/>
-        </Menu.Item>
+            <ProductCategoryDropdown />
+          </Menu.Item>
 
-        <Menu.Item as='a' header>
-            <Image size='mini' src='/amazon-prime.jpg' style={{padding:"none"}} />
-        </Menu.Item>
-        
-      <Grid.Row columns={1} style={{width:"100%"}}>
-        <Grid.Column>
-        <Menu.Item as='a' >
-        <Input fluid icon='search' placeholder='Search...' />
-            {/* <Input action='Search' placeholder='Search...' /> */}
-        </Menu.Item>
-        </Grid.Column>
-      </Grid.Row>
-        
-        <Dropdown item simple text='Hello Your Name'>
-          <Dropdown.Menu>
-            <Dropdown.Item>List Item</Dropdown.Item>
-            <Dropdown.Item>List Item</Dropdown.Item>
-            <Dropdown.Divider />
-            <Dropdown.Header>Header Item</Dropdown.Header>
-            <Dropdown.Item>
-              <i className='dropdown icon' />
-              <span className='text'>Submenu</span>
-              <Dropdown.Menu>
-                <Dropdown.Item>List Item</Dropdown.Item>
-                <Dropdown.Item>List Item</Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown.Item>
-            <Dropdown.Item onClick={(e) => props.logout()}>Sign Out</Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
-        <Menu.Item as='a' header>
+          <Menu.Item as='a' header>
+            <Image size='mini' src='/amazon-prime.jpg' style={{ padding: "none" }} />
+          </Menu.Item>
+
+          <Grid.Row columns={1} style={{ width: "100%" }}>
+            <Grid.Column>
+              <Menu.Item as='a'>
+                <div className="ui action input">
+                  <input type="text" placeholder="Search..." name="searchText" onChange={this.onChangeHandler} />
+                  <button className="ui icon button" onClick={this.onSearch}><i aria-hidden="true" className="search icon"></i></button>
+                </div>
+              </Menu.Item>
+            </Grid.Column>
+          </Grid.Row>
+
+          <Dropdown item simple text='Hello Your Name'>
+            <Dropdown.Menu>
+              <Dropdown.Item onClick={this.onProfileClick}>Profile</Dropdown.Item>
+              <Dropdown.Item>List Item</Dropdown.Item>
+              <Dropdown.Divider />
+              <Dropdown.Header>Header Item</Dropdown.Header>
+              <Dropdown.Item>
+                <i className='dropdown icon' />
+                <span className='text'>Submenu</span>
+                <Dropdown.Menu>
+                  <Dropdown.Item>List Item</Dropdown.Item>
+                  <Dropdown.Item>List Item</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown.Item>
+              <Dropdown.Item onClick={this.onLogout}>Sign Out</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+          <Menu.Item as='a' header>
             Return &  Orders
-        </Menu.Item>
-        <Menu.Item as='a' header>
-            Cart    
-        </Menu.Item>
-    </Menu>
+          </Menu.Item>
+          <Menu.Item as='a' header>
+            Cart
+          </Menu.Item>
+        </Menu>
+        <Segment inverted vertical style={{ margin: '5em 0em 0em 0em', padding: '2em 0em ' }}>
+          <Container textAlign='center'>
+            <Grid divided inverted stackable>
+              <Grid.Column width={4}>
+                <Header inverted as='h4' content='Get to Know Us' />
+                <List link inverted>
+                  <List.Item as='a'>Careers</List.Item>
+                  <List.Item as='a'>Blog</List.Item>
+                  <List.Item as='a'>Press Center</List.Item>
+                  <List.Item as='a'>Investor Relations</List.Item>
+                  <List.Item as='a'>Amazon Devices</List.Item>
+                  <List.Item as='a'>Amazon Devices</List.Item>
+                </List>
+              </Grid.Column>
+              <Grid.Column width={4}>
+                <Header inverted as='h4' content='Make Money with Us' />
+                <List link inverted>
+                  <List.Item as='a'>Link One</List.Item>
+                  <List.Item as='a'>Link Two</List.Item>
+                  <List.Item as='a'>Link Three</List.Item>
+                  <List.Item as='a'>Link Four</List.Item>
+                </List>
+              </Grid.Column>
+              <Grid.Column width={4}>
+                <Header inverted as='h4' content='Amazon Payment Products' />
+                <List link inverted>
+                  <List.Item as='a'>Link One</List.Item>
+                  <List.Item as='a'>Link Two</List.Item>
+                  <List.Item as='a'>Link Three</List.Item>
+                  <List.Item as='a'>Link Four</List.Item>
+                </List>
+              </Grid.Column>
+              <Grid.Column width={4}>
+                <Header inverted as='h4' content='Let Us Help You' />
+                <List link inverted>
+                  <List.Item as='a'>Link One</List.Item>
+                  <List.Item as='a'>Link Two</List.Item>
+                  <List.Item as='a'>Link Three</List.Item>
+                  <List.Item as='a'>Link Four</List.Item>
+                </List>
+              </Grid.Column>
+            </Grid>
 
-    <Container style={{ marginTop: '7em' }}>
-      <Header as='h1'>Amazon Prototpe Application development</Header>
-      <p>This is a basic fixed menu template using fixed size containers.</p>
-      <p>
-        A text container is used for the main container, which is useful for single column layouts.
-      </p>
-
-      <Grid columns={3} stackable>
-        <Grid.Column>
-            <Segment>
-                <Placeholder>
-                    <Placeholder.Header image>
-                        <Placeholder.Line />
-                        <Placeholder.Line />
-                    </Placeholder.Header>
-                    <Placeholder.Paragraph>
-                        <Placeholder.Line length='large' />
-                        <Placeholder.Line length='large' />
-                        <Placeholder.Line length='large' />
-                        <Placeholder.Line length='large' />
-                        <Placeholder.Line length='large' />
-                        <Placeholder.Line length='large' />
-                        <Placeholder.Line length='large' />
-                        <Placeholder.Line length='large' />
-                        <Placeholder.Line length='large' />
-                        <Placeholder.Line length='large' />
-
-                    </Placeholder.Paragraph>
-                </Placeholder>
-            </Segment>
-        </Grid.Column>
-
-    <Grid.Column>
-      <Segment raised>
-        <Placeholder>
-          <Placeholder.Header image>
-            <Placeholder.Line />
-            <Placeholder.Line />
-          </Placeholder.Header>
-          <Placeholder.Paragraph>
-          <Placeholder.Line length='large' />
-            <Placeholder.Line length='large' />
-            <Placeholder.Line length='large' />
-            <Placeholder.Line length='large' />
-            <Placeholder.Line length='large' />
-            <Placeholder.Line length='large' />
-            <Placeholder.Line length='large' />
-            <Placeholder.Line length='large' />
-            <Placeholder.Line length='large' />
-            <Placeholder.Line length='large' />
-
-          </Placeholder.Paragraph>
-        </Placeholder>
-      </Segment>
-    </Grid.Column>
-
-    <Grid.Column>
-      <Segment raised>
-        <Placeholder>
-          <Placeholder.Header image>
-            <Placeholder.Line />
-            <Placeholder.Line />
-          </Placeholder.Header>
-          <Placeholder.Paragraph>
-          <Placeholder.Line length='large' />
-        <Placeholder.Line length='large' />
-        <Placeholder.Line length='large' />
-        <Placeholder.Line length='large' />
-        <Placeholder.Line length='large' />
-        <Placeholder.Line length='large' />
-        <Placeholder.Line length='large' />
-        <Placeholder.Line length='large' />
-        <Placeholder.Line length='large' />
-        <Placeholder.Line length='large' />
-
-          </Placeholder.Paragraph>
-        </Placeholder>
-      </Segment>
-    </Grid.Column>
-  </Grid>
-
-  <Grid columns={1} stackable>
-        <Grid.Column>
-            <Segment>
-            <Placeholder fluid>
-                <Placeholder.Header image>
-                <Placeholder.Line />
-                <Placeholder.Line />
-                </Placeholder.Header>
-                <Placeholder.Paragraph>
-                <Placeholder.Line />
-                <Placeholder.Line />
-                <Placeholder.Line />
-                </Placeholder.Paragraph>
-            </Placeholder>
-            </Segment>
-        </Grid.Column>
-    </Grid>
-
-    <Grid columns={1} stackable>
-        <Grid.Column>
-            <Segment>
-            <Placeholder fluid>
-                <Placeholder.Header image>
-                <Placeholder.Line />
-                <Placeholder.Line />
-                </Placeholder.Header>
-                <Placeholder.Paragraph>
-                <Placeholder.Line />
-                <Placeholder.Line />
-                <Placeholder.Line />
-                </Placeholder.Paragraph>
-            </Placeholder>
-            </Segment>
-        </Grid.Column>
-    </Grid>
-    </Container>
-
-    <Segment inverted vertical style={{ margin: '5em 0em 0em', padding: '2em 0em ' }}>
-      <Container textAlign='center'>
-        <Grid divided inverted stackable>
-          <Grid.Column width={4}>
-            <Header inverted as='h4' content='Get to Know Us' />
-            <List link inverted>
-              <List.Item as='a'>Careers</List.Item>
-              <List.Item as='a'>Blog</List.Item>
-              <List.Item as='a'>Press Center</List.Item>
-              <List.Item as='a'>Investor Relations</List.Item>
-              <List.Item as='a'>Amazon Devices</List.Item>
-              <List.Item as='a'>Amazon Devices</List.Item>
-
+            <Divider inverted section />
+            <Image centered size='mini' src='/logo.png' />
+            <List horizontal inverted divided link size='small'>
+              <List.Item as='a' href='#'>
+                Site Map
+              </List.Item>
+              <List.Item as='a' href='#'>
+                Contact Us
+              </List.Item>
+              <List.Item as='a' href='#'>
+                Terms and Conditions
+              </List.Item>
+              <List.Item as='a' href='#'>
+                Privacy Policy
+              </List.Item>
             </List>
-          </Grid.Column>
-          <Grid.Column width={4}>
-            <Header inverted as='h4' content='Make Money with Us' />
-            <List link inverted>
-              <List.Item as='a'>Link One</List.Item>
-              <List.Item as='a'>Link Two</List.Item>
-              <List.Item as='a'>Link Three</List.Item>
-              <List.Item as='a'>Link Four</List.Item>
-            </List>
-          </Grid.Column>
-          <Grid.Column width={4}>
-            <Header inverted as='h4' content='Amazon Payment Products' />
-            <List link inverted>
-              <List.Item as='a'>Link One</List.Item>
-              <List.Item as='a'>Link Two</List.Item>
-              <List.Item as='a'>Link Three</List.Item>
-              <List.Item as='a'>Link Four</List.Item>
-            </List>
-          </Grid.Column>
-          <Grid.Column width={4}>
-            <Header inverted as='h4' content='Let Us Help You' />
-            <List link inverted>
-              <List.Item as='a'>Link One</List.Item>
-              <List.Item as='a'>Link Two</List.Item>
-              <List.Item as='a'>Link Three</List.Item>
-              <List.Item as='a'>Link Four</List.Item>
-            </List>
-          </Grid.Column>
-        </Grid>
+          </Container>
+        </Segment>
 
-        <Divider inverted section />
-        <Image centered size='mini' src='/logo.png' />
-        <List horizontal inverted divided link size='small'>
-          <List.Item as='a' href='#'>
-            Site Map
-          </List.Item>
-          <List.Item as='a' href='#'>
-            Contact Us
-          </List.Item>
-          <List.Item as='a' href='#'>
-            Terms and Conditions
-          </List.Item>
-          <List.Item as='a' href='#'>
-            Privacy Policy
-          </List.Item>
-        </List>
-      </Container>
-    </Segment>
-  </div>
-)
-
+      </div>
+    );
+  }
 }
 
-Header.propTypes = {
-  logout: PropTypes.func.isRequired,
+
+AppHeader.propTypes = {
+  isAuthenticated: PropTypes.bool.isRequired,
+  user: PropTypes.object.isRequired
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   isAuthenticated: state.auth.isAuthenticated,
   user: state.auth.user
 })
 
-export default connect(mapStateToProps, {
-  logout
-})(FixedMenuLayout);
+export default connect(mapStateToProps, { logout, fetchProduct, productCategories })(AppHeader);
