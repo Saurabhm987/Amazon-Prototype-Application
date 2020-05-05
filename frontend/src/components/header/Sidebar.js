@@ -39,7 +39,7 @@ class SideBar extends Component {
                             visible
                             width='thin'
                             >
-                            <Menu.Item as='a'>
+                            <Menu.Item as='a    '>
                                 <Icon name='home' />
                                 Home
                             </Menu.Item>
@@ -53,7 +53,7 @@ class SideBar extends Component {
                             </Menu.Item>
                             </Sidebar>
                         <Sidebar.Pusher>
-                                <Header />
+                                {/* <Header /> */}
                         </Sidebar.Pusher>
                 </Sidebar.Pushable>
         );

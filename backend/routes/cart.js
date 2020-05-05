@@ -4,16 +4,27 @@ const router = express.Router()
 var mongoose = require('mongoose');
 // const buyer = require('../dbModels/buyer')
 const cartServices = require('../services/cart')
+const cachedcart = require('../redis/cachedcart')
+const client = require('../index')
 
 
-router.get('/getCart/:id', async (request, response) => {  
+router.get('/getCart/:id', cachedcart, async (request, response, next) => {  
     try {
+
+        console.log('API CAll .......')
+
         const data = {
             "body": request.body,
             "params": request.params,
             "query": request.query,
         }
+
         let res =await cartServices.getProductsFromCart(data);
+
+        const {id} = request.params
+    
+        client.set(`"cart-${id}"`,JSON.stringify(item))
+        
         response.status(res.status).json(res.body);     
     }  
     catch (error) {
@@ -32,13 +43,19 @@ router.get('/getCart/:id', async (request, response) => {
 });
 router.post('/addToCart/:customer_id', async (request, response) => {  
     try {
+        console.log('API CALL..........')
         const data = {
             "body": request.body,
             "params": request.params,
             "query": request.query,
         }
-        console.log(data)
+
         let res =await cartServices.addProductInCart(data);
+
+        const{ customer_id } = request.params
+
+        client.set(`"cart-${customer_id}"`, JSON.stringify(res.body))
+
         response.status(res.status).json(res.body);
     }  
     catch (error) {
@@ -63,6 +80,11 @@ router.put('/updateCart/:customer_id/product/:product_id', async (request, respo
             "query": request.query,
         }
         let res =await cartServices.updateProductInCart(data);
+
+        const {customer_id} = request.params
+
+        client.set(`"cart-${customer_id}"`, JSON.stringify(res.body))
+
         response.status(res.status).json(res.body);
     }     
     catch (error) {
@@ -90,11 +112,12 @@ router.delete('/deleteCart/:customer_id/product/:product_id/:type', async (reque
             "query": request.query,
             "type": "deleteProductInCart"
         }
-        // await kafka.make_request('cart', data, function (err, data) {
-        //     if (err) throw new Error(err)
-        //     response.status(data.status).json(data.body);
-        // });
+       
         let res =await cartServices.deleteProductInCart(data);
+
+        // const {customer_id} = request.params
+        // client.set(`"cart-${customer_id}"`, JSON.stringify(res.body))
+
         response.status(res.status).json(res.body);
     } catch (error) {
         if (error.message)

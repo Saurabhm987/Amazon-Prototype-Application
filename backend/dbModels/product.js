@@ -2,9 +2,11 @@ const mongoose = require('mongoose');
 const reviewSchema = require('./review')
 
 const productSchema = new mongoose.Schema({
-    seller: {
-        _id: String,
-        name: String,
+    sellerName:{
+        type:String
+    },
+    sellerId:{
+        type:String
     },
     name: {
         type: String,

@@ -1,25 +1,49 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import HeaderView from './header/Header'
 import sellerCentral from './seller/SellerCentral'
-import { Container } from 'semantic-ui-react';
 import SignupForm from './signup/Signup'
 import LoginForm from './login/Login'
+import ProductDetail from './product/ProductDetail'
+import CustomerDashboard from './dashboard/CustomerDashboard'
+import AppHeader from './header/Header';
+import SellerProfile from './seller/SellerProfile'
+import SellerProduct from './seller/SellerProduct'
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types'
 
 class Main extends Component {
+    constructor(props) {
+        super(props);
+        
+    }
+
     render() {
         return (
             <Router>
-                <Route path="/" exact component={HeaderView} />
+                <Route path="/dashboard" exact component={CustomerDashboard} />
                 <Route path="/sellerCentral" exact component={sellerCentral} />
-                <Route path="/dashboard" exact component={HeaderView} />
                 <Route path="/signup" component={SignupForm} />
-                <Route path='/' exact component={LoginForm} />
-                {/* <Route path="/dashboard" exact component={Post} /> */}
-                {/* </Root> */}
+                <Route path='/login' exact component={LoginForm} />
+                <Route path='/productdetails' exact component={ProductDetail} />
+                <Route path='/sellerprofile' exact component={SellerProfile} />
+                <Route path='/sellerproducts' exact component={SellerProduct} />
+                { 
+                    this.props.isAuthenticated 
+                    ? <Route path='/' component={AppHeader} /> 
+                    : <Route path='/login' exact component={LoginForm} />
+                }
             </Router>
         );
     }
 }
 
-export default Main;
+Main.propTyeps = {
+    isAuthenticated: PropTypes.bool.isRequired
+}
+
+const mapStateToProps = state => ({
+    isAuthenticated: state.auth.isAuthenticated
+})
+
+export default connect(mapStateToProps, null)(Main);

@@ -24,8 +24,10 @@
     "express": "^4.17.1",
     "express-basic-auth": "^1.2.0",
     "express-session": "^1.17.0",
+    "faker": "^4.1.0",
     "formidable": "^1.2.2",
     "jsonwebtoken": "^8.5.1",
+    "kafka-node": "^5.0.0",
     "mdbreact": "^4.25.2",
     "mongoose": "^5.9.5",
     "mongoose-unique-validator": "^2.0.3",
@@ -39,6 +41,7 @@
     "passport-local": "^1.0.0",
     "pdfjs-dist": "^2.2.228",
     "react-jss": "^10.0.4",
+    "redis": "^3.0.2",
     "uuid": "^3.4.0"
   }
 }
