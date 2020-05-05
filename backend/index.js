@@ -28,21 +28,20 @@ app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());
-
 app.use('/public', express.static('public'));
-
-
 // mongo and mysql connection pool
 mongoPool
 mysqlPool
 
 // route handlers
+// require('./routes/seller/xyz')(app);
 app.use('/product', require('./routes/products'))
 app.use('/user', require('./routes/cart'))
+
+  
 app.use('/signUp', require('./routes/signUp'));
 app.use('/signin', require('./routes/signin'));
 
-// app.use('/customer', require('./routes/cart'))
 app.listen(3001);
 console.log("Server Listening on port 3001")
 module.exports = app;
