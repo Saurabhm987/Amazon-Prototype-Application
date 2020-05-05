@@ -4,6 +4,47 @@ const product = require('../dbModels/product');
 const seller = require('../dbModels/seller');
 const { orderStatus } = require('../config/types');
 
+
+// !! TODO
+exports.getProductsAnalytics = async (req) => {
+    try {
+        let results = {
+            topTenProductsRating: null,
+            topTenViewedPerDay: null,
+        };
+
+        results.topTenProductsRating = await this.getTopTenProductsRating();
+        results.topTenViewedPerDay = await this.getTopTenViewedPerDay();
+
+        results.topTenProductsRating = results.topTenProductsRating.body;
+        results.topTenViewedPerDay = results.topTenViewedPerDay.body;
+       
+        return { "status": 200, body: results };
+    } catch (error) {
+        if (error.message)
+            message = error.message
+        else
+            message = 'Error while creating order';
+        if (error.statusCode)
+            code = error.statusCode
+        else
+            code = 500
+        return { "status": code, body: { message } }
+    }
+}
+
+// !! TODO
+exports.getTopTenProductsRating = async (req) => {
+
+};
+// !! TODO
+exports.getTopTenViewedPerDay = async (req) => {
+
+};
+
+
+//********************************************************************* */
+
 // get first 4 analytics related to sales
 exports.getSalesAnalytics = async (req) => {
     try {
@@ -37,6 +78,7 @@ exports.getSalesAnalytics = async (req) => {
         return { "status": code, body: { message } }
     }
 }
+
 
 // No of orders per day.
 exports.getCountOrdersPerDay = async (req) => {
