@@ -1,18 +1,17 @@
-import React, {Component} from "react";
-import {Dropdown} from "semantic-ui-react";
-import {connect} from "react-redux";
-import {productCategories} from '../../actions/product';
-import AddProduct from './addProductModel'
+import React, { Component } from "react";
+import { Dropdown } from "semantic-ui-react";
+import { connect } from "react-redux";
+import { productCategories } from '../../actions/product';
 
-class ProductCategoryDropdown extends Component{
+class ProductCategoryDropdown extends Component {
     constructor() {
         super();
         //todo this wont be used, category to come from props
-        this.state={
-            categories: [{text:"Clothing", value:"Clothing"},
-                {text:"Amazon Fresh", value:"Amazon Fresh"},
-                {text:"Books", value:"Books"},
-                {text:"Electronics", value:"Electronics"}],
+        this.state = {
+            categories: [{ text: "Clothing", value: "Clothing" },
+            { text: "Amazon Fresh", value: "Amazon Fresh" },
+            { text: "Books", value: "Books" },
+            { text: "Electronics", value: "Electronics" }],
         }
     }
 
@@ -23,7 +22,7 @@ class ProductCategoryDropdown extends Component{
     render() {
         //todo this wont be used, category to come from props
         return (
-            <Dropdown placeholder='Categories' selection options={this.state.categories}/>
+            <Dropdown placeholder='Categories' selection options={this.state.categories} />
         )
     }
 

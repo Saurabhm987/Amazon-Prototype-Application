@@ -1,5 +1,4 @@
 const express = require('express');
-const router = express.Router();
 const queries = require('../queries/mongoQueries')
 const buyer = require('../dbModels/buyer')
 const ObjectID= require('mongodb').ObjectID
@@ -94,7 +93,7 @@ exports.deleteProductInCart = async (request) => {
         let resp = await queries.updateField(buyer, { _id: request.params.customer_id }, update)
 
         resp = await buyer.find({ _id: request.params.customer_id }).
-            populate('cart.productId', { name: 1, price: 1, _id: 1, images: 1, description: 1, removed:1  })
+            populate('cart.productId', { name: 1, price: 1, _id: 1, images: 1, description: 1, removed:1})
         if(request.params.type === 'saveforlater'){
             console.log(request.params.type)
             console.log(request.params.customer_id)

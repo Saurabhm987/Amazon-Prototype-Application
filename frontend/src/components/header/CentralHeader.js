@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { Menu, Dropdown } from 'semantic-ui-react'
-import AddProduct from '../product/addProductModel'
 
 export default class CentralHeader extends Component {
   state = { activeItem: 'CATALOG' }
@@ -11,7 +10,7 @@ export default class CentralHeader extends Component {
     const { activeItem } = this.state
 
     return (
-      <div>
+      <div style={{margin:'65px 0px 0px 0px'}}>
         <Menu pointing secondary>
           <Dropdown text='CATALOG' pointing className='link item'>
             <Dropdown.Menu>
@@ -48,7 +47,7 @@ export default class CentralHeader extends Component {
               <Dropdown.Item
                 name='Add a Product'
                 active={activeItem === 'Add a Product'}
-                onClick={<AddProduct/> }>Add a Product</Dropdown.Item>
+                onClick={this.handleItemClick}>Add a Product</Dropdown.Item>
               <Dropdown.Item
                 name='Add products via Upload'
                 active={activeItem === 'Add products via Upload'}

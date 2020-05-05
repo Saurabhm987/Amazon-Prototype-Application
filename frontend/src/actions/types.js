@@ -14,6 +14,9 @@ export const REMOVE_ALERT = 'REMOVE_ALERT';
 
 //product actions
 export const LOAD_CATEGORY = 'LOAD_CATEGORY';
+export const ADD_PRODUCT = 'ADD_PRODUCT';
+export const FETCH_PRODUCT = 'FETCH_PRODUCT';
+export const PRODUCT_DETAIL = 'PRODUCT_DETAIL';
 
 
 //cart and save for later actions
