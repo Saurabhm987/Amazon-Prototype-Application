@@ -33,7 +33,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());
 
 app.use('/public', express.static('public'));
-
+ 
 
 // mongo and mysql connection pool
 mongoPool
@@ -44,9 +44,6 @@ app.use('/product', require('./routes/products'))
 //app.use('/user', require('./routes/cart'))
 //app.use('/saveForLater', require('./routes/saveForLater'))
 
-app.use('/product', require('./routes/products'))
-// app.use('/user', require('./routes/cart'))
-// app.use('/saveForLater', require('./routes/saveForLater'))
 
 app.use('/signUp', require('./routes/signUp'));
 app.use('/signin', require('./routes/signin'));
