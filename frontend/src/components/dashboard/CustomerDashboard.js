@@ -6,11 +6,15 @@ import { fetchProduct, productCategories } from '../../actions/product';
 import CustomerDashLoader from '../loader/customerDashLoader'
 
 import {
+
     Header,
     Image,
     Placeholder,
     Card,
     Rating,
+    Grid,
+    Pagination,
+
 } from 'semantic-ui-react';
 
 
@@ -21,18 +25,39 @@ class CustomerDashboard extends Component {
         this.state = {
             searchText: '',
             loading: true,
+            hovered: false,
+            activePage: 1,
         }
-    
+
     }
 
 
     componentDidMount = async () => {
-
         await this.props.fetchProduct()
         await this.props.productCategories()
         setTimeout(() => {
-            this.setState({loading:false});
+            this.setState({ loading: false });
         }, 1000);
+    }
+
+    handlePaginationChange = async (e, { activePage }) => {
+        await this.setState({ activePage });
+        await this.handleSearch()
+    }
+
+    handleSearch = async () => {
+
+        await window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+
+        await this.setState({ loading: true });
+
+        console.log('activePage', this.state.activePage)
+
+        await this.props.fetchProduct('', '', this.state.activePage, '')
+
+        await setTimeout(() => {
+            this.setState({ loading: false });
+        }, 500);
     }
 
     onClickHandler = async (e) => {
@@ -86,7 +111,10 @@ class CustomerDashboard extends Component {
                                     <Placeholder.Image square size='small' />
                                 </Placeholder>
                             ) : (
-                                    <Image src={item.images[0]} alt="" style={{ width: '300px', height: '300px' }} />
+                                    <Image
+                                        src={item.images[0]} alt=""
+                                        style={{ width: '300px', height: '250px' }}
+                                    />
                                 )}
 
                             <Card.Content extra textAlign='left'>
@@ -102,7 +130,7 @@ class CustomerDashboard extends Component {
                                     </Placeholder>
                                 ) : (
                                         <Fragment>
-                                            <Card.Header>{item.name}</Card.Header>
+                                            <Card.Header style={{ fontWeight: 400 }}>{item.name}</Card.Header>
                                             <Card.Meta>
                                                 <Rating maxRating={5} defaultRating={3} icon='star' size='small' disabled />
                                             </Card.Meta>
@@ -113,6 +141,33 @@ class CustomerDashboard extends Component {
                         </Card>
                     ))}
                 </Card.Group>
+                <br />
+                <br />
+                <Grid columns={1}>
+                    <Grid.Column>
+                        <Grid.Row>
+                            {
+                                this.props.productCount && this.props.productCount > 1
+                                    ?
+                                    (
+                                        <Pagination
+                                            activePage={this.state.activePage}
+                                            onPageChange={this.handlePaginationChange}
+                                            totalPages={(Math.trunc(this.props.productCount / 12)) + 1}
+                                        />
+                                    ) :
+                                    (
+                                        <Pagination
+                                            activePage={this.state.activePage}
+                                            onPageChange={this.handlePaginationChange}
+                                            totalPages={1}
+                                        />
+                                    )
+                            }
+
+                        </Grid.Row>
+                    </Grid.Column>
+                </Grid>
             </div>
         );
     }
@@ -135,13 +190,15 @@ Header.propTypes = {
     fetchProduct: PropTypes.func.isRequired,
     categoryList: PropTypes.array.isRequired,
     productList: PropTypes.array.isRequired,
+    productCount:PropTypes.number.isRequired,
 }
 
 const mapStateToProps = (state) => ({
     isAuthenticated: state.auth.isAuthenticated,
     user: state.auth.user,
     productList: state.product.productList,
-    categoryList: state.product.categoryList
+    categoryList: state.product.categoryList,
+    productCount:state.product.productCount,
 })
 
 export default connect(mapStateToProps, {

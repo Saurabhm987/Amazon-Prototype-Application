@@ -51,12 +51,12 @@ export const addProduct = (payload) => async (dispatch) => {
 }
 
 
-export const fetchProduct = (searchText = '', filterText, offset, sortType) => async (dispatch) => {
+export const fetchProduct = (searchText = '', filterText='', offset=1, sortType) => async (dispatch) => {
 
     await axios.get(
         `${API_ENDPOINT}/product/search`,
         {
-            params: { searchText: searchText, offset: 1, filterText: '', sortType: 'PriceLowtoHigh' }
+            params: { searchText: searchText, offset: offset, filterText: filterText, sortType: sortType }
         },
         {
             headers: { 'Content-Type': 'application/json' }
@@ -129,3 +129,78 @@ export const getSellerProducts = (sellerId) => async (dispatch) => {
 
 
 
+
+export const getSellerProductsPaginated = (searchText = '', filterText='', offset=1, sortType='', userId) => async (dispatch) => {
+
+    await axios.get(
+        `${API_ENDPOINT}/product/getSellerPaginatedResult`,
+        {
+            params: { searchText: searchText, offset: offset, filterText: filterText, sortType: sortType, sellerId:userId }
+        },
+        {
+            headers: { 'Content-Type': 'application/json' }
+        }
+    )
+        .then(response => {
+
+            if (response.status >= 500) {
+                throw new Error('Bad response from server')
+            }
+
+            return response.data
+        })
+        .then(payload => {
+            dispatch({
+                type: 'FETCH_PRODUCT',
+                payload: payload
+            })
+        })
+        .catch(error => {
+            console.log('error', error)
+        })
+}
+
+
+
+
+
+
+export const updateProduct = (productId, body ) => async (dispatch) => {
+
+    await axios.put(`${API_ENDPOINT}/product/updateproduct/${productId}`, body)
+        .then(response => {
+            if (response.status >= 500) {
+                throw new Error('Bad response from server')
+            }
+
+            return response.data
+        })
+        .then(payload => {
+            // dispatch({
+            //     type: 'UPDATE_PRODUCT',
+            //     payload: payload
+            // })
+            console.log('update action - ', payload)
+        })
+        .catch(error => {
+            console.log('error', error)
+        })
+}
+
+export const deleteProduct = (productId) => async (dispatch) => {
+
+    await axios.put(`${API_ENDPOINT}/product/deleteproduct/${productId}`)
+        .then(response => {
+            if (response.status >= 500) {
+                throw new Error('Bad response from server')
+            }
+
+            return response.data
+        })
+        .then(payload => {
+            return payload
+        })
+        .catch(error => {
+            return error
+        })
+}

@@ -4,27 +4,33 @@ import CentralHeader from '../header/CentralHeader'
 import AddProduct from '../product/AddProduct'
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types'
+import jwtDecode from 'jwt-decode';
+import { productCategories } from '../../actions/product'
+
 
 class SellerCentral extends Component {
     constructor(props) {
         super(props);
 
-        this.state = { activeItem: 'Growth' }
+        this.state = { activeItem: 'Growth'}
 
     }
 
-    componentDidMount = () => {
-        if(!this.props.isAuthenticated){
+    componentDidMount = async () => {
+        let token = await localStorage.getItem('token')
+        if (token === null) {
             this.props.history.push('/login')
         }
     }
+
 
     handleItemClick = (e, { name }) => this.setState({ activeItem: name })
 
     render() {
         const { activeItem } = this.state
+
         return (
-            <Container style={{marginBottom:'20px'}}>
+            <Container style={{ marginBottom: '20px' }}>
                 <CentralHeader></CentralHeader>
                 <br></br>
                 <Grid columns={2}>
@@ -180,18 +186,19 @@ class SellerCentral extends Component {
                         </Segment>
                     </Grid.Column>
                 </Grid>
-
             </Container>
         )
     }
 }
 
 SellerCentral.propTypes = {
-    isAuthenticated: PropTypes.bool.isRequired
+    isAuthenticated: PropTypes.bool.isRequired,
+    productCategories: PropTypes.array.isRequired,
 }
 
 const mapStateToProps = state => ({
-    isAuthenticated: state.auth.isAuthenticated
+    isAuthenticated: state.auth.isAuthenticated,
+    categoryList: state.product.categoryList
 })
 
-export default connect(mapStateToProps, null)(SellerCentral)
+export default connect(mapStateToProps, { productCategories })(SellerCentral)

@@ -260,9 +260,13 @@ router.put('/updateproduct/:product_id', async (request, response) => {
 
         const requestBody = { body: request.body, params: request.params }
 
+        console.log('requestBody - ', requestBody)
+
         const result = await productServices.updateProduct(requestBody)
 
-        response.json(result)
+        console.log('updated result - ')
+
+        response.json(result.body) 
 
     } catch (error) {
 
@@ -341,7 +345,7 @@ router.get('/sellerproduct/:seller_id', async (request, response) => {
 
         const res = await productServices.getsellerProduct(requestBody)
 
-        response.status(res.status).json(res.body)
+        response.status(res.status).json(res)
 
     } catch (error) {
 
@@ -360,8 +364,6 @@ router.get('/sellerproduct/:seller_id', async (request, response) => {
 })
 
 
-// /user/search?searchText=${searchText}&filterText=${filterText}&offset=${offset}&sortType=${sortType}`)
-
 router.get('/search', async (request, response) => {
 
     console.log('search api call....')
@@ -377,7 +379,41 @@ router.get('/search', async (request, response) => {
 
         client.set('products', JSON.stringify(res.body))
 
-        response.status(res.status).json(res.body.Products);
+        response.status(res.status).json(res.body);
+
+    }
+    catch (error) {
+        if (error.message)
+            message = error.message
+        else
+            message = 'Error while fetching products'
+
+        if (error.statusCode)
+            code = error.statusCode
+        else
+            code = 500
+
+        return response.status(code).json({ message });
+    }
+
+});
+
+
+// /user/search?searchText=${searchText}&filterText=${filterText}&offset=${offset}&sortType=${sortType}`)
+
+router.get('/getSellerPaginatedResult', async (request, response) => {
+
+    console.log('paginated seller api call....')
+
+    try {
+
+        const data = {
+            "body": request.body,
+            "params": request.params,
+            "query": request.query,
+        }
+        let res = await productServices.getProductsforSeller(data);
+        response.status(res.status).json(res.body);
 
     }
     catch (error) {
@@ -426,7 +462,7 @@ router.put('/deleteproduct/:product_id', async (request, response) => {
         if (result.status === 200)
             response.status(res.status).json(res.body)
         else
-            response.status(500).json('Product has been deleted!')
+            response.status(500).json('Product has already been deleted!')
     }
     catch{
 

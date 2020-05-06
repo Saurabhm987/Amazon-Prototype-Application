@@ -19,6 +19,9 @@ class Main extends Component {
     }
 
     render() {
+
+        const user = localStorage.getItem('token')
+
         return (
             <Router>
                 <Route path="/dashboard" exact component={CustomerDashboard} />
@@ -29,9 +32,14 @@ class Main extends Component {
                 <Route path='/sellerprofile' exact component={SellerProfile} />
                 <Route path='/sellerproducts' exact component={SellerProduct} />
                 { 
-                    this.props.isAuthenticated 
+                    user !== null
                     ? <Route path='/' component={AppHeader} /> 
-                    : <Route path='/login' exact component={LoginForm} />
+                    : null
+                }
+                {
+                    user === null
+                    ? <Redirect to='/login'/>
+                    : null
                 }
             </Router>
         );
