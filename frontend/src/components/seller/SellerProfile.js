@@ -12,6 +12,7 @@ import {
     Button,
 } from 'semantic-ui-react'
 import { connect } from 'react-redux';
+import JwtDecode from 'jwt-decode';
 
 
 class SellerProfile extends Component {
@@ -28,7 +29,12 @@ class SellerProfile extends Component {
 
     componentDidMount = async () => {
 
-        const { userId } = this.props.user
+        // const { userId } = this.props.user
+        let user = localStorage.getItem('token')
+        if(user !== null){
+            let data = JwtDecode(user)
+            var userId = data.userId
+        }
         const sellerId = await queryString.parse(this.props.location.search);
 
         if(userId === sellerId.id){
