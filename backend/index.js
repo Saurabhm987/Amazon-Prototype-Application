@@ -51,6 +51,7 @@ app.use('/createOrder', require('./routes/customerOrder')); // temp name, must b
 app.use('/order', require('./routes/order'));
 app.use('/address', require('./routes/address'));
 app.use('/card', require('./routes/card'));
+app.use('/seller', require('./routes/seller'));
 
 app.use('/analytics', require('./routes/analytics'));
 
