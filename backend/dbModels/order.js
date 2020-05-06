@@ -125,11 +125,12 @@ const orderSchema = new mongoose.Schema({
     },
     buyerId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'seller',
+        ref: 'buyer',
         required: true,
     },
     sellerId: {
         type: mongoose.Schema.Types.ObjectId,
+        ref: 'seller',
         required: true,
     },
     productId: {
