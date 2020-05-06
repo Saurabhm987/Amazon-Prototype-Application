@@ -8,7 +8,8 @@ import PropTypes from 'prop-types'
 import jwtDecode from 'jwt-decode';
 import { productCategories } from '../../actions/product'
 import SellerProduct from '../seller/SellerProduct'
-import {getUserOrder} from '../../actions/order'
+import { getUserOrder, updateStatus } from '../../actions/order';
+import { orderStatus } from '../controller/config';
 
 class SellerCentral extends Component {
     constructor(props) {
@@ -45,7 +46,7 @@ class SellerCentral extends Component {
         if (token === null) {
             this.props.history.push('/login')
         }
-        await this.props.getUserOrder()
+        this.props.getUserOrder();
     }
 
 
@@ -54,6 +55,7 @@ class SellerCentral extends Component {
     handleNavItem = (name) => this.setState({ activeNavItem: name })
 
     render() {
+        console.log(this.props.order.userOrders);
         const { activeNavItem, activeItem } = this.state
 
         var contentPage = (
@@ -246,11 +248,17 @@ SellerCentral.propTypes = {
     isAuthenticated: PropTypes.bool.isRequired,
     productCategories: PropTypes.array.isRequired,
     getUserOrder:PropTypes.func.isRequired,
+    updateStatus:PropTypes.func.isRequired,
+    order: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = state => ({
     isAuthenticated: state.auth.isAuthenticated,
+    order: state.order,
     categoryList: state.product.categoryList
 })
 
-export default connect(mapStateToProps, {getUserOrder})(withRouter(SellerCentral))
+export default connect(mapStateToProps, {
+    getUserOrder,
+    updateStatus
+})(withRouter(SellerCentral))
