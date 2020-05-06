@@ -4,7 +4,9 @@ import CentralHeader from '../header/CentralHeader'
 import AddProduct from '../product/AddProduct'
 import { Link, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import PropTypes from 'prop-types'
+import jwtDecode from 'jwt-decode';
+import { productCategories } from '../../actions/product'
 import SellerProduct from '../seller/SellerProduct'
 import { getUserOrder, updateStatus } from '../../actions/order';
 import { orderStatus } from '../controller/config';
@@ -40,11 +42,13 @@ class SellerCentral extends Component {
     }
 
     componentDidMount = async () => {
-        if (!this.props.isAuthenticated) {
+        let token = await localStorage.getItem('token')
+        if (token === null) {
             this.props.history.push('/login')
         }
         this.props.getUserOrder();
     }
+
 
     handleItemClick = (e, { name }) => this.setState({ activeItem: name })
 
@@ -55,49 +59,9 @@ class SellerCentral extends Component {
         const { activeNavItem, activeItem } = this.state
 
         var contentPage = (
-            <Grid columns={2}>
-                <Grid.Column width={5}>
-                    <Menu pointing vertical>
-                        <Menu.Item
-                            name='Top'
-                            active={activeItem === 'Top'}
-                            onClick={this.handleItemClick}
-                        />
-                        <Menu.Item
-                            name='Inventory'
-                            active={activeItem === 'Inventory'}
-                            onClick={this.handleItemClick}
-                        />
-                        <Menu.Item
-                            name='Pricing'
-                            active={activeItem === 'Pricing'}
-                            onClick={this.handleItemClick}
-                        />
-                        <Menu.Item
-                            name='Growth'
-                            active={activeItem === 'Growth'}
-                            onClick={this.handleItemClick}
-                        />
-                        <Menu.Item
-                            name='Advertising'
-                            active={activeItem === 'Advertising'}
-                            onClick={this.handleItemClick}
-                        />
-                        <Menu.Item
-                            name='Fulfillment'
-                            active={activeItem === 'Fulfillment'}
-                            onClick={this.handleItemClick}
-                        />
-                    </Menu>
-                </Grid.Column>
-
-                <Grid.Column stretched width={11}>
-                    <Container>
-                        This is an stretched grid column. This segment will always match the
-                    tab height. This will change wrt {this.state.activeItem} tab.
-                </Container>
-                </Grid.Column>
-            </Grid>
+            <div>
+                In process
+            </div>
         )
 
         console.log(activeNavItem);
@@ -275,7 +239,6 @@ class SellerCentral extends Component {
                         </Segment>
                     </Grid.Column>
                 </Grid>
-
             </Container>
         )
     }
@@ -283,6 +246,7 @@ class SellerCentral extends Component {
 
 SellerCentral.propTypes = {
     isAuthenticated: PropTypes.bool.isRequired,
+    productCategories: PropTypes.array.isRequired,
     getUserOrder:PropTypes.func.isRequired,
     updateStatus:PropTypes.func.isRequired,
     order: PropTypes.object.isRequired,
@@ -290,7 +254,8 @@ SellerCentral.propTypes = {
 
 const mapStateToProps = state => ({
     isAuthenticated: state.auth.isAuthenticated,
-    order: state.order
+    order: state.order,
+    categoryList: state.product.categoryList
 })
 
 export default connect(mapStateToProps, {

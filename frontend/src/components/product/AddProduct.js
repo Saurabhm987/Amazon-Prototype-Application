@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import ProductCategoryDropdown from './productCategoryDropdown'
 import PropTypes from 'prop-types'
 import { addProduct } from '../../actions/product'
-import FormData from 'form-data'
 import { connect } from 'react-redux';
+import { productCategories } from '../../actions/product'
 
 import {
   Button,
@@ -14,6 +13,7 @@ import {
   Grid,
   Segment,
   Form,
+  Dropdown,
 } from 'semantic-ui-react'
 
 class AddProduct extends Component {
@@ -28,10 +28,27 @@ class AddProduct extends Component {
       price: '',
       giftPrice: '',
       modalOpen: false,
-      files: []
+      files: [],
+      data: [{ key: '', text: '', value: '' }],
+      selectedCategory:''
     }
 
     this.handleInputChange = this.handleInputChange.bind(this)
+
+  }
+
+  componentDidMount = async () => {
+
+    await this.props.productCategories()
+    await this.createOptions()
+
+  }
+
+  createOptions = async () => {
+
+    await this.setState({
+      data: this.props.categoryList.map(item => { return { key: item._id, text: item.name, value: item.name } })
+    });
 
   }
 
@@ -43,10 +60,13 @@ class AddProduct extends Component {
 
   }
 
+  categoryHandler = (e, {value}) => {
+    this.setState({selectedCategory: value});
+  }
+
   handleClose = () => {
     this.setState({ modalOpen: false })
   }
-
 
   handleInputChange = (e) => {
     this.setState({
@@ -54,11 +74,11 @@ class AddProduct extends Component {
     })
   }
 
+  
+
   addproduct = async () => {
 
     const formdata = new FormData()
-
-    console.log('length - ', this.state.files.length)
 
     for (var x = 0; x < this.state.files.length; x++) {
       formdata.append('images', this.state.files[x])
@@ -68,17 +88,15 @@ class AddProduct extends Component {
       console.log(pair[0] + ', ' + JSON.stringify(pair[1]));
     }
 
-    const { name, description, quantity, price, category, giftPrice } = this.state
+    const { name, description, quantity, price, selectedCategory, giftPrice } = this.state
 
-    const{ userId }  = this.props.user
-
-    console.log('userId', userId)
+    const { userId } = this.props.user
 
     formdata.append('name', name)
     formdata.append('description', description)
     formdata.append('quantity', quantity)
     formdata.append('price', price)
-    formdata.append('category', category)
+    formdata.append('category', selectedCategory)
     formdata.append('giftPrice', giftPrice)
     formdata.append('sellerId', userId)
     formdata.append('sellerName', 'selllerName1')
@@ -89,7 +107,7 @@ class AddProduct extends Component {
 
     await this.props.addProduct(formdata)
 
-    await this.setState({ modalOpen: false});
+    await this.setState({ modalOpen: false });
 
     await alert('Product Added')
 
@@ -99,7 +117,7 @@ class AddProduct extends Component {
 
     return (
       <div>
-        <Modal trigger={<Button onClick={ () => this.setState({modalOpen: true})}>Add Product</Button>} centered={false} open={this.state.modalOpen} onClose={this.handleClose} closeIcon>
+        <Modal trigger={<Button onClick={() => this.setState({ modalOpen: true })}>Add Product</Button>} centered={false} open={this.state.modalOpen} onClose={this.handleClose} closeIcon>
           <Modal.Header>Add a product</Modal.Header>
           <Modal.Content image>
             <Grid.Column columns={2}>
@@ -107,11 +125,12 @@ class AddProduct extends Component {
               <Segment style={{ height: '330px' }}>
                 <Grid columns={2}>
                   <Grid.Row>
-                    {this.state.files.map((item, index) =>
-                      <Grid.Column>
-                        <Image wrapped size='medium' src={URL.createObjectURL(item)} key={index} alt="Image Preview" style={{ width: "80px", height: "80px", margin: '5px'}} />
-                      </Grid.Column>
-                    )
+                    {
+                      this.state.files.map((item, index) =>
+                        <Grid.Column>
+                          <Image wrapped size='medium' src={URL.createObjectURL(item)} key={index} alt="Image Preview" style={{ width: "80px", height: "80px", margin: '5px' }} />
+                        </Grid.Column>
+                      )
                     }
                   </Grid.Row>
                 </Grid>
@@ -134,7 +153,19 @@ class AddProduct extends Component {
                         <Form.Input name='giftPrice' type="number" label="Gift Price" value={this.state.giftPrice || ''} onChange={this.handleInputChange} />
                         <Form.Field>
                           <label>Category Options</label>
-                          <ProductCategoryDropdown />
+                          {
+                            this.props.categoryList
+                              ? <Dropdown
+                                selection
+                                search
+                                options={this.state.data}
+                                value={this.state.data.value}
+                                onChange={this.categoryHandler}
+                                placeholder='choose category'
+                              />
+                              : null
+                          }
+
                         </Form.Field>
                         <Form.Field>
                           <Form.Button color='teal' type='submit'>Add Product </Form.Button>
@@ -156,11 +187,13 @@ class AddProduct extends Component {
 AddProduct.propTypes = {
   addproduct: PropTypes.func.isRequired,
   productList: PropTypes.array.isRequired,
+  productCategories: PropTypes.array.isRequired,
 }
 
 const mapStatToProps = state => ({
-  productList: state.productList,
-  user : state.auth.user
+  productList: state.product.productList,
+  user: state.auth.user,
+  categoryList: state.product.categoryList
 })
 
-export default connect(mapStatToProps, { addProduct })(AddProduct)
+export default connect(mapStatToProps, { addProduct, productCategories })(AddProduct)
