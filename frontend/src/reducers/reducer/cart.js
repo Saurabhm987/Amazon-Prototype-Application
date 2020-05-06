@@ -1,58 +1,53 @@
 import {
-    ADD_SAVEFORLATER, DELETE_SAVEFORLATER, FETCH_SAVEFORLATER, MOVE_TOCART,
-    CUSTOMER_CART, ADD_TO_CART_PRODUCT_DETAIL_PAGE,CUSTOMER_CHECKOUT_DETAILS,
-    CUSTOMER_CHECKOUT_SUBTOTAL, CUSTOMER_ORDER_SUMMARY
+    
+    CUSTOMER_CART, CUSTOMER_SAVEFORLATER,
+    CUSTOMER_SAVEFORLATER_DELETE
 }
     from "../../actions/types";
 const _ = require('lodash');
 
 const initialState = {
 
-    saveforlater: [],
     cartlist: [],
     cartsubtotal: 0,
     carttotalitems: 0,
-    checkoutdetails: {},
-    checkoutsubtotal: 0,
-    checkouttotalitems: 0,
-    ordersummary: 0
+    saveforlaterlist:[],
+    
+   
 };
 
 export default function (state = initialState, action) {
     switch (action.type) {
-        case ADD_SAVEFORLATER:
-            return {
-                ...state,
-                saveforlater: action.payload,
-                redirectToSaveForLater: true
-            };
-
-        case DELETE_SAVEFORLATER:
-            return {
-                ...state,
-                saveforlater: action.payload
-            };
-        case FETCH_SAVEFORLATER:
-            return {
-                ...state,
-                saveforlater: action.payload,
-                redirectToSaveForLater: false
-            };
-        case MOVE_TOCART:
-            return {
-                ...state,
-                cartlist: action.payload
-            };
-        case ADD_TO_CART_PRODUCT_DETAIL_PAGE:
-            return {
-                cartRedirect: true
-            };
-        case MOVE_TOCART:
-            return {
-                ...state,
-                saveforlater: action.payload,
-                cartlist: action.payload
-            };
+       
+        case CUSTOMER_SAVEFORLATER_DELETE:
+            console.log(action.payload)
+            let subtota = _.sumBy(action.payload.cart, function (item) { 
+                console.log(item)
+                if (item.gift) 
+                { 
+                    return (((item.productId.price * (105/100)).toFixed(2)) * item.quantity) 
+                } 
+                else { 
+                    return (item.productId.price * item.quantity) 
+                } 
+            })
+            console.log(subtota)
+            return Object.assign({}, state, {
+                saveforlaterlist: action.payload.saveForLater,
+                saveforlaterRedirect: false  ,
+                cartlist: action.payload.cart,
+                cartsubtotal: subtota.toFixed(2),
+                carttotalitems: _.sumBy(action.payload.cart, 'quantity'),
+                cartRedirect: false  
+            });
+        
+            case CUSTOMER_SAVEFORLATER:
+                console.log(action.payload)
+                return Object.assign({}, state, {
+                    saveforlaterlist: action.payload,
+                    saveforlaterRedirect: false  
+                });
+        
         case CUSTOMER_CART:
             console.log(action.payload)
             let subtotal = _.sumBy(action.payload, function (item) { 
@@ -72,20 +67,7 @@ export default function (state = initialState, action) {
                 carttotalitems: _.sumBy(action.payload, 'quantity'),
                 cartRedirect: false  
             });
-        case CUSTOMER_CHECKOUT_DETAILS:
-            return Object.assign({}, state, {
-                checkoutdetails: action.payload
-            });
-        case CUSTOMER_CHECKOUT_SUBTOTAL:
-            return Object.assign({}, state, {
-                checkoutsubtotal: action.payload[0],
-                checkouttotalitems: action.payload[1],
-                checkoutdetails:action.payload[2]
-            });
-        case CUSTOMER_ORDER_SUMMARY:
-            return Object.assign({}, state, {
-                ordersummary: action.payload,
-            });
+       
         default:
             return state;
     }

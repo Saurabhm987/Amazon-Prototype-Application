@@ -4,7 +4,14 @@ import { getCustomerCart, updateCustomerCart, deleteProductInCart } from '../../
 import { Link } from 'react-router-dom';
 import './cart.css';
 import { Redirect } from 'react-router';
-// import header from '../header/Header'
+import Saveforlater from './saveforlater'
+import {
+    Select,
+    Divider,
+   
+    Grid,
+   
+  } from 'semantic-ui-react';
 
 class Cart extends Component {
     constructor(props) {
@@ -13,9 +20,7 @@ class Cart extends Component {
             cart: [],
             cartsubtotal: 0,
             carttotalitems: 0,
-            rendercheckout: false,
-            month: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-            day: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+            rendercheckout: false
         };
     }
     componentDidMount() {
@@ -38,16 +43,7 @@ class Cart extends Component {
         })
     }
 
-    // onSubmit = (e) => {
-    //     e.preventDefault();
-    //     const data = {
-    //         persona: this.state.persona,
-    //         email: this.state.mail,
-    //         password: this.state.password,
-    //     }
-    //     this.props.login(data);
-    // }
-
+    
     giftProduct = (product_id, gift, quantity) => {
         let changegift
         let data
@@ -68,17 +64,22 @@ class Cart extends Component {
 
         this.props.updateCustomerCart(data)
     }
-    changeQuantity = (product_id, gift, quantity) => {
-        console.log(product_id)
-        let data = {
+    changeQuantity = (e,data) => {
+        console.log(data['data-gift'])
+
+        console.log(data['data-id'])
+
+        console.log(data.value)
+
+        let dataA = {
             customer_id: '5ea6217130c53720685db7dd',
             // customer_id: sessionStorage.getItem('id'),
-            product_id: product_id,
-            gift: gift,
-            quantity: quantity
+            product_id: data['data-id'],
+            gift: data['data-gift'],
+            quantity: data.value
         }
 
-        this.props.updateCustomerCart(data)// in backend services lookup to get product details///////////////
+        this.props.updateCustomerCart(dataA)
     }
 
     deleteProduct = (product_id, type) => {
@@ -101,7 +102,18 @@ class Cart extends Component {
         let gift = false;
         let redirectVar = null;
         customercart = this.state.cart;
-
+        const options = [
+            { key: 1, text: '1', value: 1 },
+            { key: 2, text: '2', value: 2 },
+            { key: 3, text: '3', value: 3 },
+            { key: 4, text: '4', value: 4 },
+            { key: 5, text: '5', value: 5 },
+            { key: 6, text: '6', value: 6 },
+            { key: 7, text: '7', value: 7 },
+            { key: 8, text: '8', value: 8 },
+            { key: 9, text: '9', value: 9 },
+            { key: 10, text: '10', value: 10 }
+            ]
 
         if (this.state.rendercheckout)
             redirectVar = <Redirect to={`/customer/${sessionStorage.getItem('id')}/checkout`} />
@@ -112,25 +124,30 @@ class Cart extends Component {
 
             if (customercart.filter(cartitem => cartitem.gift === true).length > 0) { gift = true }
 
-            cartlist = (<div>
+            cartlist = (<div >
                 {customercart.map((cartitem, index) => {
                     return (
-                        <div class='productConatiner'>
-                            <div class='row'>
-                                <div class='col-md-3 imageContainer'>
-                                <img class='productImage'  alt={cartitem.productId.name}></img>
+                        <div>
+                        <Divider fitted />
 
-                                    {/* <img class='productImage' src={cartitem.productId.images[0]} alt={cartitem.productId.name}></img> */}
-                                </div>
-                                <div class='col-md-7 detailsContainer'>
+                        <div style={{marginTop:'20px'}}>
+                        <Grid>
+                            <Grid.Column width={2}>
+                            <img class='productImage' src={cartitem.productId.images[0]} alt={cartitem.productId.name}></img>
+                            </Grid.Column>
+                            <Grid.Column width={10}>
+                                <Grid.Row>
                                     <Link class='productlink' to={"/product/" + cartitem.productId._id}>
                                         <div class='productTitle'>{cartitem.productId.name}</div>
                                     </Link>
+                                </Grid.Row>
+                                <Grid.Row>
                                     <div class='stocklabel'>
-                                        {/* Only {Math.ceil(Math.random() * 10)} left in stock - order soon. */}
                                         Only few left in stock - order soon.
                                     </div>
-                                    <div class='checkboxContainer'>
+                                </Grid.Row>
+                                <Grid.Row>
+                                <div class='checkboxContainer'>
                                         <input type="checkbox" name="productgift" onChange={() => this.giftProduct(cartitem.productId._id, cartitem.gift, cartitem.quantity)} checked={cartitem.gift} />
                                         <span class='giftlabel'>
                                             This is a gift
@@ -139,40 +156,34 @@ class Cart extends Component {
                                                 </span>
                                         </span>
                                     </div>
-                                    <div class='qtyContainer'>
-                                        <span class='qtyButton'>
-                                            <div className="dropdown">
-                                                <button className="form-control btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" style={{ background: "#e7e9ec", borderColor: '#e7e9ec', height: "25px", fontSize: "13px", paddingTop: "3px", marginLeft: "-40px", width: "max-content" }}>
-                                                    <span style={{fontSize:'13px', fontWeight:'550'}}>Qty:{cartitem.quantity} </span> <span className="caret" style={{ paddingBottom: "3px" }}></span>
-                                                </button>
-
-                                                <ul className="dropdown-menu" role="menu" style={{ fontSize: "11px", minWidth: "max-content", cursor: "pointer", marginLeft: "-35px" }} >
-                                                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(value => {
-                                                        return (<li ><a onClick={() => this.changeQuantity(cartitem.productId._id, cartitem.gift, value)}>{value}</a></li>)
-                                                    })}
-                                                </ul>
-
-                                            </div>
+                                </Grid.Row>
+                                <Grid.Row>
+                                <div class='qtyContainer'>
+                                        <span class='qtyButton' >
+                                             <Select placeholder={cartitem.quantity} compact width='5px' options={options} data-id={cartitem.productId._id} data-gift={cartitem.gift} onChange={this.changeQuantity}/>
                                         </span>
                                         <span class="separator"></span>
                                         <span class='deleteProduct' onClick={() => { this.deleteProduct(cartitem.productId._id, "delete") }}>Delete</span>
                                         <span class="separator"></span>
                                         <span class='deleteProduct' onClick={() => { this.deleteProduct(cartitem.productId._id, "saveforlater") }}>Save for later</span>
                                     </div>
-                                </div>
-                                <div class='col-md-2 productprice'>
-                                    ${cartitem.gift ? (cartitem.productId.price * 110/100).toFixed(2) : cartitem.productId.price}
-                                </div>
+                                </Grid.Row>
+                             
+                            </Grid.Column>
+                            <Grid.Column width={2}>
+                            <div class='col-md-2 productprice'>
+                                    ${cartitem.gift ? (cartitem.productId.price * 105/100).toFixed(2) : cartitem.productId.price}
+                                </div>                            </Grid.Column>
+                        </Grid>
+                        </div></div>
 
-
-                            </div>
-                        </div>
                     )
                 })}
             </div>)
 
             totalPrice = (<div class='subtotalContainer'>
                 <span class='subtotalLabel'>
+                <Divider fitted />
                     Subtotal ({(carttotalitems === 1) ? carttotalitems + ' item' : carttotalitems + ' items'}):
                         </span>
                 <span class='productprice'>
@@ -183,9 +194,11 @@ class Cart extends Component {
             proceedtocheckout = (<div class='checkoutContainer'>
                 <div class='checkoutSubtotal'>
                     <span class='subtotalLabel'>
+                        
                         Subtotal ({(carttotalitems === 1) ? carttotalitems + ' item' : carttotalitems + ' items'}):
                         </span>
                     <span class='productprice'>
+
                         ${subtotal}
                     </span>
                 </div>
@@ -205,31 +218,45 @@ class Cart extends Component {
         return (
             <div class="cartContainer">
                 {redirectVar}
-                <div class='col-md-9 productsContainer'>
-                    <h2 class='shoppingcart'>Shopping Cart</h2>
+                <Grid>
+                    <Grid.Column width={12} style={{marginTop:'60px'}}>
+                        <Grid.Row>
+                            <h2 class='shoppingcart'>Shopping Cart</h2>
+                        </Grid.Row>
+                        <Grid.Row> </Grid.Row>
                     {(customercart.length === 0) ? <h2 class='shoppingcart'>Your Shopping Cart is empty</h2> :
                         <div>
-                            <div class='row pricecontainer'>
-                                <div class='pricehead'>Price</div>
-                            </div>
+                            <Grid.Row>
+                                <Grid.Column width={12}>
+                                    
+                                </Grid.Column>
+                              
+                            </Grid.Row>
+                           
+                             <Grid.Row style={{marginTop:'20px'}}>
                             {cartlist}
+                            </Grid.Row>
                             {totalPrice}
-                            <div class='gradient'>
-
-                            </div>
-                            <p class='CartInfo'>
-                                The price and availability of items at Amazon.com are subject to change. The Cart is a temporary place to store a list of your items and reflects each item's most recent price.</p>
-                            <p class='CartInfo'>
-                                Do you have a gift card or promotional code? We'll ask you to enter your claim code when it's time to pay.
-                            </p>
+                           
+                       
 
                         </div>}
-                </div>
-                {(customercart.length === 0) ? <div></div> : <div class='col-md-3'>
+                    </Grid.Column>
+                    <Grid.Column width={1}></Grid.Column>
+                    {(customercart.length === 0) ? <div></div> :<Grid.Column width={3} style={{marginTop:'100px'}}>
                     {proceedtocheckout}
-                </div>}
-            </div>
+                    </Grid.Column>}
+                </Grid>
+                <Saveforlater/>
+                <p class='CartInfo'>
+                    The price and availability of items at Amazon.com are subject to change. The Cart is a temporary place to store a list of your items and reflects each item's most recent price.</p>
+                <p class='CartInfo'>
+                    Do you have a gift card or promotional code? We'll ask you to enter your claim code when it's time to pay.
+                </p>
+         </div>
         )
+
+
     }
 }
 

@@ -117,7 +117,7 @@ router.post('/addproduct', uploadMultiple, async (request, response) => {
         response.status(status).json({ 'error': message })
     }
 })
-/////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////uncommented///////////////////////////////////////////////////////////
 // router.get('/searchWithKafka', async (request, response) => {
 
 //     console.log('hitting search Kafka')
@@ -369,8 +369,8 @@ router.get('/search', async (request, response) => {
             "query": request.query,
         }
         let res = await productServices.getProductsforCustomer(data);
-
-        client.set('products', JSON.stringify(res.body))
+//////////////////***** to be uncommented */
+        // client.set('products', JSON.stringify(res.body))
 
         response.status(res.status).json(res.body.Products);
 
