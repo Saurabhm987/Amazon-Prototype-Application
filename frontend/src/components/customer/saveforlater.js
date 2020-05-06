@@ -8,15 +8,15 @@ import {
     Select,
     Divider,
     Grid,
-   
-  } from 'semantic-ui-react';
+
+} from 'semantic-ui-react';
 
 class Saveforlater extends Component {
     constructor(props) {
         super(props);
         this.state = {
             cart: [],
-            
+
             rendercheckout: false
         };
     }
@@ -29,7 +29,7 @@ class Saveforlater extends Component {
     componentWillReceiveProps(nextProps) {
         this.setState({
             cart: nextProps.cart,
-         
+
         });
     }
 
@@ -39,8 +39,8 @@ class Saveforlater extends Component {
         })
     }
 
-    
-   
+
+
 
     deleteProduct = (product_id, type) => {
         console.log(type)
@@ -56,7 +56,7 @@ class Saveforlater extends Component {
     render() {
         let saveforlaterlist = null;
         let customersaveforlater = [];
-      
+
         let gift = false;
         let redirectVar = null;
         customersaveforlater = this.state.cart;
@@ -71,58 +71,58 @@ class Saveforlater extends Component {
             { key: 8, text: '8', value: 8 },
             { key: 9, text: '9', value: 9 },
             { key: 10, text: '10', value: 10 }
-            ]
+        ]
 
         if (this.state.rendercheckout)
             redirectVar = <Redirect to={`/customer/${sessionStorage.getItem('id')}/checkout`} />
 
         if (customersaveforlater) {
-           
+
             saveforlaterlist = (<div >
                 {customersaveforlater.map((cartitem, index) => {
                     return (
                         <div>
-                        <Divider fitted />
+                            <Divider fitted />
 
-                        <div style={{marginTop:'20px'}}>
-                        <Grid>
-                            <Grid.Column width={2}>
-                            <img class='productImage' src={cartitem.productId.images[0]} alt={cartitem.productId.name}></img>
-                            </Grid.Column>
-                            <Grid.Column width={10}>
-                                <Grid.Row>
-                                    <Link class='productlink' to={"/product/" + cartitem.productId._id}>
-                                        <div class='productTitle'>{cartitem.productId.name}</div>
-                                    </Link>
-                                </Grid.Row>
-                                <Grid.Row>
-                                    <div class='stocklabel'>
-                                        Only few left in stock - order soon.
+                            <div style={{ marginTop: '20px' }}>
+                                <Grid>
+                                    <Grid.Column width={2}>
+                                        <img class='productImage' src={cartitem.productId.images[0]} alt={cartitem.productId.name}></img>
+                                    </Grid.Column>
+                                    <Grid.Column width={10}>
+                                        <Grid.Row>
+                                            <Link class='productlink' to={"/product/" + cartitem.productId._id}>
+                                                <div class='productTitle'>{cartitem.productId.name}</div>
+                                            </Link>
+                                        </Grid.Row>
+                                        <Grid.Row>
+                                            <div class='stocklabel'>
+                                                Only few left in stock - order soon.
                                     </div>
-                                </Grid.Row>
-                              
-                                <Grid.Row>
-                                <div class='qtyContainer'>
-                                       
-                                        <span class='deleteProduct' onClick={() => { this.deleteProduct(cartitem.productId._id, "delete") }}>Delete</span>
-                                        <span class="separator"></span>
-                                        <span class='deleteProduct' onClick={() => { this.deleteProduct(cartitem.productId._id, "movetocart") }}>Move to cart</span>
-                                    </div>
-                                </Grid.Row>
-                             
-                            </Grid.Column>
-                            <Grid.Column width={2}>
-                            <div class='col-md-2 productprice'>
-                                    ${cartitem.productId.price}
-                                </div>                            </Grid.Column>
-                        </Grid>
-                        </div></div>
+                                        </Grid.Row>
+
+                                        <Grid.Row>
+                                            <div class='qtyContainer'>
+
+                                                <span class='deleteProduct' onClick={() => { this.deleteProduct(cartitem.productId._id, "delete") }}>Delete</span>
+                                                <span class="separator"></span>
+                                                <span class='deleteProduct' onClick={() => { this.deleteProduct(cartitem.productId._id, "movetocart") }}>Move to cart</span>
+                                            </div>
+                                        </Grid.Row>
+
+                                    </Grid.Column>
+                                    <Grid.Column width={2}>
+                                        <div class='col-md-2 productprice'>
+                                            ${cartitem.productId.price}
+                                        </div>                            </Grid.Column>
+                                </Grid>
+                            </div></div>
 
                     )
                 })}
             </div>)
 
-          
+
         }
 
 
@@ -130,36 +130,36 @@ class Saveforlater extends Component {
             <div class="cartContainer">
                 {redirectVar}
                 <Grid>
-                    <Grid.Column width={12} style={{marginTop:'60px'}}>
+                    <Grid.Column width={12} style={{ marginTop: '60px' }}>
                         <Grid.Row>
                         </Grid.Row>
                         <Grid.Row> </Grid.Row>
-                    {(customersaveforlater.length === 0) ? <h2 class='shoppingcart'></h2> :
-                        <div>
-                             <Grid.Row>
-                            <h2 class='shoppingcart'>Save for Later</h2>
-                        </Grid.Row>
-                            <Grid.Row>
-                                <Grid.Column width={12}>
-                                    
-                                </Grid.Column>
-                              
-                            </Grid.Row>
-                           
-                             <Grid.Row style={{marginTop:'20px'}}>
-                            {saveforlaterlist}
-                            </Grid.Row>
-                           
+                        {(customersaveforlater.length === 0) ? <h2 class='shoppingcart'></h2> :
+                            <div>
+                                <Grid.Row>
+                                    <h2 class='shoppingcart'>Save for Later</h2>
+                                </Grid.Row>
+                                <Grid.Row>
+                                    <Grid.Column width={12}>
 
-                        </div>}
+                                    </Grid.Column>
+
+                                </Grid.Row>
+
+                                <Grid.Row style={{ marginTop: '20px' }}>
+                                    {saveforlaterlist}
+                                </Grid.Row>
+
+
+                            </div>}
                     </Grid.Column>
                     <Grid.Column width={1}>
 
                     </Grid.Column>
-                  
+
                 </Grid>
 
-         </div>
+            </div>
         )
 
 
@@ -169,8 +169,8 @@ class Saveforlater extends Component {
 const mapStateToProps = state => {
     return {
         cart: state.cart.saveforlaterlist,
-     
-      
+
+
     };
 };
 

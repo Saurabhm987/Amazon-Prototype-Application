@@ -265,8 +265,6 @@ router.post('/addcategory', async (request, response) => {
 */
 router.put('/updateproduct/:product_id', async (request, response) => {
 
-    console.log('updateProduct')
-
     try {
 
         const requestBody = { body: request.body, params: request.params }
@@ -275,9 +273,7 @@ router.put('/updateproduct/:product_id', async (request, response) => {
 
         const result = await productServices.updateProduct(requestBody)
 
-        console.log('updated result - ')
-
-        response.json(res.body) 
+        response.json(result.body) 
 
     } catch (error) {
 
