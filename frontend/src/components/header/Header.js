@@ -39,17 +39,17 @@ class AppHeader extends Component {
 
     let token = localStorage.getItem('token')
 
-    if(token !== null){
-      let user = JwtDecode(token);
-      if (user.userType === USER_CUSTOMER) {
-        this.props.history.push('/dashboard');
-      } else if (user.userType === USER_SELLER) {
-        this.props.history.push('/sellerCentral');
-      } else {
-        // his.props.history.push('/sellerCentral');
-      }
+    // if(token !== null){
+    //   let user = JwtDecode(token);
+    //   if (user.userType === USER_CUSTOMER) {
+    //     this.props.history.push('/dashboard');
+    //   } else if (user.userType === USER_SELLER) {
+    //     this.props.history.push('/sellerCentral');
+    //   } else {
+    //     // his.props.history.push('/sellerCentral');
+    //   }
        
-    }
+    // }
 
     await this.props.productCategories()
     await this.createOptions()

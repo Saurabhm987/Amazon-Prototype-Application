@@ -1,5 +1,5 @@
 import {
-    CUSTOMER_SAVEFORLATER,CUSTOMER_SAVEFORLATER_DELETE
+    CUSTOMER_SAVEFORLATER,CUSTOMER_SAVEFORLATER_DELETE,ADD_TO_CART_PRODUCT_DETAIL_PAGE
     
 }from "./types";
 import axios from "axios";
@@ -8,17 +8,21 @@ const _ = require('lodash');
 
 export const addSaveForLater = (id, data) => dispatch => {
     axios.defaults.withCredentials = true;
+    let body={
+        product_id:data
+    }
     console.log(API_ENDPOINT)
-    axios.post(`${API_ENDPOINT}/saveForLater/addToSaveForLater/${sessionStorage.getItem("id")}`, { productid: data })
+    axios.post(`${API_ENDPOINT}/saveForLater/addToSaveForLater/${id}`, body)
         .then(response => {
-            dispatch({ type: CUSTOMER_SAVEFORLATER, payload: response.data })
+            dispatch({
+                type: ADD_TO_CART_PRODUCT_DETAIL_PAGE
+            })            
         })
 
         .catch(error => {
             if (error.response && error.response.data) {
                 return dispatch({
-                    type: CUSTOMER_SAVEFORLATER,
-                    payload: {}
+                    type: ADD_TO_CART_PRODUCT_DETAIL_PAGE
                 });
             }
         });

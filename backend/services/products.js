@@ -296,9 +296,11 @@ const getallcategories = async () => {
 
         const findQuery = {}
         const result = await queries.findDocumets(productCategory, findQuery)
+        console.log(result)
         return { status: 200, body: result }
 
     } catch (error) {
+        console.log(error)
 
         if (error.message)
             message = error.message
