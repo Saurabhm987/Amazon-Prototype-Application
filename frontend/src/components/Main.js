@@ -5,7 +5,7 @@ import sellerCentral from './seller/SellerCentral'
 import SignupForm from './signup/Signup'
 import LoginForm from './login/Login'
 import Cart from './customer/cart'
-
+import CustomerProfile from './customer/customerProfile'
 import ProductDetail from './product/ProductDetail'
 import CustomerDashboard from './dashboard/CustomerDashboard'
 import AdminDashboard from './dashboard/AdminDashboard'
@@ -30,6 +30,7 @@ class Main extends Component {
                 <Route path="/dashboard" exact component={CustomerDashboard} />
                 <Route path="/admindashboard" exact component={AdminDashboard} />
                 <Route path="/sellerCentral" exact component={sellerCentral} />
+                <Route path="/customerprofile" component={CustomerProfile} />
                 <Route path="/signup" component={SignupForm} />
                 <Route path='/login' exact component={LoginForm} />
                 <Route path='/productdetails' exact component={ProductDetail} />

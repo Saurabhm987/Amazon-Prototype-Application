@@ -46,7 +46,7 @@ class AppHeader extends Component {
       } else if (user.userType === USER_SELLER) {
         this.props.history.push('/sellerCentral');
       } else {
-        // his.props.history.push('/sellerCentral');
+        this.props.history.push('/admindashboard');
       }
        
     }

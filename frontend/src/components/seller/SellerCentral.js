@@ -10,6 +10,8 @@ import { productCategories } from '../../actions/product'
 import SellerProduct from '../seller/SellerProduct'
 import { getUserOrder, updateStatus } from '../../actions/order';
 import { orderStatus } from '../controller/config';
+import axios from 'axios'
+import Graph from '../common/Graph'
 
 class SellerCentral extends Component {
     constructor(props) {
@@ -36,7 +38,9 @@ class SellerCentral extends Component {
                         name: 'Mobile'
                     }]
                 }
-            ]
+            ],
+            stats: [],
+            statsMonthly : []
         }
 
     }
@@ -47,16 +51,41 @@ class SellerCentral extends Component {
             this.props.history.push('/login')
         }
         this.props.getUserOrder();
+        const stat = () => {
+            return axios
+              .get('analytics/sellerstatictics')
+              .then(response => {
+                return response.data
+              })
+              .catch(err => {
+                console.log(err)
+              })
+          }
+        const stats = await stat()
+        const statMonthly = () => {
+            return axios
+              .get('analytics/sellermonthlystatictics')
+              .then(response => {
+                return response.data
+              })
+              .catch(err => {
+                console.log(err)
+              })
+          }
+        const statsMonthly = await statMonthly()
+        this.setState({
+            ...this.state,
+            stats,
+            statsMonthly
+        })
     }
 
-
-    handleItemClick = (e, { name }) => this.setState({ activeItem: name })
 
     handleNavItem = (name) => this.setState({ activeNavItem: name })
 
     render() {
-        console.log(this.props.order.userOrders);
-        const { activeNavItem, activeItem } = this.state
+        // console.log(this.props.order.userOrders);
+        const activeNavItem = this.state.activeNavItem
 
         var contentPage = (
             <div>
@@ -72,8 +101,10 @@ class SellerCentral extends Component {
         else if (activeNavItem == 'Add a Product') {
             contentPage = (<AddProduct />)
         }
-        else if (activeNavItem == 'REPORT') {
-            console.log('Report Page');
+        else if (activeNavItem == 'REPORTS') {
+            console.log(this.state.statsMonthly);
+            console.log(this.state.stats);
+            contentPage = (<Graph stats={this.state.stats} statsMonthly={this.state.statsMonthly}/>)
         }
 
         else if (activeNavItem == 'ORDERS') {
