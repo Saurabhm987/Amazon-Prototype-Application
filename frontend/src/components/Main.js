@@ -14,6 +14,8 @@ import SellerProfile from './seller/SellerProfile'
 import SellerProduct from './seller/SellerProduct'
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types'
+import OrderDetail from "./order/orderDetail";
+import OrderTrackingModal from "./order/orderTrackingModal";
 
 class Main extends Component {
     constructor(props) {
@@ -36,6 +38,8 @@ class Main extends Component {
                 <Route path='/sellerprofile' exact component={SellerProfile} />
                 <Route path='/sellerproducts' exact component={SellerProduct} />
                 <Route path='/cart' exact component={Cart} />
+                <Route path="/orderDetails" exact component={OrderDetail} />
+                <Route path="/orderTracking" exact component={OrderTrackingModal} />
 
                 { 
                     user !== null
