@@ -56,12 +56,17 @@ exports.updateProductInCart = async (request) => {
     try{
         console.log(request.params)
         update = {'cart.$.gift': request.body.gift,
-        'cart.$.giftMessage': request.body.giftMessage,
+        // 'cart.$.giftMessage': request.body.giftMessage,
             'cart.$.quantity': request.body.quantity}
-        const resp = await queries.updateField(buyer,{ _id:request.params.customer_id,'cart.productId':request.params.product_id},update)
+        let resp = await queries.updateField(buyer,{ _id:request.params.customer_id,'cart.productId':request.params.product_id},update)
+
+        resp = await buyer.findOne({ _id: request.params.customer_id }).
+        populate('cart.productId', { name: 1, price: 1, _id: 1, images: 1, description: 1, removed: 1 })
+        console.log(resp)
         return { "status": 200, body: resp.cart }
     } 
     catch (error) {
+        console.log(error)
         if (error.message)
             message = error.message
         else
@@ -89,8 +94,7 @@ exports.deleteProductInCart = async (request) => {
         }
         let resp = await queries.updateField(buyer, { _id: request.params.customer_id }, update)
 
-        resp = await buyer.find({ _id: request.params.customer_id }).
-            populate('cart.productId', { name: 1, price: 1, _id: 1, images: 1, description: 1, removed:1})
+      
         if(request.params.type === 'saveforlater'){
             console.log(request.params.type)
             console.log(request.params.customer_id)
@@ -101,9 +105,14 @@ exports.deleteProductInCart = async (request) => {
         console.log(updatesave)
         const save = await queries.updateField(buyer,{ _id:request.params.customer_id},updatesave)
         console.log(save)
-
+       
         }
-        return { "status": 200, body: resp[0].cart }
+        resp = await buyer.find({ _id: request.params.customer_id }).
+        populate('saveForLater.productId', { name: 1, price: 1, _id: 1, images: 1, description: 1, removed:1}).
+        populate('cart.productId', { name: 1, price: 1, _id: 1, images: 1, description: 1, removed:1})
+        return { "status": 200, body: resp[0] }
+    // return { "status": 200, body: resp[0].cart }
+
     }    
     catch (error) {
         if (error.message)

@@ -9,7 +9,6 @@ const morgan = require('morgan');
 
 const mongoPool = require('./database/mongoDbConnection')
 const mysqlPool = require('./database/mySqlConnection')
-
 const redis = require('redis')
 const REDIS_PORT =  process.env.PORT || 6379
 module.exports = client = redis.createClient(REDIS_PORT)
@@ -33,27 +32,38 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());
 app.use('/public', express.static('public'));
+<<<<<<< HEAD
+=======
+ 
+
+>>>>>>> 8ef6b62513e14290e33d9a8ba1c8fb1d4acc4aee
 // mongo and mysql connection pool
 mongoPool
 mysqlPool
 
 // route handlers
 <<<<<<< HEAD
+<<<<<<< HEAD
 // require('./routes/seller/xyz')(app);
 app.use('/product', require('./routes/products'))
 app.use('/user', require('./routes/cart'))
 app.use('/saveForLater', require('./routes/saveForLater'))
 =======
+=======
+app.use('/product', require('./routes/products'))
+//app.use('/user', require('./routes/cart'))
+//app.use('/saveForLater', require('./routes/saveForLater'))
+>>>>>>> 8ef6b62513e14290e33d9a8ba1c8fb1d4acc4aee
 
-// app.use('/product', require('./routes/products'))
-// app.use('/user', require('./routes/cart'))
-// app.use('/saveForLater', require('./routes/saveForLater'))
 
 >>>>>>> c31c12b106d549192df28df149500218cc6613df
 app.use('/signUp', require('./routes/signUp'));
 app.use('/signin', require('./routes/signin'));
 app.use('/createOrder', require('./routes/customerOrder')); // temp name, must be changed
 app.use('/order', require('./routes/order'));
+app.use('/address', require('./routes/address'));
+app.use('/card', require('./routes/card'));
+
 app.use('/analytics', require('./routes/analytics'));
 
 //redis connection

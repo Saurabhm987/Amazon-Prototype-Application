@@ -1,10 +1,10 @@
 const mongoose = require('mongoose');
 
 const cardDetailSchema = new mongoose.Schema({
-    cardType: {
-        type: String,
-        required: true,
-    },
+    // cardType: {
+    //     type: String,
+    //     required: true,
+    // },
     name: {
         type: String,
         required: true
