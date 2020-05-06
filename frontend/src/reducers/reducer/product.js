@@ -10,6 +10,7 @@ const initialState = {
     productList: [],
     productDetail:{},
     productCount:0,
+    productListPerOrder:{}
 };
 
 export default function(state = initialState, action) {
