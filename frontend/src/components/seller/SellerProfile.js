@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import Feedback from './Feedback'
 import queryString from 'query-string';
+import jwtDecode from 'jwt-decode';
 
 import {
     Tab,
@@ -14,7 +15,6 @@ import {
 import { connect } from 'react-redux';
 import JwtDecode from 'jwt-decode';
 
-
 class SellerProfile extends Component {
     constructor(props) {
         super(props);
@@ -24,21 +24,25 @@ class SellerProfile extends Component {
             activeIndex: 1,
             adminAccess: false
         }
-
     }
 
     componentDidMount = async () => {
 
-        // const { userId } = this.props.user
-        let user = localStorage.getItem('token')
-        if(user !== null){
-            let data = JwtDecode(user)
-            var userId = data.userId
-        }
-        const sellerId = await queryString.parse(this.props.location.search);
+        let token = localStorage.getItem('token')
+        
+        if (token !== null) {
 
-        if(userId === sellerId.id){
-            this.setState({ adminAccess : true });
+            const user = jwtDecode(token)
+            const sellerId = queryString.parse(this.props.location.search);
+
+            if (sellerId.id === user.userId) {
+                this.setState({
+                    adminAccess : true
+                });
+            }
+
+        } else {
+            this.props.history.push('/login')
         }
 
     }
@@ -71,7 +75,6 @@ class SellerProfile extends Component {
 
     render() {
 
-        console.log('adminAccess ---- ', this.state.adminAccess)
 
         const panes = [
             {

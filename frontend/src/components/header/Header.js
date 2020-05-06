@@ -6,6 +6,7 @@ import ProductCategoryDropdown from '../product/productCategoryDropdown'
 import { Redirect } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { fetchProduct, productCategories } from '../../actions/product';
+import { USER_CUSTOMER, USER_SELLER, USER_ADMIN } from '../controller/config';
 
 import {
   Container,
@@ -19,6 +20,7 @@ import {
   Segment,
 } from 'semantic-ui-react';
 import { connect } from 'react-redux';
+import JwtDecode from 'jwt-decode';
 
 
 class AppHeader extends Component {
@@ -28,16 +30,53 @@ class AppHeader extends Component {
     this.state = {
       loading: true,
       searchText: '',
+      data: [{ key: '', text: '', value: '' }],
+      searchCategory: '',
     }
   }
 
-  componentDidMount = async () => { }
+  componentDidMount = async () => {
+
+    let token = localStorage.getItem('token')
+
+    if(token !== null){
+      let user = JwtDecode(token);
+      if (user.userType === USER_CUSTOMER) {
+        this.props.history.push('/dashboard');
+      } else if (user.userType === USER_SELLER) {
+        this.props.history.push('/sellerCentral');
+      } else {
+        // his.props.history.push('/sellerCentral');
+      }
+       
+    }
+
+    await this.props.productCategories()
+    await this.createOptions()
+  }
+
+  categoryHandler = async (e, { value }) => {
+    console.log('calling cate hand --', value)
+    await this.setState({ searchCategory: value });
+  }
+
+  createOptions = async () => {
+
+    await this.setState({
+      data: this.props.categoryList.map(
+        item => {
+          return { key: item._id, text: item.name, value: item.name }
+        }
+      )
+    });
+
+  }
+
 
   onLogout = async () => {
     await this.props.logout()
     await this.props.history.push('/login')
   }
-
 
   onChangeHandler = async (e) => {
     e.preventDefault()
@@ -46,9 +85,11 @@ class AppHeader extends Component {
 
   onSearch = async () => {
 
-    const { searchText } = this.state   
+    const { searchText, searchCategory } = this.state
 
-    await this.props.fetchProduct(searchText)
+    console.log('searchText - ', searchText, 'cate -', searchCategory)
+
+    await this.props.fetchProduct(searchText,searchCategory)
 
     await this.props.history.push('/dashboard')
 
@@ -70,15 +111,14 @@ class AppHeader extends Component {
 
       this.props.history.push(`/adminprofile/id?=${userId}`)
 
-    } else {
-      //unauthorized access
-      this.props.history.push('/login')
     }
   }
 
   render() {
 
-    if (!this.props.user) {
+    const user = localStorage.getItem('token')
+
+    if (user === null) {
       return <Redirect to='/login' />
     }
 
@@ -88,7 +128,18 @@ class AppHeader extends Component {
         <Menu id="headerMenu" fixed='top' inverted>
           <Menu.Item as='a' header>
             <i className="align justify icon"></i>
-            <ProductCategoryDropdown />
+            {
+              this.props.categoryList
+                ? <Dropdown
+                  selection
+                  search
+                  options={this.state.data}
+                  value={this.state.data.value}
+                  onChange={this.categoryHandler}
+                  placeholder='choose category'
+                />
+                : null
+            }
           </Menu.Item>
 
           <Menu.Item as='a' header>
@@ -100,7 +151,7 @@ class AppHeader extends Component {
               <Menu.Item as='a'>
                 <div className="ui action input">
                   <input type="text" placeholder="Search..." name="searchText" onChange={this.onChangeHandler} />
-                  <button className="ui icon button" onClick={this.onSearch}><i aria-hidden="true" className="search icon"></i></button>
+                  <button className="ui icon button" onClick={this.onSearch} style={{ backgroundColor: '#febd69' }}><i aria-hidden="true" className="search icon"></i></button>
                 </div>
               </Menu.Item>
             </Grid.Column>
@@ -109,7 +160,12 @@ class AppHeader extends Component {
           <Dropdown item simple text='Hello Your Name'>
             <Dropdown.Menu>
               <Dropdown.Item onClick={this.onProfileClick}>Profile</Dropdown.Item>
-              <Dropdown.Item>List Item</Dropdown.Item>
+              {
+                this.props.user && this.props.user.userType === 'seller'
+                  ?
+                  <Dropdown.Item><Link to='/sellercentral' style={{ color: 'black' }}>Sellercentral</Link></Dropdown.Item>
+                  : null
+              }
               <Dropdown.Divider />
               <Dropdown.Header>Header Item</Dropdown.Header>
               <Dropdown.Item>
@@ -202,12 +258,15 @@ class AppHeader extends Component {
 
 AppHeader.propTypes = {
   isAuthenticated: PropTypes.bool.isRequired,
-  user: PropTypes.object.isRequired
+  user: PropTypes.object.isRequired,
+  productCategories: PropTypes.func.isRequired,
+  categoryList: PropTypes.array.isRequired,
 }
 
 const mapStateToProps = state => ({
   isAuthenticated: state.auth.isAuthenticated,
-  user: state.auth.user
+  user: state.auth.user,
+  categoryList: state.product.categoryList,
 })
 
 export default connect(mapStateToProps, { logout, fetchProduct, productCategories })(AppHeader);

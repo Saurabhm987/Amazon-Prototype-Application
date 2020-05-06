@@ -58,6 +58,9 @@ var uploadMultiple = multer({
 */
 router.post('/addproduct', uploadMultiple, async (request, response) => {
 
+
+    console.log('hitting add product')
+
     let data = JSON.parse(JSON.stringify(request.body))
 
     try {
@@ -117,14 +120,13 @@ router.post('/addproduct', uploadMultiple, async (request, response) => {
         response.status(status).json({ 'error': message })
     }
 })
-//////////////////////////////////uncommented///////////////////////////////////////////////////////////
-// router.get('/searchWithKafka', async (request, response) => {
 
-//     console.log('hitting search Kafka')
+
+// router.get('/searchWithKafka', cachedsearch, async (request, response) => {
+
+//     console.log('Kafka search api call')
 
 //     try {
-//         console.log(request.query)
-//         console.log("aa")
 
 //         const data = {
 //             "body": request.body,
@@ -132,8 +134,13 @@ router.post('/addproduct', uploadMultiple, async (request, response) => {
 //             "query": request.query,
 //             "type":"ProductSearchResults"
 //         }
-//         await kafka.make_request('testB', data, function (err, data) {
+
+//         // params = { topic_name, request_body, callback}
+//         await kafka.make_request('product', data, async (err, data) => {
 //             if (err) throw new Error(err)
+
+//             await client.set('products', JSON.stringify(data.body))
+
 //             response.status(data.status).json(data.body);
 //         });
 
@@ -157,7 +164,8 @@ router.post('/addproduct', uploadMultiple, async (request, response) => {
 
 // });
 
-//////////////////////////////////////////////////////////////////////////////////////////
+
+
 /*
     add review about product
     request_body = {
@@ -174,6 +182,9 @@ router.post('/addproduct', uploadMultiple, async (request, response) => {
 
 */
 router.post('/addreview/:product_id', async (request, response) => {
+
+    console.log('hitting adreview')
+
     try {
         const requestBody = { body: request.body, params: request.params }
 
@@ -213,6 +224,9 @@ router.post('/addreview/:product_id', async (request, response) => {
 
 
 router.post('/addcategory', async (request, response) => {
+
+    console.log('hitting addcategory')
+
     try {
         const requestBody = { body: request.body }
 
@@ -251,13 +265,19 @@ router.post('/addcategory', async (request, response) => {
 */
 router.put('/updateproduct/:product_id', async (request, response) => {
 
+    console.log('updateProduct')
+
     try {
 
         const requestBody = { body: request.body, params: request.params }
 
+        console.log('requestBody - ', requestBody)
+
         const result = await productServices.updateProduct(requestBody)
 
-        response.json(result)
+        console.log('updated result - ')
+
+        response.json(res.body) 
 
     } catch (error) {
 
@@ -355,8 +375,6 @@ router.get('/sellerproduct/:seller_id', async (request, response) => {
 })
 
 
-// /user/search?searchText=${searchText}&filterText=${filterText}&offset=${offset}&sortType=${sortType}`)
-
 router.get('/search', async (request, response) => {
 
     console.log('search api call....')
@@ -369,10 +387,44 @@ router.get('/search', async (request, response) => {
             "query": request.query,
         }
         let res = await productServices.getProductsforCustomer(data);
-//////////////////***** to be uncommented */
-        // client.set('products', JSON.stringify(res.body))
 
-        response.status(res.status).json(res.body.Products);
+        client.set('products', JSON.stringify(res.body))
+
+        response.status(res.status).json(res.body);
+
+    }
+    catch (error) {
+        if (error.message)
+            message = error.message
+        else
+            message = 'Error while fetching products'
+
+        if (error.statusCode)
+            code = error.statusCode
+        else
+            code = 500
+
+        return response.status(code).json({ message });
+    }
+
+});
+
+
+// /user/search?searchText=${searchText}&filterText=${filterText}&offset=${offset}&sortType=${sortType}`)
+
+router.get('/getSellerPaginatedResult', async (request, response) => {
+
+    console.log('paginated seller api call....')
+
+    try {
+
+        const data = {
+            "body": request.body,
+            "params": request.params,
+            "query": request.query,
+        }
+        let res = await productServices.getProductsforSeller(data);
+        response.status(res.status).json(res.body);
 
     }
     catch (error) {
@@ -407,6 +459,8 @@ router.get('/search', async (request, response) => {
 */
 router.put('/deleteproduct/:product_id', async (request, response) => {
 
+    console.log('hitting deleteproduct')
+
     try {
 
         const requestBody = { params: request.params }
@@ -421,7 +475,7 @@ router.put('/deleteproduct/:product_id', async (request, response) => {
         if (result.status === 200)
             response.status(res.status).json(res.body)
         else
-            response.status(500).json('Product has been deleted!')
+            response.status(500).json('Product has already been deleted!')
     }
     catch{
 
@@ -455,11 +509,11 @@ router.put('/deleteproduct/:product_id', async (request, response) => {
 */
 router.get('/:product_id', async (req, res, next) => {
 
-    console.log('hitting product route')
+    console.log('hitting get product route')
 
     const product_id = req.params.product_id
 
-    if (product_id === 'updateproduct' || product_id === 'testroute') {
+    if (product_id === 'updateproduct' || product_id === 'testroute' || product_id==='getcategories') {
         return next()
     }
 

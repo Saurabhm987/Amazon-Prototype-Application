@@ -8,6 +8,7 @@ import Cart from './customer/cart'
 
 import ProductDetail from './product/ProductDetail'
 import CustomerDashboard from './dashboard/CustomerDashboard'
+import AdminDashboard from './dashboard/AdminDashboard'
 import AppHeader from './header/Header';
 import SellerProfile from './seller/SellerProfile'
 import SellerProduct from './seller/SellerProduct'
@@ -21,9 +22,13 @@ class Main extends Component {
     }
 
     render() {
+
+        const user = localStorage.getItem('token')
+
         return (
             <Router>
                 <Route path="/dashboard" exact component={CustomerDashboard} />
+                <Route path="/admindashboard" exact component={AdminDashboard} />
                 <Route path="/sellerCentral" exact component={sellerCentral} />
                 <Route path="/signup" component={SignupForm} />
                 <Route path='/login' exact component={LoginForm} />
@@ -33,8 +38,13 @@ class Main extends Component {
                 <Route path='/cart' exact component={Cart} />
 
                 { 
-                    this.props.isAuthenticated 
+                    user !== null
                     ? <Route path='/' component={AppHeader} /> 
+                    : null
+                }
+                {
+                    user === null
+                    ? <Redirect to='/login'/>
                     : null
                 }
             </Router>
