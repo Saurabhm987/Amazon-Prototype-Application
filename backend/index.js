@@ -38,14 +38,23 @@ mongoPool
 mysqlPool
 
 // route handlers
+<<<<<<< HEAD
 // require('./routes/seller/xyz')(app);
 app.use('/product', require('./routes/products'))
 app.use('/user', require('./routes/cart'))
 app.use('/saveForLater', require('./routes/saveForLater'))
+=======
+
+// app.use('/product', require('./routes/products'))
+// app.use('/user', require('./routes/cart'))
+// app.use('/saveForLater', require('./routes/saveForLater'))
+
+>>>>>>> c31c12b106d549192df28df149500218cc6613df
 app.use('/signUp', require('./routes/signUp'));
 app.use('/signin', require('./routes/signin'));
 app.use('/createOrder', require('./routes/customerOrder')); // temp name, must be changed
 app.use('/order', require('./routes/order'));
+app.use('/analytics', require('./routes/analytics'));
 
 //redis connection
 client.on("connect", () => {
