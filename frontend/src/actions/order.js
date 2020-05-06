@@ -34,7 +34,7 @@ export const getUserOrder = () => async dispatch => {
                 error: err.body
             }
         });
-        dispatch(setAlert(err.body.error, 'danger'));
+        // dispatch(setAlert(err.body.error, 'danger'));
     }
 };
 
@@ -45,7 +45,7 @@ export const updateStatus = (orderId, productId, updatedStatus) => async dispatc
         productId,
         updatedStatus
     };
-    
+
     try {
         console.log('POST /order/updateStatus with data: ', data);
         const res = await axios.post(`/order/updateStatus`, data, config );
