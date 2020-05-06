@@ -9,7 +9,6 @@ const morgan = require('morgan');
 
 const mongoPool = require('./database/mongoDbConnection')
 const mysqlPool = require('./database/mySqlConnection')
-
 const redis = require('redis')
 const REDIS_PORT =  process.env.PORT || 6379
 module.exports = client = redis.createClient(REDIS_PORT)
@@ -44,10 +43,18 @@ mysqlPool
 app.use('/product', require('./routes/products'))
 //app.use('/user', require('./routes/cart'))
 //app.use('/saveForLater', require('./routes/saveForLater'))
+
+// app.use('/product', require('./routes/products'))
+// app.use('/user', require('./routes/cart'))
+// app.use('/saveForLater', require('./routes/saveForLater'))
+
 app.use('/signUp', require('./routes/signUp'));
 app.use('/signin', require('./routes/signin'));
 app.use('/createOrder', require('./routes/customerOrder')); // temp name, must be changed
 app.use('/order', require('./routes/order'));
+app.use('/address', require('./routes/address'));
+app.use('/card', require('./routes/card'));
+
 app.use('/analytics', require('./routes/analytics'));
 
 //redis connection

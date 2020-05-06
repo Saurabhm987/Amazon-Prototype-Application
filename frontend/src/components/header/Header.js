@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import React, { Component, Fragment } from 'react';
 import './header.css'
 import { logout } from '../../actions/auth'
@@ -126,8 +127,10 @@ class AppHeader extends Component {
             Return &  Orders
           </Menu.Item>
           <Menu.Item as='a' header>
-            Cart
-          </Menu.Item>
+          <Link  to={"/cart"}>
+              Cart
+            </Link>  
+        </Menu.Item>
         </Menu>
         <Segment inverted vertical style={{ margin: '5em 0em 0em 0em', padding: '2em 0em ' }}>
           <Container textAlign='center'>
