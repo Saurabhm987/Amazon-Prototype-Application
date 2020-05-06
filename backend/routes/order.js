@@ -96,14 +96,19 @@ order/getOrder/:userId
 //:{userID}
 
 router.get('/getUserOrder', checkAuth, async(req,res)=>{ // todo add checkAuth,
+// router.get('/getUserOrder/:userId', async(req,res)=>{ // without  checkAuth,
+
     //console.log("req.query", req.query);
     //console.log("req.params", req.params);
     console.log('hiting....!!!!')
     try{
         const data = {
-            userId: req.user.userId, //{ userID: '1123' }
+            userId: req.user.userId, //{ userID: '1123' }// with checkauth
+            // userId: req.params.userId, //{ userID: '1123' }// without checkauth
+
             "query": req.query, // { page: '1', limit: '12' }
             userType:req.user.userType} //"customer"
+            // userType:"customer"} //""
 
             console.log('data---', data)
         let resOrder =await getUserOrders(data);
