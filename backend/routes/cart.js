@@ -82,9 +82,7 @@ router.put('/updateCart/:customer_id/product/:product_id', async (request, respo
         let res =await cartServices.updateProductInCart(data);
 
         const {customer_id} = request.params
-
         client.set(`"cart-${customer_id}"`, JSON.stringify(res.body))
-
         response.status(res.status).json(res.body);
     }     
     catch (error) {
