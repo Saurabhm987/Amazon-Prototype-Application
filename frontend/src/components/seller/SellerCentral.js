@@ -4,9 +4,10 @@ import CentralHeader from '../header/CentralHeader'
 import AddProduct from '../product/AddProduct'
 import { Link, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux';
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 import SellerProduct from '../seller/SellerProduct'
-import {getUserOrder} from '../../actions/order'
+import { getUserOrder, updateStatus } from '../../actions/order';
+import { orderStatus } from '../controller/config';
 
 class SellerCentral extends Component {
     constructor(props) {
@@ -42,7 +43,7 @@ class SellerCentral extends Component {
         if (!this.props.isAuthenticated) {
             this.props.history.push('/login')
         }
-        await this.props.getUserOrder()
+        this.props.getUserOrder();
     }
 
     handleItemClick = (e, { name }) => this.setState({ activeItem: name })
@@ -50,6 +51,7 @@ class SellerCentral extends Component {
     handleNavItem = (name) => this.setState({ activeNavItem: name })
 
     render() {
+        console.log(this.props.order.userOrders);
         const { activeNavItem, activeItem } = this.state
 
         var contentPage = (
@@ -282,10 +284,16 @@ class SellerCentral extends Component {
 SellerCentral.propTypes = {
     isAuthenticated: PropTypes.bool.isRequired,
     getUserOrder:PropTypes.func.isRequired,
+    updateStatus:PropTypes.func.isRequired,
+    order: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = state => ({
-    isAuthenticated: state.auth.isAuthenticated
+    isAuthenticated: state.auth.isAuthenticated,
+    order: state.order
 })
 
-export default connect(mapStateToProps, {getUserOrder})(withRouter(SellerCentral))
+export default connect(mapStateToProps, {
+    getUserOrder,
+    updateStatus
+})(withRouter(SellerCentral))
