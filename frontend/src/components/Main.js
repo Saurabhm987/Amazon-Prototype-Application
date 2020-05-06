@@ -5,16 +5,13 @@ import sellerCentral from './seller/SellerCentral'
 import SignupForm from './signup/Signup'
 import LoginForm from './login/Login'
 import Cart from './customer/cart'
-<<<<<<< HEAD
 import Address from './customer/address'
 import Cards from './customer/card'
 import AddAddress from './customer/addAddress'
 import AddCard from './customer/addCard'
 
 
-=======
 import CustomerProfile from './customer/customerProfile'
->>>>>>> eb34bc26bf31142e2e1610fe6d5a25c31bae3edb
 import ProductDetail from './product/ProductDetail'
 import CustomerDashboard from './dashboard/CustomerDashboard'
 import AdminDashboard from './dashboard/AdminDashboard'

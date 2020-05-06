@@ -1,7 +1,7 @@
 import {
     
     CUSTOMER_CART, CUSTOMER_SAVEFORLATER,
-    CUSTOMER_SAVEFORLATER_DELETE
+    CUSTOMER_SAVEFORLATER_DELETE,ADD_TO_CART_PRODUCT_DETAIL_PAGE
 }
     from "../../actions/types";
 const _ = require('lodash');
@@ -45,21 +45,32 @@ export default function (state = initialState, action) {
                 console.log(action.payload)
                 return Object.assign({}, state, {
                     saveforlaterlist: action.payload,
-                    saveforlaterRedirect: false  
+                    cartRedirect: false  
                 });
-        
+
+    case ADD_TO_CART_PRODUCT_DETAIL_PAGE:
+        return {
+            cartRedirect: true
+        };
+
         case CUSTOMER_CART:
             console.log(action.payload)
             let subtotal = _.sumBy(action.payload, function (item) { 
                 console.log(item)
                 if (item.gift) 
                 { 
+                    console.log("a")
+
                     return (((item.productId.price * (105/100)).toFixed(2)) * item.quantity) 
                 } 
                 else { 
+                    console.log("b")
+
                     return (item.productId.price * item.quantity) 
                 } 
             })
+            console.log("c")
+
             console.log(subtotal)
             return Object.assign({}, state, {
                 cartlist: action.payload,

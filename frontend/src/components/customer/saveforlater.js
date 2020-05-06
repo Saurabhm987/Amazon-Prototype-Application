@@ -76,7 +76,7 @@ class Saveforlater extends Component {
         if (this.state.rendercheckout)
             redirectVar = <Redirect to={`/customer/${sessionStorage.getItem('id')}/checkout`} />
 
-        if (customersaveforlater) {
+        if (customersaveforlater.length) {
            
             saveforlaterlist = (<div >
                 {customersaveforlater.map((cartitem, index) => {

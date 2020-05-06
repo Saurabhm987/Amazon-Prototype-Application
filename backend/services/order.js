@@ -176,7 +176,10 @@ exports.getUserOrders= async (data)=>{
         else if(data.userType===USER_SELLER){
             console.log("finding seller oder ",userId);
             const findQuery={sellerId:userId};
-            return await findDocumets(order, findQuery);
+            // return await findDocumets(order, findQuery);
+            const response = await order.find(findQuery).sort({ orderDate : -1 } ).populate('productId', { name: 1, price: 1, _id: 1, images: 1, description:1, removed:1 })
+            return { "status": 200, body: response };
+
         }
         else{
             throw new Error("User is not authenticated for this information");
