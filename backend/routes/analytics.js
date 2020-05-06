@@ -43,5 +43,58 @@ router.get('/products', async (req, res) => {
 
 });
 
+///////////////////////
 
+router.get('/sellerstatictics',checkAuth, async (request, response) => {
+    try {
+        const data = {
+            "body": request.body,
+            "params": request.params,
+            "query": request.query,
+            "user": request.user
+        }
+        let res = await analyticsService.sellerstatictics(data);
+        response.status(res.status).json(res.body);
+    } catch (error) {
+        if (error.message)
+            message = error.message
+        else
+            message = 'Error while deleting address'
+        
+        if (error.statusCode)
+            code = error.statusCode
+        else
+            code = 500
+
+        return response.status(code).json({ message });
+    }
+});
+
+router.get('/sellermonthlystatictics',checkAuth, async (request, response) => {
+    try {
+        const data = {
+            "body": request.body,
+            "params": request.params,
+            "query": request.query,
+            "user": request.user
+        }
+        let res = await analyticsService.sellermonthlystatictics(data);
+        response.status(res.status).json(res.body);
+    } catch (error) {
+        if (error.message)
+            message = error.message
+        else
+            message = 'Error while deleting address'
+        
+        if (error.statusCode)
+            code = error.statusCode
+        else
+            code = 500
+
+        return response.status(code).json({ message });
+    }
+});
+
+
+//////////////////////
 module.exports = router;

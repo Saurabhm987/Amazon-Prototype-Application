@@ -3,6 +3,7 @@ const order = require('../dbModels/order');
 const { orderStatus } = require('../config/types');
 const {findDocumets,updateField,countDocumentsByQuery,findDocumentsByQueryFilter}= require('../queries/mongoQueries');
 const {USER_CUSTOMER,USER_SELLER} = require('../config/types');
+const ObjectID= require('mongodb').ObjectID
 
 exports.paginatedResults = (model,data)=>{
     return async (req, res, next) => {
@@ -35,8 +36,12 @@ exports.paginatedResults = (model,data)=>{
                         };
 
             //console.log("filter to be sent to query in pagianted funcion", filter);
-            results.results = await findDocumentsByQueryFilter(order,...Array(2),filter);
-            res.paginatedResults = results;
+            // results.results = await findDocumentsByQueryFilter(order,...Array(2),filter);
+           
+            results.results= await order.find().lean().skip(filter.skip).limit(filter.limit)
+            .populate('productId', { name: 1, price: 1, _id: 1, images: 1, description:1, removed:1 })
+            res.paginatedResults = results
+
             //console.log("res pagiintaed resutls ",res.paginatedResults);
             next();
         } catch (error) {
@@ -137,8 +142,36 @@ exports.getUserOrders= async (data)=>{
         if(data.userType===USER_CUSTOMER){
 
             console.log("finding customer oder ", userId);
-            const findQuery={buyerId:userId};
-            return await findDocumets(order, findQuery);
+            const findQuery={buyerId:ObjectID(data.userId)};
+            
+            const response = await order.find(findQuery).sort({ orderDate : -1 } ).populate('productId', { name: 1, price: 1, _id: 1, images: 1, description:1, removed:1 })
+
+
+            // return await findDocumets(order, findQuery);
+
+            // let resp = await order.aggregate([
+            //     { "$match": { buyerId:ObjectID(data.userId) } },
+            //     {
+            //         "$group": {
+            //             _id: "$orderId",
+            //             products: { $push: '$productId' },
+            //             seller: { $push: '$sellerId' },
+            //             totalAmount: { $push: '$totalAmount' },
+            //             quantity: { $push: '$quantity' },
+
+            //             deliveryAddress : { $first: '$deliveryAddress' },
+
+            //             paymentDetails : { $first: '$paymentDetails' },
+            //             billingAddress : { $first: '$billingAddress' }
+ 
+            //         }           
+            //     }
+            // ]);
+
+            // let opts = {path: 'productId', select:'_id name price' };
+            // let results = await product.populate(resp, opts);
+            return { "status": 200, body: response };
+
         }
         else if(data.userType===USER_SELLER){
             console.log("finding seller oder ",userId);
