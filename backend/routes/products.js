@@ -117,52 +117,47 @@ router.post('/addproduct', uploadMultiple, async (request, response) => {
         response.status(status).json({ 'error': message })
     }
 })
+//////////////////////////////////uncommented///////////////////////////////////////////////////////////
+// router.get('/searchWithKafka', async (request, response) => {
 
+//     console.log('hitting search Kafka')
 
-router.get('/searchWithKafka', cachedsearch, async (request, response) => {
+//     try {
+//         console.log(request.query)
+//         console.log("aa")
 
-    console.log('Kafka search api call')
+//         const data = {
+//             "body": request.body,
+//             "params": request.params,
+//             "query": request.query,
+//             "type":"ProductSearchResults"
+//         }
+//         await kafka.make_request('testB', data, function (err, data) {
+//             if (err) throw new Error(err)
+//             response.status(data.status).json(data.body);
+//         });
 
-    try {
+//         // let res = await productServices.getProductsforCustomer(data);
+//         // response.status(res.status).json(res.body);
 
-        const data = {
-            "body": request.body,
-            "params": request.params,
-            "query": request.query,
-            "type":"ProductSearchResults"
-        }
+//     }
+//     catch (error) {
+//         if (error.message)
+//             message = error.message
+//         else
+//             message = 'Error while fetching products'
 
-        // params = { topic_name, request_body, callback}
-        await kafka.make_request('product', data, async (err, data) => {
-            if (err) throw new Error(err)
+//         if (error.statusCode)
+//             code = error.statusCode
+//         else
+//             code = 500
 
-            await client.set('products', JSON.stringify(data.body))
+//         return response.status(code).json({ message });
+//     }
 
-            response.status(data.status).json(data.body);
-        });
+// });
 
-        // let res = await productServices.getProductsforCustomer(data);
-        // response.status(res.status).json(res.body);
-
-    }
-    catch (error) {
-        if (error.message)
-            message = error.message
-        else
-            message = 'Error while fetching products'
-
-        if (error.statusCode)
-            code = error.statusCode
-        else
-            code = 500
-
-        return response.status(code).json({ message });
-    }
-
-});
-
-
-
+//////////////////////////////////////////////////////////////////////////////////////////
 /*
     add review about product
     request_body = {
@@ -374,8 +369,8 @@ router.get('/search', async (request, response) => {
             "query": request.query,
         }
         let res = await productServices.getProductsforCustomer(data);
-
-        client.set('products', JSON.stringify(res.body))
+//////////////////***** to be uncommented */
+        // client.set('products', JSON.stringify(res.body))
 
         response.status(res.status).json(res.body.Products);
 

@@ -67,22 +67,28 @@ exports.deleteProductInSaveForLater = async (request) => {
         }
         let resp = await queries.updateField(buyer, { _id: request.params.customer_id }, update)
 
-        resp = await buyer.find({ _id: request.params.customer_id }).
-            populate('saveForLater.productId', { name: 1, price: 1, _id: 1, images: 1, description: 1, removed:1  })
+      
         if(request.params.type === 'movetocart'){
             console.log(request.params.type)
             console.log(request.params.customer_id)
             console.log(request.params.product_id)
             updatesave =  {$push:{"cart":{
                 "productId" : request.params.product_id,
-                "quantity"  : request.body.quantity
+                "quantity"  : 1
             }}}
         console.log(updatesave)
         const save = await queries.updateField(buyer,{ _id:request.params.customer_id},updatesave)
         console.log(save)
-
+      
         }
-        return { "status": 200, body: resp[0].saveForLater }
+        resp = await buyer.find({ _id: request.params.customer_id }).
+        populate('saveForLater.productId', { name: 1, price: 1, _id: 1, images: 1, description: 1, removed:1  }).
+        populate('cart.productId', { name: 1, price: 1, _id: 1, images: 1, description: 1, removed:1  })
+
+        console.log(resp[0])
+        // return { "status": 200, body: resp[0].saveForLater }
+        return { "status": 200, body: resp[0] }
+
     }    
     catch (error) {
         if (error.message)

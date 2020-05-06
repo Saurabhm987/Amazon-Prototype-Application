@@ -78,7 +78,7 @@ class CustomerDashboard extends Component {
 
                 <Header as='h1'>Products for you </Header>
 
-                <Card.Group itemsPerRow={6} stackable>
+                <Card.Group itemsPerRow={5} stackable>
                     {this.props.productList.map((item, index) => (
                         <Card key={item._id} data-_id={item._id} onClick={this.onClickHandler}>
                             {this.state.loading ? (
@@ -86,7 +86,7 @@ class CustomerDashboard extends Component {
                                     <Placeholder.Image square size='small' />
                                 </Placeholder>
                             ) : (
-                                    <Image src={item.images[0]} alt="" style={{ width: '300px', height: '300px' }} />
+                                    <Image src={item.images[0]} alt="" style={{ width: '300px', height: '270px' }} />
                                 )}
 
                             <Card.Content extra textAlign='left'>

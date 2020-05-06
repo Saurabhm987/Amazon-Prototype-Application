@@ -18,4 +18,13 @@ export const ADD_PRODUCT = 'ADD_PRODUCT';
 export const FETCH_PRODUCT = 'FETCH_PRODUCT';
 export const PRODUCT_DETAIL = 'PRODUCT_DETAIL';
 
+
+//cart and save for later actions
+
+export const CUSTOMER_CART = 'CUSTOMER_CART';
+export const CUSTOMER_SAVEFORLATER = 'CUSTOMER_SAVEFORLATER';
+export const CUSTOMER_SAVEFORLATER_DELETE = 'CUSTOMER_SAVEFORLATER_DELETE';
+export const ADD_TO_CART_PRODUCT_DETAIL_PAGE = 'ADD_TO_CART_PRODUCT_DETAIL_PAGE';
+
+
 // ...add a new action type
