@@ -8,7 +8,11 @@ import PropTypes from 'prop-types'
 import jwtDecode from 'jwt-decode';
 import { productCategories } from '../../actions/product'
 import SellerProduct from '../seller/SellerProduct'
-import {getUserOrder} from '../../actions/order'
+import { getUserOrder, updateStatus } from '../../actions/order';
+import { orderStatus } from '../controller/config';
+import axios from 'axios'
+import Graph from '../common/Graph'
+var _ = require('lodash');
 
 class SellerCentral extends Component {
     constructor(props) {
@@ -35,7 +39,9 @@ class SellerCentral extends Component {
                         name: 'Mobile'
                     }]
                 }
-            ]
+            ],
+            stats: [],
+            statsMonthly : []
         }
 
     }
@@ -45,16 +51,41 @@ class SellerCentral extends Component {
         if (token === null) {
             this.props.history.push('/login')
         }
-        await this.props.getUserOrder()
+        await this.props.getUserOrder();
+        const stat = () => {
+            return axios
+              .get('analytics/sellerstatictics')
+              .then(response => {
+                return response.data
+              })
+              .catch(err => {
+                console.log(err)
+              })
+          }
+        const stats = await stat()
+        const statMonthly = () => {
+            return axios
+              .get('analytics/sellermonthlystatictics')
+              .then(response => {
+                return response.data
+              })
+              .catch(err => {
+                console.log(err)
+              })
+          }
+        const statsMonthly = await statMonthly()
+        this.setState({
+            ...this.state,
+            stats,
+            statsMonthly
+        })
     }
 
-
-    handleItemClick = (e, { name }) => this.setState({ activeItem: name })
 
     handleNavItem = (name) => this.setState({ activeNavItem: name })
 
     render() {
-        const { activeNavItem, activeItem } = this.state
+        const activeNavItem = this.state.activeNavItem
 
         var contentPage = (
             <div>
@@ -70,24 +101,35 @@ class SellerCentral extends Component {
         else if (activeNavItem == 'Add a Product') {
             contentPage = (<AddProduct />)
         }
-        else if (activeNavItem == 'REPORT') {
-            console.log('Report Page');
+        else if (activeNavItem == 'REPORTS') {
+            console.log(this.state.statsMonthly);
+            console.log(this.state.stats);
+            contentPage = (<Graph stats={this.state.stats} statsMonthly={this.state.statsMonthly}/>)
         }
 
         else if (activeNavItem == 'ORDERS') {
+            console.log(this.props.order.userOrders);
+            var orders = _.mapValues(_.groupBy(this.props.order.userOrders, 'orderId'),clist => clist.map(order => _.omit(order, 'orderId')));
+            console.log(orders);
+
+            // console.log('====================================')
+            // console.log(Object.keys(orders).map(order => {return('a')}))
+            // console.log('====================================')
+            // console.log(Object.keys(orders))
             const options = [
                 { key: 1, text: 'Ordered', value: 1 },
                 { key: 2, text: 'Packing', value: 2 },
                 { key: 3, text: 'Out For Delivery', value: 3 },
             ]
-            contentPage = this.state.orders.map(order => {
+            
+            contentPage = Object.keys(orders).map(orderId => {
 
                 return (
                     <Card fluid>
                         <Card.Content>
-                            <Header as='h3'>ORDER ID: {order.id}</Header>
+                            <Header as='h3'>ORDER ID: {orderId}</Header>
                         </Card.Content>
-                        {order.products.map(product => {
+                        {orders[orderId].map(product => {
                             return (
                                 <Card.Content>
                                     <Grid columns={3}>
@@ -98,11 +140,16 @@ class SellerCentral extends Component {
                                         </Grid.Column>
                                         <Grid.Column width={8}>
                                             <Grid.Row>
-                                                {product.name}
+                                                <Header as='h4'>{product.productId}</Header>
                                             </Grid.Row>
+                                            <br></br>
+                                            <Grid.Row>
+                                                <Header as='h5' color='grey'>Current Status: {product.status.status}</Header>
+                                            </Grid.Row>
+                                            <br></br>
                                             <Grid.Row>
                                                 <Menu compact>
-                                                    <Dropdown text='Order Status' options={options} simple item />
+                                                    <Dropdown placeholder='Change Status' options={options} simple item compact/>
                                                 </Menu>
                                             </Grid.Row>
                                         </Grid.Column>
@@ -246,11 +293,17 @@ SellerCentral.propTypes = {
     isAuthenticated: PropTypes.bool.isRequired,
     productCategories: PropTypes.array.isRequired,
     getUserOrder:PropTypes.func.isRequired,
+    updateStatus:PropTypes.func.isRequired,
+    order: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = state => ({
     isAuthenticated: state.auth.isAuthenticated,
+    order: state.order,
     categoryList: state.product.categoryList
 })
 
-export default connect(mapStateToProps, {getUserOrder})(withRouter(SellerCentral))
+export default connect(mapStateToProps, {
+    getUserOrder,
+    updateStatus
+})(withRouter(SellerCentral))

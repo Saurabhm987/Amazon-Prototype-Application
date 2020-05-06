@@ -5,12 +5,16 @@ import sellerCentral from './seller/SellerCentral'
 import SignupForm from './signup/Signup'
 import LoginForm from './login/Login'
 import Cart from './customer/cart'
+<<<<<<< HEAD
 import Address from './customer/address'
 import Cards from './customer/card'
 import AddAddress from './customer/addAddress'
 import AddCard from './customer/addCard'
 
 
+=======
+import CustomerProfile from './customer/customerProfile'
+>>>>>>> eb34bc26bf31142e2e1610fe6d5a25c31bae3edb
 import ProductDetail from './product/ProductDetail'
 import CustomerDashboard from './dashboard/CustomerDashboard'
 import AdminDashboard from './dashboard/AdminDashboard'
@@ -19,6 +23,8 @@ import SellerProfile from './seller/SellerProfile'
 import SellerProduct from './seller/SellerProduct'
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types'
+import OrderDetail from "./order/orderDetail";
+import OrderTrackingModal from "./order/orderTrackingModal";
 
 class Main extends Component {
     constructor(props) {
@@ -35,6 +41,7 @@ class Main extends Component {
                 <Route path="/dashboard" exact component={CustomerDashboard} />
                 <Route path="/admindashboard" exact component={AdminDashboard} />
                 <Route path="/sellerCentral" exact component={sellerCentral} />
+                <Route path="/customerprofile" component={CustomerProfile} />
                 <Route path="/signup" component={SignupForm} />
                 <Route path='/login' exact component={LoginForm} />
                 <Route path='/productdetails' exact component={ProductDetail} />
@@ -45,6 +52,8 @@ class Main extends Component {
                 <Route path='/addaddress' exact component={AddAddress} />
                 <Route path='/yourpayments' exact component={Cards} />
                 <Route path='/addcard' exact component={AddCard} />
+                <Route path="/orderDetails" exact component={OrderDetail} />
+                <Route path="/orderTracking" exact component={OrderTrackingModal} />
 
                 { 
                     user !== null

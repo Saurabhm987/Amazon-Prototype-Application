@@ -6,6 +6,7 @@ import ProductCategoryDropdown from '../product/productCategoryDropdown'
 import { Redirect } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { fetchProduct, productCategories } from '../../actions/product';
+import { USER_CUSTOMER, USER_SELLER, USER_ADMIN } from '../controller/config';
 
 import {
   Container,

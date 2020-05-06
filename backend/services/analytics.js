@@ -3,9 +3,9 @@ const order = require('../dbModels/order');
 const product = require('../dbModels/product');
 const seller = require('../dbModels/seller');
 const { orderStatus } = require('../config/types');
+const ObjectID= require('mongodb').ObjectID
 
 
-// !! TODO
 exports.getProductsAnalytics = async (req) => {
     try {
         let results = {
@@ -33,13 +33,37 @@ exports.getProductsAnalytics = async (req) => {
     }
 }
 
-// !! TODO
 exports.getTopTenProductsRating = async (req) => {
-
+    try {
+    let topTenProductsRating =await product.find ().sort( { overallRating: -1 }).limit(10);
+        return { "status": 200, body: topTenProductsRating };
+    } catch (error) {
+        if (error.message)
+            message = error.message
+        else
+            message = 'Error while creating order';
+        if (error.statusCode)
+            code = error.statusCode
+        else
+            code = 500
+        return { "status": code, body: { message } }
+    }
 };
-// !! TODO
 exports.getTopTenViewedPerDay = async (req) => {
-
+    try {
+        let topTenProductsViews =await product.find ().sort( { views: -1 }).limit(10);
+            return { "status": 200, body: topTenProductsViews };
+        } catch (error) {
+            if (error.message)
+                message = error.message
+            else
+                message = 'Error while creating order';
+            if (error.statusCode)
+                code = error.statusCode
+            else
+                code = 500
+            return { "status": code, body: { message } }
+        }
 };
 
 
@@ -229,3 +253,60 @@ exports.getTopFiveCustomerAmount = async (req) => {
     }
 }
 
+//////////////////////
+exports.sellerstatictics  = async (request) => {
+    try{
+        let resp = await order.aggregate([
+            { "$match": { sellerId: ObjectID(request.user.userId) } },
+            {
+                "$group": {
+                    _id: "$productId",
+                    amount:{"$sum": "$totalAmount"},
+                    quantity:{"$sum": "$quantity"},
+                }           
+            }
+        ]);
+        let opts = {path: '_id', select:'_id name price' };
+        let results = await product.populate(resp, opts);
+        return { "status": 200, body: results };
+    }  catch (error) {
+        if (error.message)
+            message = error.message
+        else
+            message = 'Error while getting statistics';
+        if (error.statusCode)
+            code = error.statusCode
+        else
+            code = 500
+        return { "status": code, body: { message } }
+    }
+}
+exports.sellermonthlystatictics  = async (request) => {
+    try{
+        let resp = await order.aggregate([
+            { "$match": { sellerId: ObjectID(request.user.userId) } },
+            {
+                "$group": {
+                    _id: {"$month": "$orderDate"},
+                    amount:{"$sum": "$totalAmount"}
+                }           
+            }
+        ]);
+        return { "status": 200, body: resp };
+    }  catch (error) {
+        if (error.message)
+            message = error.message
+        else
+            message = 'Error while getting monthly statistics';
+        if (error.statusCode)
+            code = error.statusCode
+        else
+            code = 500
+        return { "status": code, body: { message } }
+    }
+}
+
+
+
+
+//////////////////////
