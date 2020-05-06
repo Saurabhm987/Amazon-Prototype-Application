@@ -4,6 +4,8 @@ import HeaderView from './header/Header'
 import sellerCentral from './seller/SellerCentral'
 import SignupForm from './signup/Signup'
 import LoginForm from './login/Login'
+import Cart from './customer/cart'
+
 import ProductDetail from './product/ProductDetail'
 import CustomerDashboard from './dashboard/CustomerDashboard'
 import AppHeader from './header/Header';
@@ -31,6 +33,8 @@ class Main extends Component {
                 <Route path='/productdetails' exact component={ProductDetail} />
                 <Route path='/sellerprofile' exact component={SellerProfile} />
                 <Route path='/sellerproducts' exact component={SellerProduct} />
+                <Route path='/cart' exact component={Cart} />
+
                 { 
                     user !== null
                     ? <Route path='/' component={AppHeader} /> 

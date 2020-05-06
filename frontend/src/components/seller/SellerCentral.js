@@ -1,18 +1,42 @@
 import React, { Component } from 'react'
-import { Container, Grid, Segment, Menu, Header } from 'semantic-ui-react'
+import { Container, Grid, Segment, Menu, Header, Placeholder, Dropdown, Button, Card } from 'semantic-ui-react'
 import CentralHeader from '../header/CentralHeader'
 import AddProduct from '../product/AddProduct'
+import { Link, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types'
 import jwtDecode from 'jwt-decode';
 import { productCategories } from '../../actions/product'
-
+import SellerProduct from '../seller/SellerProduct'
+import {getUserOrder} from '../../actions/order'
 
 class SellerCentral extends Component {
     constructor(props) {
         super(props);
 
-        this.state = { activeItem: 'Growth'}
+
+        this.state = {
+            activeNavItem: 'Add Product',
+            activeItem: 'Growth',
+            orders: [
+                {
+                    id: '1234',
+                    products: [{
+                        name: 'Headphones'
+                    }, {
+                        name: 'Mobile'
+                    }]
+                },
+                {
+                    id: '5678',
+                    products: [{
+                        name: 'Demo'
+                    }, {
+                        name: 'Mobile'
+                    }]
+                }
+            ]
+        }
 
     }
 
@@ -21,18 +45,134 @@ class SellerCentral extends Component {
         if (token === null) {
             this.props.history.push('/login')
         }
+        await this.props.getUserOrder()
     }
 
 
     handleItemClick = (e, { name }) => this.setState({ activeItem: name })
 
+    handleNavItem = (name) => this.setState({ activeNavItem: name })
+
     render() {
-        const { activeItem } = this.state
+        const { activeNavItem, activeItem } = this.state
+
+        var contentPage = (
+            <Grid columns={2}>
+                <Grid.Column width={5}>
+                    <Menu pointing vertical>
+                        <Menu.Item
+                            name='Top'
+                            active={activeItem === 'Top'}
+                            onClick={this.handleItemClick}
+                        />
+                        <Menu.Item
+                            name='Inventory'
+                            active={activeItem === 'Inventory'}
+                            onClick={this.handleItemClick}
+                        />
+                        <Menu.Item
+                            name='Pricing'
+                            active={activeItem === 'Pricing'}
+                            onClick={this.handleItemClick}
+                        />
+                        <Menu.Item
+                            name='Growth'
+                            active={activeItem === 'Growth'}
+                            onClick={this.handleItemClick}
+                        />
+                        <Menu.Item
+                            name='Advertising'
+                            active={activeItem === 'Advertising'}
+                            onClick={this.handleItemClick}
+                        />
+                        <Menu.Item
+                            name='Fulfillment'
+                            active={activeItem === 'Fulfillment'}
+                            onClick={this.handleItemClick}
+                        />
+                    </Menu>
+                </Grid.Column>
+
+                <Grid.Column stretched width={11}>
+                    <Container>
+                        This is an stretched grid column. This segment will always match the
+                    tab height. This will change wrt {this.state.activeItem} tab.
+                </Container>
+                </Grid.Column>
+            </Grid>
+        )
+
+        console.log(activeNavItem);
+
+        if (activeNavItem == 'Manage Inventory') {
+            contentPage = (<SellerProduct />)
+        }
+        else if (activeNavItem == 'Add a Product') {
+            contentPage = (<AddProduct />)
+        }
+        else if (activeNavItem == 'REPORT') {
+            console.log('Report Page');
+        }
+
+        else if (activeNavItem == 'ORDERS') {
+            const options = [
+                { key: 1, text: 'Ordered', value: 1 },
+                { key: 2, text: 'Packing', value: 2 },
+                { key: 3, text: 'Out For Delivery', value: 3 },
+            ]
+            contentPage = this.state.orders.map(order => {
+
+                return (
+                    <Card fluid>
+                        <Card.Content>
+                            <Header as='h3'>ORDER ID: {order.id}</Header>
+                        </Card.Content>
+                        {order.products.map(product => {
+                            return (
+                                <Card.Content>
+                                    <Grid columns={3}>
+                                        <Grid.Column width={3}>
+                                            <Placeholder>
+                                                <Placeholder.Image style={{ width: '100px', height: '100px' }}></Placeholder.Image>
+                                            </Placeholder>
+                                        </Grid.Column>
+                                        <Grid.Column width={8}>
+                                            <Grid.Row>
+                                                {product.name}
+                                            </Grid.Row>
+                                            <Grid.Row>
+                                                <Menu compact>
+                                                    <Dropdown text='Order Status' options={options} simple item />
+                                                </Menu>
+                                            </Grid.Row>
+                                        </Grid.Column>
+                                        <Grid.Column width={5}>
+                                            <Grid.Row>
+                                                <Button color='blue' floated='right' style={{ height: '35px', width: '150px', margin: '5px' }}>Billing Details</Button>
+                                            </Grid.Row>
+                                            <Grid.Row>
+                                                <Button color='blue' floated='right' style={{ height: '35px', width: '150px', margin: '5px' }}>Payment Details</Button>
+                                            </Grid.Row>
+                                            <Grid.Row>
+                                                <Button color='blue' floated='right' style={{ height: '35px', width: '150px', margin: '5px' }}>Delivery Address</Button>
+                                            </Grid.Row>
+                                        </Grid.Column>
+                                    </Grid>
+                                </Card.Content>
+                            )
+                        }
+                        )}
+                    </Card>
+                )
+            })
+        }
+
 
         return (
             <Container style={{ marginBottom: '20px' }}>
-                <CentralHeader></CentralHeader>
+                <CentralHeader handleNavItem={this.handleNavItem}></CentralHeader>
                 <br></br>
+
                 <Grid columns={2}>
                     <Grid.Column width={5}>
                         <Segment textAlign='left'>
@@ -40,7 +180,7 @@ class SellerCentral extends Component {
                             <Segment inverted color='blue' tertiary key='mini' size='mini'>
                                 <Grid columns={2}>
                                     <Grid.Column width={14}>
-                                        <Header as='h3' color='blue'>Pending</Header>
+                                        <Header as='h3' color='blue'>All</Header>
                                     </Grid.Column>
                                     <Grid.Column width={2}>
                                         <Header as='h3' color='blue'>0</Header>
@@ -50,7 +190,7 @@ class SellerCentral extends Component {
                             <Segment inverted color='blue' tertiary key='mini' size='mini'>
                                 <Grid columns={2}>
                                     <Grid.Column width={14}>
-                                        <Header as='h3' color='blue'>Premium unshipped</Header>
+                                        <Header as='h3' color='blue'>Open</Header>
                                     </Grid.Column>
                                     <Grid.Column width={2}>
                                         <Header as='h3' color='blue'>0</Header>
@@ -60,7 +200,7 @@ class SellerCentral extends Component {
                             <Segment inverted color='blue' tertiary key='mini' size='mini'>
                                 <Grid columns={2}>
                                     <Grid.Column width={14}>
-                                        <Header as='h3' color='blue'>Unshipped</Header>
+                                        <Header as='h3' color='blue'>Delivered</Header>
                                     </Grid.Column>
                                     <Grid.Column width={2}>
                                         <Header as='h3' color='blue'>0</Header>
@@ -70,7 +210,7 @@ class SellerCentral extends Component {
                             <Segment inverted color='blue' tertiary key='mini' size='mini'>
                                 <Grid columns={2}>
                                     <Grid.Column width={14}>
-                                        <Header as='h3' color='blue'>Return Requests</Header>
+                                        <Header as='h3' color='blue'>Cancelled</Header>
                                     </Grid.Column>
                                     <Grid.Column width={2}>
                                         <Header as='h3' color='blue'>0</Header>
@@ -133,56 +273,7 @@ class SellerCentral extends Component {
                     </Grid.Column>
                     <Grid.Column width={11}>
                         <Segment textAlign='left'>
-                            <Header as='h2'>Title</Header>
-                        The Paragraphs module allows content creators to choose which kinds of paragraphs they want to place on the page, and the order in which they want to place them. They can do all of this through the familiar node edit screen. There is no need to resort to code, the dreaded block placement config screen or Panelizer overrides. They just use node edit form where all content is available to them in one place.
-                        </Segment>
-                        <br></br>
-                        <Segment textAlign='left'>
-                            <Header as='h2'>Amazon Selling Coach</Header>
-                            <AddProduct />
-                            <Grid columns={2}>
-                                <Grid.Column width={5}>
-                                    <Menu pointing vertical>
-                                        <Menu.Item
-                                            name='Top'
-                                            active={activeItem === 'Top'}
-                                            onClick={this.handleItemClick}
-                                        />
-                                        <Menu.Item
-                                            name='Inventory'
-                                            active={activeItem === 'Inventory'}
-                                            onClick={this.handleItemClick}
-                                        />
-                                        <Menu.Item
-                                            name='Pricing'
-                                            active={activeItem === 'Pricing'}
-                                            onClick={this.handleItemClick}
-                                        />
-                                        <Menu.Item
-                                            name='Growth'
-                                            active={activeItem === 'Growth'}
-                                            onClick={this.handleItemClick}
-                                        />
-                                        <Menu.Item
-                                            name='Advertising'
-                                            active={activeItem === 'Advertising'}
-                                            onClick={this.handleItemClick}
-                                        />
-                                        <Menu.Item
-                                            name='Fulfillment'
-                                            active={activeItem === 'Fulfillment'}
-                                            onClick={this.handleItemClick}
-                                        />
-                                    </Menu>
-                                </Grid.Column>
-
-                                <Grid.Column stretched width={11}>
-                                    <Container>
-                                        This is an stretched grid column. This segment will always match the
-                                        tab height. This will change wrt {this.state.activeItem} tab.
-                                    </Container>
-                                </Grid.Column>
-                            </Grid>
+                            {contentPage}
                         </Segment>
                     </Grid.Column>
                 </Grid>
@@ -194,6 +285,7 @@ class SellerCentral extends Component {
 SellerCentral.propTypes = {
     isAuthenticated: PropTypes.bool.isRequired,
     productCategories: PropTypes.array.isRequired,
+    getUserOrder:PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
@@ -201,4 +293,4 @@ const mapStateToProps = state => ({
     categoryList: state.product.categoryList
 })
 
-export default connect(mapStateToProps, { productCategories })(SellerCentral)
+export default connect(mapStateToProps, {getUserOrder})(withRouter(SellerCentral))

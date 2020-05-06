@@ -8,7 +8,7 @@ var options = {
     useCreateIndex: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
-    // poolSize: 500,
+    poolSize: 500,
     bufferMaxEntries: 0
 };
 

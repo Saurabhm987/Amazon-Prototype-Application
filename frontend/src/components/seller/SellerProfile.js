@@ -13,6 +13,7 @@ import {
     Button,
 } from 'semantic-ui-react'
 import { connect } from 'react-redux';
+import JwtDecode from 'jwt-decode';
 
 class SellerProfile extends Component {
     constructor(props) {

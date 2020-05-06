@@ -58,6 +58,9 @@ var uploadMultiple = multer({
 */
 router.post('/addproduct', uploadMultiple, async (request, response) => {
 
+
+    console.log('hitting add product')
+
     let data = JSON.parse(JSON.stringify(request.body))
 
     try {
@@ -119,47 +122,47 @@ router.post('/addproduct', uploadMultiple, async (request, response) => {
 })
 
 
-router.get('/searchWithKafka', cachedsearch, async (request, response) => {
+// router.get('/searchWithKafka', cachedsearch, async (request, response) => {
 
-    console.log('Kafka search api call')
+//     console.log('Kafka search api call')
 
-    try {
+//     try {
 
-        const data = {
-            "body": request.body,
-            "params": request.params,
-            "query": request.query,
-            "type":"ProductSearchResults"
-        }
+//         const data = {
+//             "body": request.body,
+//             "params": request.params,
+//             "query": request.query,
+//             "type":"ProductSearchResults"
+//         }
 
-        // params = { topic_name, request_body, callback}
-        await kafka.make_request('product', data, async (err, data) => {
-            if (err) throw new Error(err)
+//         // params = { topic_name, request_body, callback}
+//         await kafka.make_request('product', data, async (err, data) => {
+//             if (err) throw new Error(err)
 
-            await client.set('products', JSON.stringify(data.body))
+//             await client.set('products', JSON.stringify(data.body))
 
-            response.status(data.status).json(data.body);
-        });
+//             response.status(data.status).json(data.body);
+//         });
 
-        // let res = await productServices.getProductsforCustomer(data);
-        // response.status(res.status).json(res.body);
+//         // let res = await productServices.getProductsforCustomer(data);
+//         // response.status(res.status).json(res.body);
 
-    }
-    catch (error) {
-        if (error.message)
-            message = error.message
-        else
-            message = 'Error while fetching products'
+//     }
+//     catch (error) {
+//         if (error.message)
+//             message = error.message
+//         else
+//             message = 'Error while fetching products'
 
-        if (error.statusCode)
-            code = error.statusCode
-        else
-            code = 500
+//         if (error.statusCode)
+//             code = error.statusCode
+//         else
+//             code = 500
 
-        return response.status(code).json({ message });
-    }
+//         return response.status(code).json({ message });
+//     }
 
-});
+// });
 
 
 
@@ -179,6 +182,9 @@ router.get('/searchWithKafka', cachedsearch, async (request, response) => {
 
 */
 router.post('/addreview/:product_id', async (request, response) => {
+
+    console.log('hitting adreview')
+
     try {
         const requestBody = { body: request.body, params: request.params }
 
@@ -218,6 +224,9 @@ router.post('/addreview/:product_id', async (request, response) => {
 
 
 router.post('/addcategory', async (request, response) => {
+
+    console.log('hitting addcategory')
+
     try {
         const requestBody = { body: request.body }
 
@@ -256,6 +265,8 @@ router.post('/addcategory', async (request, response) => {
 */
 router.put('/updateproduct/:product_id', async (request, response) => {
 
+    console.log('updateProduct')
+
     try {
 
         const requestBody = { body: request.body, params: request.params }
@@ -266,7 +277,7 @@ router.put('/updateproduct/:product_id', async (request, response) => {
 
         console.log('updated result - ')
 
-        response.json(result.body) 
+        response.json(res.body) 
 
     } catch (error) {
 
@@ -345,7 +356,7 @@ router.get('/sellerproduct/:seller_id', async (request, response) => {
 
         const res = await productServices.getsellerProduct(requestBody)
 
-        response.status(res.status).json(res)
+        response.status(res.status).json(res.body)
 
     } catch (error) {
 
@@ -448,6 +459,8 @@ router.get('/getSellerPaginatedResult', async (request, response) => {
 */
 router.put('/deleteproduct/:product_id', async (request, response) => {
 
+    console.log('hitting deleteproduct')
+
     try {
 
         const requestBody = { params: request.params }
@@ -496,11 +509,11 @@ router.put('/deleteproduct/:product_id', async (request, response) => {
 */
 router.get('/:product_id', async (req, res, next) => {
 
-    console.log('hitting product route')
+    console.log('hitting get product route')
 
     const product_id = req.params.product_id
 
-    if (product_id === 'updateproduct' || product_id === 'testroute') {
+    if (product_id === 'updateproduct' || product_id === 'testroute' || product_id==='getcategories') {
         return next()
     }
 

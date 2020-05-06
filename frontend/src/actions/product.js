@@ -2,7 +2,7 @@ import axios from "axios";
 import { API_ENDPOINT } from '../components/controller/Endpoint'
 
 export const productCategories = () => async (dispatch) => {
-    console.log("inside  editCompanyInfo action");
+    console.log("hitting get categoreis");
 
     axios.defaults.withCredentials = true;
     await axios({
@@ -131,6 +131,8 @@ export const getSellerProducts = (sellerId) => async (dispatch) => {
 
 
 export const getSellerProductsPaginated = (searchText = '', filterText='', offset=1, sortType='', userId) => async (dispatch) => {
+
+    console.log('hitting seller product paginated')
 
     await axios.get(
         `${API_ENDPOINT}/product/getSellerPaginatedResult`,

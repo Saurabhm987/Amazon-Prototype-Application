@@ -2,35 +2,24 @@
 const express = require('express')
 const router = express.Router()
 var mongoose = require('mongoose');
-// const buyer = require('../dbModels/buyer')
-const cartServices = require('../services/cart')
-const cachedcart = require('../redis/cachedcart')
-const client = require('../index')
+const addressServices = require('../services/address')
 
-router.get('/getCart/:id', cachedcart, async (request, response, next) => {  
 
+router.get('/getAddress/:id', async (request, response) => {  
     try {
-
-        console.log('API CAll .......')
-
         const data = {
             "body": request.body,
             "params": request.params,
             "query": request.query,
         }
-
-        let res =await cartServices.getProductsFromCart(data);
-
-        const {id} = request.params
-        client.set(`"cart-${id}"`,JSON.stringify(item))
-
+        let res =await addressServices.getAddress(data);
         response.status(res.status).json(res.body);     
     }  
     catch (error) {
         if (error.message)
             message = error.message
         else
-            message = 'Error while getting products from cart'
+            message = 'Error while getting address details'
         
         if (error.statusCode)
             code = error.statusCode
@@ -41,28 +30,24 @@ router.get('/getCart/:id', cachedcart, async (request, response, next) => {
     }
 });
 
-router.post('/addToCart/:customer_id', async (request, response) => {  
+
+
+router.post('/addAddress/:customer_id', async (request, response) => {  
     try {
-        console.log('API CALL..........')
         const data = {
             "body": request.body,
             "params": request.params,
             "query": request.query,
         }
-
-        let res =await cartServices.addProductInCart(data);
-
-        const{ customer_id } = request.params
-
-        client.set(`"cart-${customer_id}"`, JSON.stringify(res.body))
-
+        console.log(data)
+        let res = await addressServices.addAddress(data);
         response.status(res.status).json(res.body);
     }  
     catch (error) {
         if (error.message)
             message = error.message
         else
-            message = 'Error while adding product to cart'
+            message = 'Error while adding address details'
         
         if (error.statusCode)
             code = error.statusCode
@@ -72,26 +57,22 @@ router.post('/addToCart/:customer_id', async (request, response) => {
         return response.status(code).json({ message });
     }
 });
-router.put('/updateCart/:customer_id/product/:product_id', async (request, response) => {  
+
+router.put('/updateAddress/:customer_id/address/:id', async (request, response) => {  
     try {
         const data = {
             "body": request.body,
             "params": request.params,
             "query": request.query,
         }
-        let res =await cartServices.updateProductInCart(data);
-
-        const {customer_id} = request.params
-
-        client.set(`"cart-${customer_id}"`, JSON.stringify(res.body))
-
+        let res =await addressServices.updateAddress(data);
         response.status(res.status).json(res.body);
     }     
     catch (error) {
         if (error.message)
             message = error.message
         else
-            message = 'Error while updating cart'
+            message = 'Error while updating address'
         
         if (error.statusCode)
             code = error.statusCode
@@ -104,26 +85,20 @@ router.put('/updateCart/:customer_id/product/:product_id', async (request, respo
 
 
 
-router.delete('/deleteCart/:customer_id/product/:product_id/:type', async (request, response) => {  
+router.delete('/deleteAddress/:customer_id/address/:address_id', async (request, response) => {  
     try {
         const data = {
             "body": request.body,
             "params": request.params,
             "query": request.query,
-            "type": "deleteProductInCart"
         }
-       
-        let res =await cartServices.deleteProductInCart(data);
-
-        // const {customer_id} = request.params
-        // client.set(`"cart-${customer_id}"`, JSON.stringify(res.body))
-
+        let res = await addressServices.deleteAddress(data);
         response.status(res.status).json(res.body);
     } catch (error) {
         if (error.message)
             message = error.message
         else
-            message = 'Error while updating cart'
+            message = 'Error while deleting address'
         
         if (error.statusCode)
             code = error.statusCode
