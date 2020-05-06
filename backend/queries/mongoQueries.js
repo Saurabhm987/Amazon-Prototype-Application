@@ -21,10 +21,6 @@ const findDocumentsByQueryFilter = async (modelObject, query, projection, filter
         if (!filter) {
             filter = {}
         }
-        console.log(query)
-        console.log(projection)
-        console.log(filter)
-
 
         return await modelObject.find(query, projection, options).lean().sort(filter.sort).skip(filter.skip).limit(filter.limit);
     } catch (error) {

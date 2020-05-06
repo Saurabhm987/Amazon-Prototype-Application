@@ -269,8 +269,6 @@ router.put('/updateproduct/:product_id', async (request, response) => {
 
         const requestBody = { body: request.body, params: request.params }
 
-        console.log('requestBody - ', requestBody)
-
         const result = await productServices.updateProduct(requestBody)
 
         response.json(result.body) 

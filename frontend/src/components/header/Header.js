@@ -1,12 +1,11 @@
 import { Link } from 'react-router-dom';
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import './header.css'
 import { logout } from '../../actions/auth'
-import ProductCategoryDropdown from '../product/productCategoryDropdown'
 import { Redirect } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { fetchProduct, productCategories } from '../../actions/product';
-import { USER_CUSTOMER, USER_SELLER, USER_ADMIN } from '../controller/config';
+import { connect } from 'react-redux';
 
 import {
   Container,
@@ -19,8 +18,6 @@ import {
   Menu,
   Segment,
 } from 'semantic-ui-react';
-import { connect } from 'react-redux';
-import JwtDecode from 'jwt-decode';
 
 
 class AppHeader extends Component {
@@ -39,17 +36,21 @@ class AppHeader extends Component {
 
     let token = localStorage.getItem('token')
 
-    if(token !== null){
-      let user = JwtDecode(token);
-      if (user.userType === USER_CUSTOMER) {
-        this.props.history.push('/dashboard');
-      } else if (user.userType === USER_SELLER) {
-        this.props.history.push('/sellerCentral');
-      } else {
-        // his.props.history.push('/sellerCentral');
-      }
-       
+    if (token === null) {
+      this.props.history.push('/login')
     }
+
+    // if(token !== null){
+    //   let user = JwtDecode(token);
+    //   if (user.userType === USER_CUSTOMER) {
+    //     this.props.history.push('/dashboard');
+    //   } else if (user.userType === USER_SELLER) {
+    //     this.props.history.push('/sellerCentral');
+    //   } else {
+    //     // his.props.history.push('/sellerCentral');
+    //   }
+
+    // }
 
     await this.props.productCategories()
     await this.createOptions()
@@ -87,9 +88,7 @@ class AppHeader extends Component {
 
     const { searchText, searchCategory } = this.state
 
-    console.log('searchText - ', searchText, 'cate -', searchCategory)
-
-    await this.props.fetchProduct(searchText,searchCategory)
+    await this.props.fetchProduct(searchText, searchCategory)
 
     await this.props.history.push('/dashboard')
 
@@ -183,10 +182,10 @@ class AppHeader extends Component {
             Return &  Orders
           </Menu.Item>
           <Menu.Item as='a' header>
-          <Link  to={"/cart"}>
+            <Link to={"/cart"}>
               Cart
-            </Link>  
-        </Menu.Item>
+            </Link>
+          </Menu.Item>
         </Menu>
         <Segment inverted vertical style={{ margin: '5em 0em 0em 0em', padding: '2em 0em ' }}>
           <Container textAlign='center'>

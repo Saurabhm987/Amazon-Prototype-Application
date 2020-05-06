@@ -169,8 +169,8 @@ class SellerProduct extends Component {
         const body = {
             name: name,
             description: description,
-            quantity: price,
-            price: quantity,
+            quantity: quantity,
+            price: price,
             category: selectedCategory,
             giftPrice: giftPrice,
         }
