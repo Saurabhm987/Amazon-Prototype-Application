@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {
     Placeholder,
     Card,
-    Button,
 } from 'semantic-ui-react';
 
 

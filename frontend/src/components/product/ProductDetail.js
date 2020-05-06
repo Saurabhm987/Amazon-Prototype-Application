@@ -15,6 +15,7 @@ import {
     Placeholder,
     Divider,
     Dropdown,
+    Icon,
 } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 
@@ -25,6 +26,7 @@ class ProductDetail extends Component {
 
         this.state = {
             imgUrl: '',
+            hovered: false,
             options: [
                 { key: 1, text: '1', value: 1 },
                 { key: 2, text: '2', value: 2 },
@@ -40,6 +42,8 @@ class ProductDetail extends Component {
     }
 
     componentDidMount = async () => {
+
+        await window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
 
         const productId = await queryString.parse(this.props.location.search);
 
@@ -85,9 +89,21 @@ class ProductDetail extends Component {
                                 )
                                 :
                                 (
-                                    <Placeholder>
-                                        <Placeholder.Image square size='small' />
-                                    </Placeholder>
+                                    <div>
+                                        <Placeholder>
+                                            <Placeholder.Image style={{ width: '82.5px', height: '82.5px' }} />
+                                        </Placeholder>
+                                        <Placeholder>
+                                            <Placeholder.Image style={{ width: '82.5px', height: '82.5px' }} />
+                                        </Placeholder>
+                                        <Placeholder>
+                                            <Placeholder.Image style={{ width: '82.5px', height: '82.5px' }} />
+                                        </Placeholder>
+                                        <Placeholder>
+                                            <Placeholder.Image style={{ width: '82.5px', height: '82.5px' }} />
+                                        </Placeholder>
+
+                                    </div>
                                 )
                         }
 
@@ -96,11 +112,17 @@ class ProductDetail extends Component {
                         {
                             images && images.length > 0
                                 ?
-                                <Image src={this.state.imgUrl || images[0]} style={{ height: '730px', width: '780px' }} />
+                                <Image
+                                    src={this.state.imgUrl || images[0]}
+                                    style={{ height: '730px', width: '780px' }}
+                                />
                                 :
                                 (
                                     <Placeholder>
-                                        <Placeholder.Image square style={{ height: '700px', width: '780px' }} />
+                                        <Placeholder.Image
+                                            square
+                                            style={{ height: '700px', width: '780px' }}
+                                        />
                                     </Placeholder>
                                 )
 
@@ -114,7 +136,7 @@ class ProductDetail extends Component {
                                 <Grid.Column width={7} textAlign='left'>
                                     <Segment style={{ height: '730px' }}>
                                         <Grid.Row>
-                                            <Grid.Column><Header>{this.props.productDetail.name}</Header></Grid.Column>
+                                            <Grid.Column><Header style={{ fontWeight: '400', fontSize: '21px', lineHeight: '1.3' }}>{this.props.productDetail.name}</Header></Grid.Column>
                                         </Grid.Row>
                                         <br />
                                         <Grid.Row>
@@ -123,7 +145,7 @@ class ProductDetail extends Component {
                                         <br />
                                         <Divider />
                                         <Grid.Row>
-                                            With Deal:<span style={{ color: 'red', fontSize: '1.5em' }}><b>  $ {this.props.productDetail.price}</b></span>
+                                            <span style={{ color: '#B12704', fontSize: '1.28em', fontWeight: '400' }}><b> With Deal: $ {this.props.productDetail.price}</b></span>
                                         </Grid.Row>
                                         <br />
                                         <Grid.Row>
@@ -143,7 +165,7 @@ class ProductDetail extends Component {
                                         </Grid.Row>
                                         <br />
                                         <Grid.Row>
-                                            <Grid.Column style={{ fontSize: '1.2em' }} length='small'>
+                                            <Grid.Column style={{ fontSize: '1.2em', fontWeight: '400' }} length='small'>
                                                 {this.props.productDetail.description}
                                             </Grid.Column>
                                         </Grid.Row>
@@ -185,7 +207,7 @@ class ProductDetail extends Component {
                                 <Grid.Column width={2} textAlign='left'>
                                     <Segment style={{ height: '730px' }}>
                                         <Grid.Row>
-                                            <span style={{ color: 'red' }}>$ {this.props.productDetail.price}</span>
+                                            <span style={{ color: '#B12704' }}>$ {this.props.productDetail.price}</span>
                                         </Grid.Row>
                                         <Grid.Row>
                                             <span style={{ color: 'blue' }}>Prime & Free Return</span>
@@ -209,11 +231,17 @@ class ProductDetail extends Component {
                                         </Grid.Row>
                                         <br />
                                         <Grid.Row>
-                                            <Button color='yellow' size='large' fluid>Add to cart</Button>
+                                            <Button icon labelPosition='left' color='yellow' icon='shopping cart' size='small' fluid style={{ background: '#febd69', backgroundColor: '#a88734 #9c7e31 #846a29', color: 'rgb(17, 17, 17)', width: '184px', height: '29px' }}>
+                                                <Icon name='shopping cart'></Icon>
+                                                Add to cart
+                                            </Button>
                                         </Grid.Row>
                                         <br />
                                         <Grid.Row>
-                                            <Button color='yellow' size='large' fluid>Buy Now</Button>
+                                            <Button icon labelPosition='left' color='yellow' size='small' fluid style={{ background: 'linear-gradient(rgb(246, 200, 143), rgb(237, 146, 32))', color: '#111', width: '184px', height: '29px' }}>
+                                                <Icon name='play'></Icon>
+                                                Buy Now
+                                            </Button>
                                         </Grid.Row>
                                         <br />
                                         <Grid.Row>

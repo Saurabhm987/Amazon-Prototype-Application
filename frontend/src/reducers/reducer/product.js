@@ -9,6 +9,7 @@ const initialState = {
     categoryList: [],
     productList: [],
     productDetail:{},
+    productCount:0,
 };
 
 export default function(state = initialState, action) {
@@ -29,7 +30,8 @@ export default function(state = initialState, action) {
         case FETCH_PRODUCT:
             return {
                 ...state,
-                productList: payload
+                productList: payload.Products,
+                productCount: payload.Count,
             }
 
         case PRODUCT_DETAIL:

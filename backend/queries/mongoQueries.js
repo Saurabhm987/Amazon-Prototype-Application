@@ -45,10 +45,6 @@ const findDocumentsByQuery = async (modelObject, query, options) => {
 
 const updateField = async (modelObject, filters, update) => {
     try {
-        // console.log(update)
-        // console.log(modelObject)
-        // console.log(filters)
-
         return await modelObject.findOneAndUpdate(filters, update, { useFindAndModify: false, new: true });
     } catch (error) {
         console.log("Error while fetching data:" + error)
@@ -69,10 +65,10 @@ const createDocument = async (modelObject, data) => {
 const findDocumets = async (modelObject, findQuery) => {
     try {
         const response = await modelObject.find(findQuery);
-        if(response.length>0){
+        if (response.length > 0) {
             return response;
         }
-        else{
+        else {
             throw ("Record not found");
         }
 

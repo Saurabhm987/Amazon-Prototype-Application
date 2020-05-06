@@ -5,6 +5,8 @@ import AddProduct from '../product/AddProduct'
 import { Link, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types'
+import jwtDecode from 'jwt-decode';
+import { productCategories } from '../../actions/product'
 import SellerProduct from '../seller/SellerProduct'
 import {getUserOrder} from '../../actions/order'
 
@@ -39,11 +41,13 @@ class SellerCentral extends Component {
     }
 
     componentDidMount = async () => {
-        if (!this.props.isAuthenticated) {
+        let token = await localStorage.getItem('token')
+        if (token === null) {
             this.props.history.push('/login')
         }
         await this.props.getUserOrder()
     }
+
 
     handleItemClick = (e, { name }) => this.setState({ activeItem: name })
 
@@ -273,7 +277,6 @@ class SellerCentral extends Component {
                         </Segment>
                     </Grid.Column>
                 </Grid>
-
             </Container>
         )
     }
@@ -281,11 +284,13 @@ class SellerCentral extends Component {
 
 SellerCentral.propTypes = {
     isAuthenticated: PropTypes.bool.isRequired,
+    productCategories: PropTypes.array.isRequired,
     getUserOrder:PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
-    isAuthenticated: state.auth.isAuthenticated
+    isAuthenticated: state.auth.isAuthenticated,
+    categoryList: state.product.categoryList
 })
 
 export default connect(mapStateToProps, {getUserOrder})(withRouter(SellerCentral))
