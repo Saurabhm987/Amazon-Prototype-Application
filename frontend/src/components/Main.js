@@ -5,7 +5,7 @@ import sellerCentral from './seller/SellerCentral'
 import SignupForm from './signup/Signup'
 import LoginForm from './login/Login'
 import Cart from './customer/cart'
-
+import CustomerProfile from './customer/customerProfile'
 import ProductDetail from './product/ProductDetail'
 import CustomerDashboard from './dashboard/CustomerDashboard'
 import AdminDashboard from './dashboard/AdminDashboard'
@@ -14,6 +14,8 @@ import SellerProfile from './seller/SellerProfile'
 import SellerProduct from './seller/SellerProduct'
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types'
+import OrderDetail from "./order/orderDetail";
+import OrderTrackingModal from "./order/orderTrackingModal";
 
 class Main extends Component {
     constructor(props) {
@@ -30,12 +32,15 @@ class Main extends Component {
                 <Route path="/dashboard" exact component={CustomerDashboard} />
                 <Route path="/admindashboard" exact component={AdminDashboard} />
                 <Route path="/sellerCentral" exact component={sellerCentral} />
+                <Route path="/customerprofile" component={CustomerProfile} />
                 <Route path="/signup" component={SignupForm} />
                 <Route path='/login' exact component={LoginForm} />
                 <Route path='/productdetails' exact component={ProductDetail} />
                 <Route path='/sellerprofile' exact component={SellerProfile} />
                 <Route path='/sellerproducts' exact component={SellerProduct} />
                 <Route path='/cart' exact component={Cart} />
+                <Route path="/orderDetails" exact component={OrderDetail} />
+                <Route path="/orderTracking" exact component={OrderTrackingModal} />
 
                 { 
                     user !== null

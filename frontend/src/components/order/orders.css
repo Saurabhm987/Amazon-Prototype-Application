@@ -1,0 +1,45 @@
+#orderdetailHeader{
+    text-align: left;
+}
+
+#orderdetailStatus{
+    font-weight: bolder;
+    font-size: x-large;
+    text-align: left;
+    padding-left: 0px;
+}
+
+#commonInfoCol{
+    padding-top: 0px;
+    padding-left: 20px;
+    text-align: left;
+}
+#commonInfoColtext{
+    font-size: medium;
+    font-family: sans-serif;
+}
+
+#orderDetailInfoButton{
+    width:100%;
+    left:50px;
+    padding-right: 0px;
+    margin-right: 0px;
+    margin-left: 150px;
+
+}
+#orderDetailBuyAgainButton{
+    width:100%;
+    left:50px;
+    padding-right: 0px;
+    margin-right: 0px;
+    margin-left: 0px;
+    background-color: #f2711c;
+    color: black;
+
+}
+
+#orderDetailInfo{
+    text-align:left;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}

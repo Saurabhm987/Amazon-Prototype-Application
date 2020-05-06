@@ -255,10 +255,9 @@ exports.getTopFiveCustomerAmount = async (req) => {
 
 //////////////////////
 exports.sellerstatictics  = async (request) => {
-    console.log(request.params.id)
     try{
         let resp = await order.aggregate([
-            { "$match": { sellerId: ObjectID(request.params.id) } },
+            { "$match": { sellerId: ObjectID(request.user.userId) } },
             {
                 "$group": {
                     _id: "$productId",
@@ -283,10 +282,9 @@ exports.sellerstatictics  = async (request) => {
     }
 }
 exports.sellermonthlystatictics  = async (request) => {
-    console.log(request.params.id)
     try{
         let resp = await order.aggregate([
-            { "$match": { sellerId: ObjectID(request.params.id) } },
+            { "$match": { sellerId: ObjectID(request.user.userId) } },
             {
                 "$group": {
                     _id: {"$month": "$orderDate"},

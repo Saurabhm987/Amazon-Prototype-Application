@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { Container, Grid, Segment, Menu, Header, Placeholder, Dropdown, Button, Card } from 'semantic-ui-react'
 import CentralHeader from '../header/CentralHeader'
 import AddProduct from '../product/AddProduct'
-import { Link, withRouter } from 'react-router-dom'
 import Graph from '../common/Graph'
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types'
@@ -14,18 +13,18 @@ class AdminDashboard extends Component {
     constructor(props) {
         super(props);
 
-
         this.state = {
             activeNavItem: 'ANALYTICS',
-            salesAnalytics: {}
+            salesAnalytics: {},
+            productAnalytics: {},
+            seller: []
         }
-
     }
 
     componentDidMount = async () => {
-        // if (!this.props.isAuthenticated) {
-        //     this.props.history.push('/login')
-        // }
+        if (!this.props.isAuthenticated) {
+            this.props.history.push('/login')
+        }
         const sales = () => {
             return axios
               .get('analytics/sales')
@@ -37,14 +36,42 @@ class AdminDashboard extends Component {
               })
           }
         const salesAnalytics = await sales()
+
+        const products = () => {
+            return axios
+              .get('analytics/products')
+              .then(response => {
+                return response.data
+              })
+              .catch(err => {
+                console.log(err)
+              })
+          }
+        const productAnalytics = await products()
+
+        const sellers = () => {
+            return axios
+              .get('seller')
+              .then(response => {
+                return response.data
+              })
+              .catch(err => {
+                console.log(err)
+              })
+          }
+        const seller = await sellers()
         this.setState({
-            salesAnalytics
+            ...this.state,
+            salesAnalytics,
+            productAnalytics,
+            seller
         })
     }
 
-    handleNavItem = (name) => this.setState({ activeNavItem: name })
+    handleNavItem = (e, { name }) => this.setState({ activeNavItem: name })
 
     render() {
+        
         const  activeNavItem = this.state.activeNavItem
 
         var contentPage = (
@@ -61,8 +88,26 @@ class AdminDashboard extends Component {
         else if (activeNavItem == 'INVENTORY') {
             contentPage = (<AddProduct />)
         }
+        else if (activeNavItem == 'SELLERS') {
+            contentPage = (<Card fluid>
+                {this.state.seller.map(slr => {
+                    return (
+                        <Card.Content>
+                            <Grid columns={3}>
+                                <Grid.Column width={8}>
+                                    <Header as='h4'>EMAIL: {slr.email}</Header>
+                                </Grid.Column>
+                                <Grid.Column width={8}>
+                                    <Header as='h4'>NAME: {slr.name}</Header>
+                                </Grid.Column>
+                            </Grid>
+                        </Card.Content>
+                    )
+                })}
+            </Card>)
+        }
         else if (activeNavItem == 'ANALYTICS') {
-            contentPage = (<Graph salesAnalytics={this.state.salesAnalytics}/>)
+            contentPage = (<Graph salesAnalytics={this.state.salesAnalytics} productAnalytics={this.state.productAnalytics}/>)
         }
 
         else if (activeNavItem == 'ORDERS') {
@@ -128,33 +173,33 @@ class AdminDashboard extends Component {
                         <Menu.Item
                             name='PROFILE'
                             active={activeNavItem === 'PROFILE'}
-                            onClick={this.handleItemClick}
+                            onClick={this.handleNavItem}
                         />
                         <Menu.Item
                             name='INVENTORY'
                             active={activeNavItem === 'INVENTORY'}
-                            onClick={this.handleItemClick}
+                            onClick={this.handleNavItem}
                         />
                         <Menu.Item
                             name='SELLERS'
-                            active={activeNavItem === 'INVENTORY'}
-                            onClick={this.handleItemClick}
+                            active={activeNavItem === 'SELLERS'}
+                            onClick={this.handleNavItem}
                         />
                         <Menu.Item
                             name='ORDERS'
                             active={activeNavItem === 'ORDERS'}
-                            onClick={this.handleItemClick}
+                            onClick={this.handleNavItem}
                         />
                         <Menu.Item
                             name='ANALYTICS'
-                            active={activeNavItem === 'REPORTS'}
-                            onClick={this.handleItemClick}
+                            active={activeNavItem === 'ANALYTICS'}
+                            onClick={this.handleNavItem}
                         />
                         <Menu.Menu position='right'>
                             <Menu.Item
                                 name='logout'
                                 active={activeNavItem === 'logout'}
-                                onClick={this.handleItemClick}
+                                onClick={this.handleNavItem}
                             />
                         </Menu.Menu>
                     </Menu>
@@ -177,4 +222,4 @@ const mapStateToProps = state => ({
     isAuthenticated: state.auth.isAuthenticated
 })
 
-export default connect(mapStateToProps, { getUserOrder })(withRouter(AdminDashboard))
+export default connect(mapStateToProps, { getUserOrder })(AdminDashboard)

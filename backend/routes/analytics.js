@@ -45,12 +45,13 @@ router.get('/products', async (req, res) => {
 
 ///////////////////////
 
-router.get('/sellerstatictics/:id', async (request, response) => {
+router.get('/sellerstatictics',checkAuth, async (request, response) => {
     try {
         const data = {
             "body": request.body,
             "params": request.params,
             "query": request.query,
+            "user": request.user
         }
         let res = await analyticsService.sellerstatictics(data);
         response.status(res.status).json(res.body);
@@ -69,12 +70,13 @@ router.get('/sellerstatictics/:id', async (request, response) => {
     }
 });
 
-router.get('/sellermonthlystatictics/:id', async (request, response) => {
+router.get('/sellermonthlystatictics',checkAuth, async (request, response) => {
     try {
         const data = {
             "body": request.body,
             "params": request.params,
             "query": request.query,
+            "user": request.user
         }
         let res = await analyticsService.sellermonthlystatictics(data);
         response.status(res.status).json(res.body);
