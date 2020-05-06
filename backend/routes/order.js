@@ -108,7 +108,7 @@ router.get('/getUserOrder', checkAuth, async(req,res)=>{ // todo add checkAuth,
 
             "query": req.query, // { page: '1', limit: '12' }
             userType:req.user.userType} //"customer"
-            // userType:"customer"} //""
+            // userType:"seller"} //""
 
             console.log('data---', data)
         let resOrder =await getUserOrders(data);
