@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const cardSchema = required('./card')
+const cardSchema = require('./card')
 const uniqueValidator = require('mongoose-unique-validator');
 
 const addressSchema = new mongoose.Schema({
@@ -31,7 +31,7 @@ const addressSchema = new mongoose.Schema({
         required: true
     },
 
-}),
+});
 
 const sellerSchema = new mongoose.Schema({
     name: {

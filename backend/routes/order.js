@@ -44,14 +44,17 @@ order/getOrder/:userId
 //query : ?page=x&limit=y
 //:{userID}
 
-router.get('/getUserOrder/:userId',async(req,res)=>{ // todo add checkAuth,
+router.get('/getUserOrder', checkAuth, async(req,res)=>{ // todo add checkAuth,
     //console.log("req.query", req.query);
     //console.log("req.params", req.params);
+    console.log('hiting....!!!!')
     try{
         const data = {
-            userId: req.params.userId, //{ userID: '1123' }
+            userId: req.user.userId, //{ userID: '1123' }
             "query": req.query, // { page: '1', limit: '12' }
             userType:req.user.userType} //"customer"
+
+            console.log('data---', data)
         let resOrder =await getUserOrders(data);
         res.status(200).json(resOrder);
     }

@@ -35,7 +35,7 @@ class Main extends Component {
                 { 
                     this.props.isAuthenticated 
                     ? <Route path='/' component={AppHeader} /> 
-                    : <Route path='/login' exact component={LoginForm} />
+                    : null
                 }
             </Router>
         );
