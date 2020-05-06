@@ -57,49 +57,9 @@ class SellerCentral extends Component {
         const { activeNavItem, activeItem } = this.state
 
         var contentPage = (
-            <Grid columns={2}>
-                <Grid.Column width={5}>
-                    <Menu pointing vertical>
-                        <Menu.Item
-                            name='Top'
-                            active={activeItem === 'Top'}
-                            onClick={this.handleItemClick}
-                        />
-                        <Menu.Item
-                            name='Inventory'
-                            active={activeItem === 'Inventory'}
-                            onClick={this.handleItemClick}
-                        />
-                        <Menu.Item
-                            name='Pricing'
-                            active={activeItem === 'Pricing'}
-                            onClick={this.handleItemClick}
-                        />
-                        <Menu.Item
-                            name='Growth'
-                            active={activeItem === 'Growth'}
-                            onClick={this.handleItemClick}
-                        />
-                        <Menu.Item
-                            name='Advertising'
-                            active={activeItem === 'Advertising'}
-                            onClick={this.handleItemClick}
-                        />
-                        <Menu.Item
-                            name='Fulfillment'
-                            active={activeItem === 'Fulfillment'}
-                            onClick={this.handleItemClick}
-                        />
-                    </Menu>
-                </Grid.Column>
-
-                <Grid.Column stretched width={11}>
-                    <Container>
-                        This is an stretched grid column. This segment will always match the
-                    tab height. This will change wrt {this.state.activeItem} tab.
-                </Container>
-                </Grid.Column>
-            </Grid>
+            <div>
+                In process
+            </div>
         )
 
         console.log(activeNavItem);
