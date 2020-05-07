@@ -31,19 +31,50 @@ exports.getProductsFromCart = async (request) => {
     }
 }
 exports.addProductInCart = async (request) => {
+    let resp = null
+
     try{
+////////////////
+        const res = await queries.findDocumentsByQuery(buyer, { _id: request.params.customer_id, cart: { $elemMatch: { productId: request.body.product_id } } })
+        console.log("a")
+        if (res.length) {
+            let productindex = 0
+            console.log(res[0].cart)
+            res[0].cart.forEach((item, index) => {
+               
+                if ((item.productId).toString() === (request.body.product_id)) {
+
+                    productindex = index
+                }
+            });
+            console.log(productindex)
+            update = {
+                'cart.$.gift': res[0].cart[productindex].gift,
+                'cart.$.quantity': res[0].cart[productindex].quantity + request.body.quantity
+            }
+            console.log(update)
+            resp = await queries.updateField(buyer, { _id: request.params.customer_id, 'cart.productId': request.body.product_id }, update)
+        } else {
+
+
+
+
+//////////////////////
         console.log(request.body)
         update =  {$push:{"cart":{
                 "productId" : request.body.product_id,
-                "gift"    : request.body.gift,
-                // "giftMessage"    : request.body.giftMessage,
+                "gift"    : false,
                 "quantity"  : request.body.quantity
             }}}
         console.log(update)
         const resp = await queries.updateField(buyer,{ _id:request.params.customer_id},update)
         console.log(resp)
+        }
         return { "status": 200, body: resp.cart }
-    } 
+    
+///
+}
+////
     catch (error) {
         if (error.message)
             message = error.message
@@ -60,10 +91,12 @@ exports.addProductInCart = async (request) => {
 }
 exports.updateProductInCart = async (request) => {
     try{
-        console.log(request.params)
+        console.log(request.body)
         update = {'cart.$.gift': request.body.gift,
-        // 'cart.$.giftMessage': request.body.giftMessage,
+        'cart.$.giftMessage': request.body.giftMessage,
             'cart.$.quantity': request.body.quantity}
+
+            console.log(update)
         let resp = await queries.updateField(buyer,{ _id:request.params.customer_id,'cart.productId':request.params.product_id},update)
 
         resp = await buyer.findOne({ _id: request.params.customer_id }).

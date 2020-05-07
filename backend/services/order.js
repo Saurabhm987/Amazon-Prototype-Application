@@ -178,6 +178,7 @@ exports.getUserOrders= async (data)=>{
             const findQuery={sellerId:userId};
             // return await findDocumets(order, findQuery);
             const response = await order.find(findQuery).sort({ orderDate : -1 } ).populate('productId', { name: 1, price: 1, _id: 1, images: 1, description:1, removed:1 })
+            
             return { "status": 200, body: response };
 
         }

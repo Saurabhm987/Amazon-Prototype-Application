@@ -10,9 +10,9 @@ const morgan = require('morgan');
 const mongoPool = require('./database/mongoDbConnection')
 const mysqlPool = require('./database/mySqlConnection')
 
-// const redis = require('redis')
-// const REDIS_PORT =  process.env.PORT || 6379
-// module.exports = client = redis.createClient(REDIS_PORT)
+const redis = require('redis')
+const REDIS_PORT =  process.env.PORT || 6379
+module.exports = client = redis.createClient(REDIS_PORT)
 
 const app = express();
 
@@ -41,16 +41,12 @@ mysqlPool
 // route handlers
 
 // require('./routes/seller/xyz')(app);
-app.use('/product', require('./routes/products'))
-// app.use('/user', require('./routes/cart'))
-// app.use('/saveForLater', require('./routes/saveForLater'))
-app.use('/product', require('./routes/products'))
-app.use('/user', require('./routes/cart'))
-app.use('/saveForLater', require('./routes/saveForLater'))
 
 app.use('/product', require('./routes/products'))
 app.use('/user', require('./routes/cart'))
 app.use('/saveForLater', require('./routes/saveForLater'))
+
+
 
 app.use('/signUp', require('./routes/signUp'));
 app.use('/signin', require('./routes/signin'));
@@ -63,9 +59,9 @@ app.use('/seller', require('./routes/seller'));
 app.use('/analytics', require('./routes/analytics'));
 
 //redis connection
-// client.on("connect", () => {
-//   console.log('Your are connected to Redis');
-// });
+client.on("connect", () => {
+  console.log('Your are connected to Redis');
+});
 
 app.listen(3001);
 console.log("Server Listening on port 3001")
