@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Container, Grid, Segment, Menu, Header, Placeholder, Dropdown, Button, Card } from 'semantic-ui-react'
+import { Container, Grid, Image, Menu, Header, Placeholder, Dropdown, Button, Card, Modal } from 'semantic-ui-react'
 import CentralHeader from '../header/CentralHeader'
 import AddProduct from '../product/AddProduct'
 import Graph from '../common/Graph'
@@ -17,48 +17,49 @@ class AdminDashboard extends Component {
             activeNavItem: 'ANALYTICS',
             salesAnalytics: {},
             productAnalytics: {},
+            statsMonthly: {},
             seller: []
         }
     }
 
     componentDidMount = async () => {
-        if (!this.props.isAuthenticated) {
-            this.props.history.push('/login')
-        }
+        // if (!this.props.isAuthenticated) {
+        //     this.props.history.push('/login')
+        // }
         const sales = () => {
             return axios
-              .get('analytics/sales')
-              .then(response => {
-                return response.data
-              })
-              .catch(err => {
-                console.log(err)
-              })
-          }
+                .get('analytics/sales')
+                .then(response => {
+                    return response.data
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        }
         const salesAnalytics = await sales()
 
         const products = () => {
             return axios
-              .get('analytics/products')
-              .then(response => {
-                return response.data
-              })
-              .catch(err => {
-                console.log(err)
-              })
-          }
+                .get('analytics/products')
+                .then(response => {
+                    return response.data
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        }
         const productAnalytics = await products()
 
         const sellers = () => {
             return axios
-              .get('seller')
-              .then(response => {
-                return response.data
-              })
-              .catch(err => {
-                console.log(err)
-              })
-          }
+                .get('seller')
+                .then(response => {
+                    return response.data
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        }
         const seller = await sellers()
         this.setState({
             ...this.state,
@@ -70,9 +71,27 @@ class AdminDashboard extends Component {
 
     handleNavItem = (e, { name }) => this.setState({ activeNavItem: name })
 
+    statsClick = async (e) => {
+        const statMonthly = (v) => {
+            return axios
+                .get('analytics/staticticsmonthlyseller/' + '5e9e769c53ba4429d4835ade')
+                .then(response => {
+                    return response.data
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        }
+        const statsMonthly = await statMonthly(e.target.value)
+        this.setState({
+            ...this.state,
+            statsMonthly
+        })
+    }
+
     render() {
-        
-        const  activeNavItem = this.state.activeNavItem
+
+        const activeNavItem = this.state.activeNavItem
 
         var contentPage = (
             <div>
@@ -90,24 +109,41 @@ class AdminDashboard extends Component {
         }
         else if (activeNavItem == 'SELLERS') {
             contentPage = (<Card fluid>
-                {this.state.seller.map(slr => {
-                    return (
-                        <Card.Content>
-                            <Grid columns={3}>
-                                <Grid.Column width={8}>
-                                    <Header as='h4'>EMAIL: {slr.email}</Header>
-                                </Grid.Column>
-                                <Grid.Column width={8}>
-                                    <Header as='h4'>NAME: {slr.name}</Header>
-                                </Grid.Column>
-                            </Grid>
-                        </Card.Content>
-                    )
-                })}
+                {
+                    this.state.seller.map(slr => {
+                        return (
+                            <Card.Content>
+                                <Grid columns={3}>
+                                    <Grid.Column width={5}>
+                                        <Placeholder>
+                                            {slr.image ? (
+                                                <Image src={slr.image} size='small' />
+                                            ) : (
+                                                    <Placeholder.Image style={{ width: '60px', height: '60px' }}></Placeholder.Image>
+                                                )}
+
+                                        </Placeholder>
+                                    </Grid.Column>
+                                    <Grid.Column width={8} textAlign='left'>
+                                        <Header as='h5'>NAME: {slr.name}</Header>
+                                        <Header as='h5'>EMAIL: {slr.email}</Header>
+                                    </Grid.Column>
+                                    <Grid.Column width={3}>
+                                        <Modal trigger={<Button color='blue' onClick={this.statsClick} value={slr._id}>Monthly Statistics</Button>} centered={false}>
+                                            <Modal.Content>
+                                                <Graph statsMonthly={this.state.statsMonthly} />
+                                            </Modal.Content>
+                                        </Modal>
+                                        {/* <Button color='blue' onClick={this.statsClick}>Monthly Statistics</Button> */}
+                                    </Grid.Column>
+                                </Grid>
+                            </Card.Content>
+                        )
+                    })}
             </Card>)
         }
         else if (activeNavItem == 'ANALYTICS') {
-            contentPage = (<Graph salesAnalytics={this.state.salesAnalytics} productAnalytics={this.state.productAnalytics}/>)
+            contentPage = (<Graph salesAnalytics={this.state.salesAnalytics} productAnalytics={this.state.productAnalytics} />)
         }
 
         else if (activeNavItem == 'ORDERS') {
