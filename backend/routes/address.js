@@ -2,16 +2,18 @@
 const express = require('express')
 const router = express.Router()
 var mongoose = require('mongoose');
+const checkAuth = require('../config/passport');
 const addressServices = require('../services/address')
 
 
-router.get('/getAddress/:id', async (request, response) => {  
+router.get('/getAddress', checkAuth, async (request, response) => {  
     try {
         const data = {
-            "body": request.body,
+            "body": request.user.userId,
             "params": request.params,
             "query": request.query,
         }
+        console.log(data)
         let res =await addressServices.getAddress(data);
         response.status(res.status).json(res.body);     
     }  
@@ -32,16 +34,18 @@ router.get('/getAddress/:id', async (request, response) => {
 
 
 
-router.post('/addAddress/:customer_id', async (request, response) => {  
+router.put('/addAddress/:customer_id', async (request, response) => {  
     try {
         const data = {
             "body": request.body,
+            "id": request.params.customer_id,
             "params": request.params,
             "query": request.query,
         }
-        console.log(data)
-        let res = await addressServices.addAddress(data);
-        response.status(res.status).json(res.body);
+        console.log("add address", data)
+        response.end()
+        // let res = await addressServices.addAddress(data);
+        // response.status(res.status).json(res.body);
     }  
     catch (error) {
         if (error.message)

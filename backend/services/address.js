@@ -8,7 +8,7 @@ exports.getAddress = async (request) => {
     try{
         console.log(request.params)
         console.log("aaa")
-        const resp = await buyer.findOne({_id: request.params.id })
+        const resp = await queries.findDocumentsById(buyer, '5ea6217130c53720685db7dd')
         console.log(resp)
         return { "status": 200, body: resp.address }
     }
@@ -41,7 +41,9 @@ exports.addAddress = async (request) => {
                 "phone": request.body.phone
             }}}
         console.log(update)
-        const resp = await queries.updateField(buyer,{ _id:request.params.customer_id},update)
+        console.log(request.id);
+        
+        const resp = await queries.updateField(buyer,{ _id:'5ea6217130c53720685db7dd'},update)
         console.log(resp)
         return { "status": 200, body: resp.address }
     } 
