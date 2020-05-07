@@ -46,6 +46,9 @@ class SellerCentral extends Component {
     }
 
     componentDidMount = async () => {
+
+        await window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
+        
         let token = await localStorage.getItem('token')
         if (token === null) {
             this.props.history.push('/login')

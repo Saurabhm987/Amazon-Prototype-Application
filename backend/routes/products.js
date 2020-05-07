@@ -306,8 +306,6 @@ router.get('/getcategories', async (request, response) => {
 
         const res = await productServices.getallcategories()
 
-        // client.set('categories', JSON.stringify(res))
-
         response.status(res.status).json(res.body)
 
     } catch (error) {
@@ -316,6 +314,31 @@ router.get('/getcategories', async (request, response) => {
             message = error.message
         else
             message = 'Error while fetching categories'
+
+        if (error.statusCode)
+            code = error.statusCode
+        else
+            code = 500
+
+        return response.status(code).json({ message });
+    }
+})
+
+
+router.delete('/deletecategory/:category_name', async(request, response) => {
+
+    try {
+
+        const res = await productServices.deleteCategory(request)
+
+        response.status(res.status).json(res.body)
+
+    } catch (error) {
+
+        if (error.message)
+            message = error.message
+        else
+            message = 'Error while deleting categories'
 
         if (error.statusCode)
             code = error.statusCode

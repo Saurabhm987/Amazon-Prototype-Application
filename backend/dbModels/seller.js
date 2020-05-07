@@ -53,13 +53,16 @@ const sellerSchema = new mongoose.Schema({
     },
     address: {
         type: addressSchema,
-        required: true
+        // required: true
+    },
+    description: {
+        type: String
     },
     products: [{
-        id:{type:  mongoose.Schema.Types.ObjectId}
+        id:{type:  mongoose.Schema.Types.ObjectId, ref:'product'}
     }],
     orders: [{
-        id:{type:  mongoose.Schema.Types.ObjectId}
+        id:{type:  mongoose.Schema.Types.ObjectId, ref:'order'}
     }]
 });
 

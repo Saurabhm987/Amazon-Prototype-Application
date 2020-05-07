@@ -16,6 +16,11 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types'
 import OrderDetail from "./order/orderDetail";
 import OrderTrackingModal from "./order/orderTrackingModal";
+import AddAddress from './customer/AddAddress'
+import AddCard from './customer/AddCard';
+import Address from './customer/Address';
+import UserCard from './customer/UserCard';
+import EditAddress from './customer/EditAddress';
 
 class Main extends Component {
     constructor(props) {
@@ -41,6 +46,12 @@ class Main extends Component {
                 <Route path='/cart' exact component={Cart} />
                 <Route path="/orderDetails" exact component={OrderDetail} />
                 <Route path="/orderTracking" exact component={OrderTrackingModal} />
+                <Route path='/addaddress' exact component={AddAddress} />
+                <Route path='/addcard' exact component={AddCard} />
+                <Route path='/customer/address' exact component={Address} />
+                <Route path='/customer/card' exact component={UserCard} />
+                <Route path='/customer/addressupdate' exact component={EditAddress} />
+
 
                 { 
                     user !== null

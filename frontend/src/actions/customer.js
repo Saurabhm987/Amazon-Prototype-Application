@@ -1,0 +1,213 @@
+import axios from "axios";
+import { API_ENDPOINT } from '../components/controller/Endpoint'
+
+export const getCard = (customerId) => async (dispatch) => {
+
+    await axios.get(`${API_ENDPOINT}/card/getCard/${customerId}`)
+        .then(response => {
+
+            if (response.status >= 500) {
+                throw new Error('Bad response from server')
+            }
+
+            return response.data
+        })
+        .then(payload => {
+            dispatch({
+                type: 'FETCH_CARD',
+                payload: payload
+            })
+        })
+        .catch(error => {
+            console.log('error', error)
+        })
+}
+
+
+export const getAddress = (customerId) => async (dispatch) => {
+
+    axios.defaults.withCredentials = true;
+    await axios.get(`${API_ENDPOINT}/address/getAddress/${customerId}`, { config: { headers: { 'Content-Type': 'application/json' }} } )
+        .then(response => {
+
+            if (response.status >= 500) {
+                throw new Error('Bad response from server')
+            }
+
+            return response.data
+        })
+        .then(payload => {
+            dispatch({
+                type: 'FETCH_ADDRESS',
+                payload: payload
+            })
+        })
+        .catch(error => {
+            console.log('error', error)
+        })
+}
+
+
+export const addCard = (body) => async (dispatch) => {
+
+    await axios.post(`${API_ENDPOINT}/card/addCard`, body)
+        .then(response => {
+            if (response.status >= 500) {
+                throw new Error('Bad response from server')
+            }
+            return response.data
+        })
+        .then(payload => {
+            dispatch({
+                type: 'ADD_CARD',
+                payload: payload
+            })
+            console.log('update action - ', payload)
+        })
+        .catch(error => {
+            console.log('error', error)
+        })
+}
+
+//done
+export const addAddress = (body) => async (dispatch) => {
+
+    await axios.post(`${API_ENDPOINT}/address/addAddress`, body)
+        .then(response => {
+            if (response.status >= 500) {
+                throw new Error('Bad response from server')
+            }
+
+            return response.data
+        })
+        .then(payload => {
+            dispatch({
+                type: 'ADD_ADDRESS',
+                payload: payload
+            })
+            console.log('update action - ', payload)
+        })
+        .catch(error => {
+            console.log('error', error)
+        })
+}
+
+
+
+export const updateCard = (customerId, cardId, body) => async (dispatch) => {
+
+    await axios.put(`${API_ENDPOINT}/card/updateCard/5ea91dccebe1b9a0fc721a67/card/${cardId}`, body)
+        .then(response => {
+            if (response.status >= 500) {
+                throw new Error('Bad response from server')
+            }
+
+            return response.data
+        })
+        .then(payload => {
+            dispatch({
+                type: 'FETCH_CARD',
+                payload: payload
+            })
+            console.log('update action - ', payload)
+        })
+        .catch(error => {
+            console.log('error', error)
+        })
+}
+
+
+
+export const updateAddress = (customerId, addressId, body) => async (dispatch) => {
+    console.log('addressid -', addressId)
+    // manually adding id
+    await axios.put(`${API_ENDPOINT}/address/updateAddress/5ea91dccebe1b9a0fc721a67/address/${addressId}`, body)
+        .then(response => {
+            if (response.status >= 500) {
+                throw new Error('Bad response from server')
+            }
+
+            return response.data
+        })
+        .then(payload => {
+            // dispatch({
+            //     type: 'UPDATE_PRODUCT',
+            //     payload: payload
+            // })
+            console.log('update action - ', payload)
+        })
+        .catch(error => {
+            console.log('error', error)
+        })
+}
+
+export const getAddressDetail = (userId, addressId) => async (dispatch) => {
+
+    await axios.get(`${API_ENDPOINT}/address/${userId}/detail/${addressId}`)
+        .then(response => {
+            if (response.status >= 500) {
+                throw new Error('Bad response from server')
+            }
+
+            return response.data
+        })
+        .then(payload => {
+            dispatch({
+                type: 'ADDRESS_DETAIL',
+                payload: payload
+            })
+            console.log('update action - ', payload)
+        })
+        .catch(error => {
+            console.log('error', error)
+        })
+}
+
+
+export const removeAddress = (customerId, addressId) => async (dispatch) => {
+
+    console.log('addressid -', addressId)
+    // manually adding id
+    await axios.delete(`${API_ENDPOINT}/address/deleteAddress/${customerId}/address/${addressId}`)
+        .then(response => {
+            if (response.status >= 500) {
+                throw new Error('Bad response from server')
+            }
+
+            return response.data
+        })
+        .then(payload => {
+            console.log('update action - ', payload)
+
+            dispatch({
+                type:'FETCH_ADDRESS',
+                payload: payload
+            })
+        })
+        .catch(error => {
+            console.log('error', error)
+        })
+}
+
+
+export const deleteCard = (customerId, cardId) => async (dispatch) => {
+
+    await axios.delete(`${API_ENDPOINT}/card/deleteCard/${customerId}/card/${cardId}`)
+        .then(response => {
+            if (response.status >= 500) {
+                throw new Error('Bad response from server')
+            }
+
+            return response.data
+        })
+        .then(payload => {
+            dispatch({
+                type: 'FETCH_CARD',
+                payload: payload
+            })
+            console.log('update action - ', payload)
+        })
+        .catch(error => {
+            console.log('error', error)
+        })
+}

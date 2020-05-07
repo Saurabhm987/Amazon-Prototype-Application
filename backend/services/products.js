@@ -495,6 +495,51 @@ const getProductsforSeller = async (request) => {
 }
 
 
+
+const deleteCategory = async (request) => {
+
+    try {
+
+        const { params } = request
+        let name = params.category_name
+
+        let findQuery = { name: name }
+
+        const result = await queries.findDocumets(productCategory, findQuery)
+
+        if (result[0].numOfProducts === 0) {
+
+            const res = await queries.deleteDocuments(productCategory, findQuery)
+
+            if (res.deletedCount === 1) {
+
+                return { status: 200, body: 'category deleted' }
+
+            }else{
+                throw new Error('Error while deleting category')
+            }
+        } else {
+
+            throw new Error('Category can not delete')
+        }
+
+    } catch (error) {
+
+        if (error.message)
+            message = error.message
+        else
+            message = 'Error while getting product'
+
+        if (error.statusCode)
+            code = error.statusCode
+        else
+            code = 500
+
+        return { "status": code, body: { message } }
+    }
+}
+
+
 module.exports = {
     addProduct: addProduct,
     updateProduct: updateProduct,
@@ -508,4 +553,5 @@ module.exports = {
     incproductCount: incproductCount,
     dcrproductCount: dcrproductCount,
     getProductsforSeller: getProductsforSeller,
+    deleteCategory: deleteCategory,
 }
