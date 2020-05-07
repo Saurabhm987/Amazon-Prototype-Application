@@ -87,12 +87,9 @@ const buyerSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    password: {
-        type: String,
-        required: true
-    },
     image: {
-        type: String
+        type: String,
+        default:null
     },
     comments: [{
         type: commentSchema
@@ -110,9 +107,9 @@ const buyerSchema = new mongoose.Schema({
     saveForLater: [{
         type: saveForLaterSchema
     }],
-    orders: [{
-        type: mongoose.Schema.Types.ObjectId,
-    }]
+    // orders: [{
+    //     type: mongoose.Schema.Types.ObjectId,
+    // }]
 });
 
 buyerSchema.plugin(uniqueValidator);

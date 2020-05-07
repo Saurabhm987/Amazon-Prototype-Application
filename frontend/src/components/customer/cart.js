@@ -181,7 +181,7 @@ class Cart extends Component {
             ]
 
         if (this.state.rendercheckout)
-            redirectVar = <Redirect to={`/customer/${sessionStorage.getItem('id')}/checkout`} />
+            redirectVar = <Redirect to={`/checkout/${sessionStorage.getItem('id')}`} />
 
         if (customercart.length) {
             let subtotal = this.state.cartsubtotal
