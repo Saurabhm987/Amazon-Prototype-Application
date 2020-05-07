@@ -2,16 +2,18 @@
 const express = require('express')
 const router = express.Router()
 var mongoose = require('mongoose');
+const checkAuth = require('../config/passport');
 const cardServices = require('../services/card')
 
 
-router.get('/getCard/:id', async (request, response) => {  
+router.get('/getCard', checkAuth, async (request, response) => {  
     try {
         const data = {
-            "body": request.body,
+            "body": request.user.userId,
             "params": request.params,
             "query": request.query,
         }
+        console.log(data)
         let res =await cardServices.getCard(data);
         response.status(res.status).json(res.body);     
     }  
@@ -19,7 +21,7 @@ router.get('/getCard/:id', async (request, response) => {
         if (error.message)
             message = error.message
         else
-            message = 'Error while getting address details'
+            message = 'Error while getting Card details'
         
         if (error.statusCode)
             code = error.statusCode
@@ -32,10 +34,11 @@ router.get('/getCard/:id', async (request, response) => {
 
 
 
-router.post('/addCard/:customer_id', async (request, response) => {  
+router.post('/addCard', checkAuth, async (request, response) => {  
     try {
         const data = {
             "body": request.body,
+            "id": request.user.userId,
             "params": request.params,
             "query": request.query,
         }

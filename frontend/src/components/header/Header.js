@@ -40,6 +40,9 @@ class AppHeader extends Component {
     let token = localStorage.getItem('token')
 
     // if(token !== null){
+<<<<<<< HEAD
+    //   this.props.history.push('/dashboard')
+=======
     //   let user = JwtDecode(token);
     //   if (user.userType === USER_CUSTOMER) {
     //     this.props.history.push('/dashboard');
@@ -49,6 +52,7 @@ class AppHeader extends Component {
     //     // his.props.history.push('/sellerCentral');
     //   }
        
+>>>>>>> 140922ccd097f50e20046b8ff2e1e0f8936c8719
     // }
 
     await this.props.productCategories()
@@ -170,10 +174,18 @@ class AppHeader extends Component {
               <Dropdown.Header>Header Item</Dropdown.Header>
               <Dropdown.Item>
                 <i className='dropdown icon' />
-                <span className='text'>Submenu</span>
+                <span className='text'>Account</span>
                 <Dropdown.Menu>
-                  <Dropdown.Item>List Item</Dropdown.Item>
-                  <Dropdown.Item>List Item</Dropdown.Item>
+                  <Dropdown.Item as='a' header>
+                  <Link  style={{ color: 'black' }} to={"/youraddresses"}>
+                    Your Addresses
+                  </Link>
+                  </Dropdown.Item>
+                  <Dropdown.Item as='a' header>
+                  <Link  style={{ color: 'black' }} to={"/yourpayments"}>
+                    Your Payments
+                  </Link>
+                  </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown.Item>
               <Dropdown.Item onClick={this.onLogout}>Sign Out</Dropdown.Item>
