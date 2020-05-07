@@ -2,13 +2,14 @@
 const express = require('express')
 const router = express.Router()
 var mongoose = require('mongoose');
+const checkAuth = require('../config/passport');
 const addressServices = require('../services/address')
 const checkAuth = require('../config/passport')
 
 router.get('/getAddress/:customer_id', async (request, response) => {
     try {
         const data = {
-            "body": request.body,
+            "body": request.user.userId,
             "params": request.params,
             "query": request.query,
             "user": request.user,
@@ -37,6 +38,7 @@ router.post('/addAddress', checkAuth, async (request, response) => {
     try {
         const data = {
             "body": request.body,
+            "id": request.params.customer_id,
             "params": request.params,
             "query": request.query,
             "user": request.user

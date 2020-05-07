@@ -12,6 +12,7 @@ import { getUserOrder, updateStatus } from '../../actions/order';
 import { orderStatus } from '../controller/config';
 import axios from 'axios'
 import Graph from '../common/Graph'
+var _ = require('lodash');
 
 class SellerCentral extends Component {
     constructor(props) {
@@ -53,7 +54,7 @@ class SellerCentral extends Component {
         if (token === null) {
             this.props.history.push('/login')
         }
-        this.props.getUserOrder();
+        await this.props.getUserOrder();
         const stat = () => {
             return axios
               .get('analytics/sellerstatictics')
@@ -87,7 +88,6 @@ class SellerCentral extends Component {
     handleNavItem = (name) => this.setState({ activeNavItem: name })
 
     render() {
-        // console.log(this.props.order.userOrders);
         const activeNavItem = this.state.activeNavItem
 
         var contentPage = (
@@ -111,19 +111,28 @@ class SellerCentral extends Component {
         }
 
         else if (activeNavItem == 'ORDERS') {
+            console.log(this.props.order.userOrders);
+            var orders = _.mapValues(_.groupBy(this.props.order.userOrders, 'orderId'),clist => clist.map(order => _.omit(order, 'orderId')));
+            console.log(orders);
+
+            // console.log('====================================')
+            // console.log(Object.keys(orders).map(order => {return('a')}))
+            // console.log('====================================')
+            // console.log(Object.keys(orders))
             const options = [
                 { key: 1, text: 'Ordered', value: 1 },
                 { key: 2, text: 'Packing', value: 2 },
                 { key: 3, text: 'Out For Delivery', value: 3 },
             ]
-            contentPage = this.state.orders.map(order => {
+            
+            contentPage = Object.keys(orders).map(orderId => {
 
                 return (
                     <Card fluid>
                         <Card.Content>
-                            <Header as='h3'>ORDER ID: {order.id}</Header>
+                            <Header as='h3'>ORDER ID: {orderId}</Header>
                         </Card.Content>
-                        {order.products.map(product => {
+                        {orders[orderId].map(product => {
                             return (
                                 <Card.Content>
                                     <Grid columns={3}>
@@ -134,11 +143,16 @@ class SellerCentral extends Component {
                                         </Grid.Column>
                                         <Grid.Column width={8}>
                                             <Grid.Row>
-                                                {product.name}
+                                                <Header as='h4'>{product.productId}</Header>
                                             </Grid.Row>
+                                            <br></br>
+                                            <Grid.Row>
+                                                <Header as='h5' color='grey'>Current Status: {product.status.status}</Header>
+                                            </Grid.Row>
+                                            <br></br>
                                             <Grid.Row>
                                                 <Menu compact>
-                                                    <Dropdown text='Order Status' options={options} simple item />
+                                                    <Dropdown placeholder='Change Status' options={options} simple item compact/>
                                                 </Menu>
                                             </Grid.Row>
                                         </Grid.Column>

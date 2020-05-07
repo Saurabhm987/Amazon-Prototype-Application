@@ -39,19 +39,7 @@ class AppHeader extends Component {
     if (token === null) {
       this.props.history.push('/login')
     }
-
-    // if(token !== null){
-    //   let user = JwtDecode(token);
-    //   if (user.userType === USER_CUSTOMER) {
-    //     this.props.history.push('/dashboard');
-    //   } else if (user.userType === USER_SELLER) {
-    //     this.props.history.push('/sellerCentral');
-    //   } else {
-    //     // his.props.history.push('/sellerCentral');
-    //   }
-
-    // }
-
+    
     await this.props.productCategories()
     await this.createOptions()
   }
@@ -169,10 +157,18 @@ class AppHeader extends Component {
               <Dropdown.Header>Header Item</Dropdown.Header>
               <Dropdown.Item>
                 <i className='dropdown icon' />
-                <span className='text'>Submenu</span>
+                <span className='text'>Account</span>
                 <Dropdown.Menu>
-                  <Dropdown.Item>List Item</Dropdown.Item>
-                  <Dropdown.Item>List Item</Dropdown.Item>
+                  <Dropdown.Item as='a' header>
+                  <Link  style={{ color: 'black' }} to={"/youraddresses"}>
+                    Your Addresses
+                  </Link>
+                  </Dropdown.Item>
+                  <Dropdown.Item as='a' header>
+                  <Link  style={{ color: 'black' }} to={"/yourpayments"}>
+                    Your Payments
+                  </Link>
+                  </Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown.Item>
               <Dropdown.Item onClick={this.onLogout}>Sign Out</Dropdown.Item>

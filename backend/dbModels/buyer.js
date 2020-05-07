@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const cardSchema = require('./card')
+const cardSchema = require('./card');
+const reviewSchema = require('./review');
 const uniqueValidator = require('mongoose-unique-validator');
 
 
@@ -40,9 +41,8 @@ const commentSchema = new mongoose.Schema ({
         required: true,
         ref: "product" 
     },
-    
-    commentId: {
-        type: mongoose.Schema.Types.ObjectId,
+    review: {
+        type: reviewSchema,
         required: true
     },
 });
@@ -77,6 +77,7 @@ const saveForLaterSchema = new mongoose.Schema ({
     // }
 });
 
+
 const buyerSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -87,12 +88,9 @@ const buyerSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    password: {
-        type: String,
-        required: true
-    },
     image: {
-        type: String
+        type: String,
+        default:null
     },
     comments: [{
         type: commentSchema
@@ -110,9 +108,9 @@ const buyerSchema = new mongoose.Schema({
     saveForLater: [{
         type: saveForLaterSchema
     }],
-    orders: [{
-        type: mongoose.Schema.Types.ObjectId,
-    }]
+    // orders: [{
+    //     type: mongoose.Schema.Types.ObjectId,
+    // }]
 });
 
 buyerSchema.plugin(uniqueValidator);

@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 import './cart.css';
 import { Redirect } from 'react-router';
 import Saveforlater from './saveforlater'
+import jwtDecode from 'jwt-decode';
+
 import {
     Select,
     Divider,
@@ -20,12 +22,24 @@ class Cart extends Component {
             cart: [],
             cartsubtotal: 0,
             carttotalitems: 0,
-            rendercheckout: false
+            rendercheckout: false,
+            setmessage: [],
+            message:"",
+            userId:""
+
         };
     }
     componentDidMount() {
+        if (localStorage.getItem("token") !== null) {
+            var user = jwtDecode(localStorage.getItem("token"));
+            this.setState({ userId: user.userId });
+
+        }
+        console.log(user)
+
+        console.log(this.state.userId)
         // 5ea6217130c53720685db7dd
-        this.props.getCustomerCart("5ea6217130c53720685db7dd")
+        this.props.getCustomerCart(user.userId)
         // this.props.getCustomerCart(sessionStorage.getItem("id"))
     }
 
@@ -42,28 +56,77 @@ class Cart extends Component {
             [e.target.name]: e.target.value
         })
     }
-
-    
-    giftProduct = (product_id, gift, quantity) => {
-        let changegift
+    giftMessage = (product_id, gift, message, quantity, index) => {
         let data
-
-        if (gift === true)
-            changegift = false
-        else
-            changegift = true
-
+        let setmessage = this.state.setmessage
+        if (gift) {
+            data = {
+                customer_id:this.state.userId,
+                // customer_id: "5ea6217130c53720685db7dd",
+                product_id: product_id,
+                gift: false,
+                giftMessage: "",
+                quantity: quantity
+            }
+            this.props.updateCustomerCart(data)
+            setmessage[index] = ""
+            this.setState({
+                setmessage: setmessage
+            })
+        } else {
+            setmessage[index] = "true"
+            this.setState({
+                setmessage: setmessage
+            })
+        }
+    }
+    giftProduct = (product_id, gift, message, quantity ,index) => {
+        let data
+        console.log(this.state.message)
+        let setmessage = this.state.setmessage
         data = {
-            
-            customer_id: '5ea6217130c53720685db7dd',
-            // customer_id: sessionStorage.getItem('id'),
+            // customer_id: "5ea6217130c53720685db7dd",
+            customer_id:this.state.userId,
+
             product_id: product_id,
-            gift: changegift,
+            gift: true,
+            giftMessage: message,
             quantity: quantity
         }
-
+        console.log(data)
         this.props.updateCustomerCart(data)
+        setmessage[index] = ""
+        this.setState({
+            setmessage: setmessage
+        })
     }
+    inputChangeHandler = (e) => {
+        let value = e.target.value
+        this.setState({
+            [e.target.name]: value
+        })
+        console.log(this.state)
+    }
+    // giftProduct = (product_id, gift, quantity) => {
+    //     let changegift
+    //     let data
+
+    //     if (gift === true)
+    //         changegift = false
+    //     else
+    //         changegift = true
+
+    //     data = {
+            
+    //         customer_id: '5ea6217130c53720685db7dd',
+    //         // customer_id: sessionStorage.getItem('id'),
+    //         product_id: product_id,
+    //         gift: changegift,
+    //         quantity: quantity
+    //     }
+
+    //     this.props.updateCustomerCart(data)
+    // }
     changeQuantity = (e,data) => {
         console.log(data['data-gift'])
 
@@ -72,8 +135,8 @@ class Cart extends Component {
         console.log(data.value)
 
         let dataA = {
-            customer_id: '5ea6217130c53720685db7dd',
-            // customer_id: sessionStorage.getItem('id'),
+            // customer_id: '5ea6217130c53720685db7dd',
+            customer_id:this.state.userId,
             product_id: data['data-id'],
             gift: data['data-gift'],
             quantity: data.value
@@ -84,7 +147,9 @@ class Cart extends Component {
 
     deleteProduct = (product_id, type) => {
         console.log(type)
-        this.props.deleteProductInCart({ customer_id: '5ea6217130c53720685db7dd', product_id: product_id, type: type })
+        this.props.deleteProductInCart({ customer_id: this.state.userId, product_id: product_id, type: type })
+
+        // this.props.deleteProductInCart({ customer_id: '5ea6217130c53720685db7dd', product_id: product_id, type: type })
         // this.props.deleteProductInCart({ customer_id: sessionStorage.getItem('id'), product_id: product_id, type: type })
     }
 
@@ -102,6 +167,7 @@ class Cart extends Component {
         let gift = false;
         let redirectVar = null;
         customercart = this.state.cart;
+        console.log(this.state.userId)
         const options = [
             { key: 1, text: '1', value: 1 },
             { key: 2, text: '2', value: 2 },
@@ -116,9 +182,9 @@ class Cart extends Component {
             ]
 
         if (this.state.rendercheckout)
-            redirectVar = <Redirect to={`/customer/${sessionStorage.getItem('id')}/checkout`} />
+            redirectVar = <Redirect to={`/checkout/${sessionStorage.getItem('id')}`} />
 
-        if (customercart) {
+        if (customercart.length) {
             let subtotal = this.state.cartsubtotal
             let carttotalitems = this.state.carttotalitems
 
@@ -148,7 +214,7 @@ class Cart extends Component {
                                 </Grid.Row>
                                 <Grid.Row>
                                 <div class='checkboxContainer'>
-                                        <input type="checkbox" name="productgift" onChange={() => this.giftProduct(cartitem.productId._id, cartitem.gift, cartitem.quantity)} checked={cartitem.gift} />
+                                        <input type="checkbox" name="productgift" onChange={() => this.giftMessage(cartitem.productId._id, cartitem.gift, this.state.message, cartitem.quantity,index)} defaultChecked={cartitem.gift} />
                                         <span class='giftlabel'>
                                             This is a gift
                                                 <span class='learnlabel'>
@@ -156,6 +222,37 @@ class Cart extends Component {
                                                 </span>
                                         </span>
                                     </div>
+                                    {this.state.setmessage[index] ? <div style={{ marginBottom: '10px' }}>
+                                        <input type="text" class="inputField" onChange={this.inputChangeHandler} name='message' />
+                                        <button class='giftButton' onClick={() => this.giftProduct(cartitem.productId._id, cartitem.gift, this.state.message, cartitem.quantity, index)}>
+                                            <div class='checkoutButtonText'>Save Message</div>
+                                        </button>
+                                    </div> :
+                                        !cartitem.giftMessage ? <div style={{ marginBottom: '10px' }}></div> : <div style={{ paddingBottom: '10px', paddingTop: '0px' }}><span style={{ color: 'Black' }}>Gift Message: </span>{cartitem.giftMessage}</div>} 
+
+
+
+                                    {/* <div class='checkboxContainer'>
+                                        <input type="checkbox" name="productgift" onChange={() => this.giftMessage(cartitem.product._id, cartitem.gift, this.state.message, cartitem.quantity, index)} defaultChecked={cartitem.gift} />
+                                        <span class='giftlabel'>
+                                            This is a gift
+                                                <span class='learnlabel'>
+                                                Learn more
+                                                </span>
+                                        </span>
+                                    </div>
+                                    {this.state.setmessage[index] ? <div style={{ marginBottom: '10px' }}>
+                                        <input type="text" class="inputField" onChange={this.inputChangeHandler} name='message' />
+                                        <button class='giftButton' onClick={() => this.giftProduct(cartitem.product._id, cartitem.gift, this.state.message, cartitem.quantity, index)}>
+                                            <div class='checkoutButtonText'>Save Message</div>
+                                        </button>
+                                    </div> :
+                                        !cartitem.message ? <div style={{ marginBottom: '10px' }}></div> : <div style={{ paddingBottom: '10px', paddingTop: '0px' }}><span style={{ color: 'Black' }}>Gift Message: </span>{cartitem.message}</div>} */}
+
+
+
+
+
                                 </Grid.Row>
                                 <Grid.Row>
                                 <div class='qtyContainer'>

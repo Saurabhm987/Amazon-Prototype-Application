@@ -103,7 +103,6 @@ exports.deleteAddress = async (request) => {
         }
         let resp = await queries.updateField(buyer, { _id: request.params.customer_id }, update)
         resp = await buyer.findOne({ _id: request.params.customer_id })
-        console.log(resp)
         return { "status": 200, body: resp.address }
     }
     catch (error) {
@@ -128,14 +127,9 @@ exports.getAddressDetail = async (request) => {
 
         const { customer_id, address_id } = request.params
 
-        console.log('id -----', customer_id)
-
         let findQuery = { _id: customer_id, 'address._id': address_id }
         let filterQuery = {_id:0, address: { $elemMatch: { _id: address_id } } }
-
-        console.log('findQeury - ', findQuery)
-        console.log('filterQuery --', filterQuery)
-
+        
         const resp = await queries.findDocumets(buyer, findQuery, filterQuery)
 
         return { "status": 200, body: resp[0].address }

@@ -4,6 +4,8 @@ import { addSaveForLater, deleteSaveForLater, fetchSaveForLater, moveToCart } fr
 import { Link } from 'react-router-dom';
 import './cart.css';
 import { Redirect } from 'react-router';
+import jwtDecode from 'jwt-decode';
+
 import {
     Select,
     Divider,
@@ -16,13 +18,20 @@ class Saveforlater extends Component {
         super(props);
         this.state = {
             cart: [],
+            
+            rendercheckout: false,
+            userId:""
 
-            rendercheckout: false
         };
     }
-    componentDidMount() {
+    componentDidMount=async()=> {
+        if (localStorage.getItem("token") !== null) {
+            var user = jwtDecode(localStorage.getItem("token"));
+           await  this.setState({ userId: user.userId });
+
+        }
         // 5ea6217130c53720685db7dd
-        this.props.fetchSaveForLater("5ea6217130c53720685db7dd")
+        await this.props.fetchSaveForLater(this.state.userId)
         // this.props.fetchSaveForLater(sessionStorage.getItem("id"))
     }
 
@@ -44,7 +53,7 @@ class Saveforlater extends Component {
 
     deleteProduct = (product_id, type) => {
         console.log(type)
-        this.props.deleteSaveForLater({ customer_id: '5ea6217130c53720685db7dd', product_id: product_id, type: type })
+        this.props.deleteSaveForLater({ customer_id: this.state.userId, product_id: product_id, type: type })
     }
 
     redirectToCheckout = () => {
@@ -76,8 +85,13 @@ class Saveforlater extends Component {
         if (this.state.rendercheckout)
             redirectVar = <Redirect to={`/customer/${sessionStorage.getItem('id')}/checkout`} />
 
+<<<<<<< HEAD
         if (customersaveforlater) {
 
+=======
+        if (customersaveforlater.length) {
+           
+>>>>>>> 489282b02576151687d46a0396ee57490e4a4f58
             saveforlaterlist = (<div >
                 {customersaveforlater.map((cartitem, index) => {
                     return (

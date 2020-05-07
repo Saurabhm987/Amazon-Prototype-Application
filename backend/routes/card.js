@@ -2,20 +2,20 @@
 const express = require('express')
 const router = express.Router()
 var mongoose = require('mongoose');
+const checkAuth = require('../config/passport');
 const cardServices = require('../services/card')
 const checkAuth = require('../config/passport')
 
 
 router.get('/getCard/:customer_id', async (request, response) => {
-    console.log('hitting...........')
+
     try {
         const data = {
-            "body": request.body,
+            "body": request.user.userId,
             "params": request.params,
             "query": request.query,
         }
 
-        console.log('data - ', data)
         let res = await cardServices.getCard(data);
         response.status(res.status).json(res.body);
     }
@@ -41,6 +41,7 @@ router.post('/addCard', checkAuth, async (request, response) => {
     try {
         const data = {
             "body": request.body,
+            "id": request.user.userId,
             "params": request.params,
             "query": request.query,
             "user": request.user

@@ -44,19 +44,17 @@ const sellerSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    password: {
-        type: String,
-        required: true
-    },
     image: {
-        type: String
+        type: String,
+        default: null
     },
     address: {
         type: addressSchema,
         // required: true
     },
     description: {
-        type: String
+        type: String,
+        default: null
     },
     products: [{
         id:{type:  mongoose.Schema.Types.ObjectId, ref:'product'}

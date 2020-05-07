@@ -118,7 +118,41 @@
     margin-top: -4px;
     margin-bottom: 3px;
 }
-
+.giftButton{
+    display :inline;
+    width: 100px;
+    /* width: 100%!important; */
+    background: #F0C14B;
+    background: linear-gradient(to bottom, #F7DFA5, #F0C14B);
+    border-color: #A88734 #9C7E31 #846A29;
+    color: #111;
+    border-style: solid;
+    border-width: 1px;
+    cursor: pointer;
+    display: inline-block;
+    padding: 0;
+    text-align: center;
+    text-decoration: none!important;
+    vertical-align: middle;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, .4) inset;
+    position: relative;
+    overflow: hidden;
+    height: 29px;
+    border-radius: 2px;
+    margin-left: 10px;
+    top:-1px;
+}
+.inputField {
+    background-color: #fff;
+    height: 31px;
+    padding: 3px 7px;
+    line-height: normal;
+    border: 1px solid #A6A6A6;
+    border-top-color: #949494;
+    border-radius: 3px;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, .5), 0 1px 0 rgba(0, 0, 0, .07) inset;
+    outline: 0;
+}
 .qtyButton {
     background: #e7e9ec;
     border-radius: 3px;

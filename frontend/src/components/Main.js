@@ -5,6 +5,13 @@ import sellerCentral from './seller/SellerCentral'
 import SignupForm from './signup/Signup'
 import LoginForm from './login/Login'
 import Cart from './customer/cart'
+import Address from './customer/address'
+import Cards from './customer/card'
+import AddAddress from './customer/addAddress'
+import AddCard from './customer/addCard'
+import Checkout from './customer/checkout'
+
+
 import CustomerProfile from './customer/customerProfile'
 import ProductDetail from './product/ProductDetail'
 import CustomerDashboard from './dashboard/CustomerDashboard'
@@ -44,6 +51,8 @@ class Main extends Component {
                 <Route path='/sellerprofile' exact component={SellerProfile} />
                 <Route path='/sellerproducts' exact component={SellerProduct} />
                 <Route path='/cart' exact component={Cart} />
+                {/* <Route path='/youraddresses' exact component={Address} /> */}
+                {/* <Route path='/yourpayments' exact component={Cards} /> */}
                 <Route path="/orderDetails" exact component={OrderDetail} />
                 <Route path="/orderTracking" exact component={OrderTrackingModal} />
                 <Route path='/addaddress' exact component={AddAddress} />
@@ -51,7 +60,7 @@ class Main extends Component {
                 <Route path='/customer/address' exact component={Address} />
                 <Route path='/customer/card' exact component={UserCard} />
                 <Route path='/customer/addressupdate' exact component={EditAddress} />
-
+                <Route path='/checkout'  component={Checkout} />
 
                 { 
                     user !== null
