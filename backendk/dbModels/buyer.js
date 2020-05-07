@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const cardSchema = require('./card');
 const reviewSchema = require('./review');
 const uniqueValidator = require('mongoose-unique-validator');
-const product = require('./product')
+
 
 const addressSchema = new mongoose.Schema({
     street1: {

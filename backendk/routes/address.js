@@ -1,0 +1,130 @@
+
+const express = require('express')
+const router = express.Router()
+var mongoose = require('mongoose');
+const checkAuth = require('../config/passport');
+const addressServices = require('../services/address')
+var kafka = require('../kafka/client');
+
+
+router.get('/getAddress', checkAuth, async (request, response) => {  
+// router.get('/getAddress/:userId', async (request, response) => {
+
+    try {
+        const data = {
+            "body": request.user.userId,
+            // "body": request.params.userId,
+            "params": request.params,
+            "query": request.query,
+            "type": "getAddress"
+        }
+        console.log(data)
+
+        ///
+        await kafka.make_request('address-card', data, async (err, data) => {
+            if (err) throw new Error(err)
+            await response.status(data.status).json(data.body);
+        });
+        ///
+
+        // let res = await addressServices.getAddress(data);
+        // response.status(res.status).json(res.body);
+    }
+    catch (error) {
+        if (error.message)
+            message = error.message
+        else
+            message = 'Error while getting address details'
+
+        if (error.statusCode)
+            code = error.statusCode
+        else
+            code = 500
+
+        return response.status(code).json({ message });
+    }
+});
+
+
+
+router.put('/addAddress/:customer_id', async (request, response) => {
+    try {
+        const data = {
+            "body": request.body,
+            "id": request.params.customer_id,
+            "params": request.params,
+            "query": request.query,
+        }
+        console.log("add address", data)
+        response.end()
+        // let res = await addressServices.addAddress(data);
+        // response.status(res.status).json(res.body);
+    }
+    catch (error) {
+        if (error.message)
+            message = error.message
+        else
+            message = 'Error while adding address details'
+
+        if (error.statusCode)
+            code = error.statusCode
+        else
+            code = 500
+
+        return response.status(code).json({ message });
+    }
+});
+
+router.put('/updateAddress/:customer_id/address/:id', async (request, response) => {
+    try {
+        const data = {
+            "body": request.body,
+            "params": request.params,
+            "query": request.query,
+        }
+        let res = await addressServices.updateAddress(data);
+        response.status(res.status).json(res.body);
+    }
+    catch (error) {
+        if (error.message)
+            message = error.message
+        else
+            message = 'Error while updating address'
+
+        if (error.statusCode)
+            code = error.statusCode
+        else
+            code = 500
+
+        return response.status(code).json({ message });
+    }
+});
+
+
+
+router.delete('/deleteAddress/:customer_id/address/:address_id', async (request, response) => {
+    try {
+        const data = {
+            "body": request.body,
+            "params": request.params,
+            "query": request.query,
+        }
+        let res = await addressServices.deleteAddress(data);
+        response.status(res.status).json(res.body);
+    } catch (error) {
+        if (error.message)
+            message = error.message
+        else
+            message = 'Error while deleting address'
+
+        if (error.statusCode)
+            code = error.statusCode
+        else
+            code = 500
+
+        return response.status(code).json({ message });
+    }
+});
+
+
+module.exports = router
