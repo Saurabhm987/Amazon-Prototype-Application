@@ -27,11 +27,17 @@ export default class Graph extends Component {
     var xLabel = []
     var yLabel = ''
 
+    var switchcase = this.state.graph
+
+    
+    stats || data ? switchcase = this.state.graph : switchcase = 'Statastics Monthly'
+
+
     const cases = ['No of orders per day', 'Top 5 most sold products', 'Top 5 sellers based on total sales amount', 'Top 5 customers based on total purchase amount', 'Top 10 products based on rating', 'Top 10 products viewed per day']
 
     try {
 
-      switch (this.state.graph) {
+      switch (switchcase) {
         case cases[0]:
           data['countOrdersPerDay'].map(d => {
             plotData.push(d.counts)
@@ -83,9 +89,10 @@ export default class Graph extends Component {
           yLabel = 'Quantity'
           break;
         case 'Statastics Monthly':
+          const yearmap = {1 : 'Jan', 2: 'Feb',3:'Mar',4:'Apr',5:'May',6:'June',7:'July',8:'Aug',9:'Sep',10:'Oct',11:'Nov',12:'Dec'}
           statsMonthly.map(d => {
             plotData.push(d.amount)
-            xLabel.push(d._id)
+            xLabel.push(yearmap[d._id])
           })
           yLabel = 'Quantity'
           break;
@@ -107,7 +114,7 @@ export default class Graph extends Component {
         type: 'column'
       },
       title: {
-        text: this.state.graph
+        text: switchcase
       },
       xAxis: {
         categories: xLabel
@@ -156,9 +163,9 @@ export default class Graph extends Component {
 
     return (
       <Card style={{ backgroundColor: 'rgb(226, 226, 226)', padding: '10px' }} fluid>
-        <Menu>
+        {stats || data ? <Menu>
           <Dropdown placeholder={this.state.graph} options={dropdownOptions} simple item onChange={(e, v) => this.setState({ ...this.state, graph: v.value })} />
-        </Menu>
+        </Menu>:<div></div>}
         <Card style={{ padding: '10px' }} fluid>
           <div>
             <HighchartsReact
