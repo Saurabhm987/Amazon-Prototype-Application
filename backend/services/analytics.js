@@ -311,6 +311,31 @@ exports.sellermonthlystatictics  = async (request) => {
     }
 }
 
+exports.staticticsmonthlyseller  = async (request) => {
+    try{
+        let resp = await order.aggregate([
+            { "$match": { sellerId: ObjectID(request.params.sellerId) } },
+            {
+                "$group": {
+                    _id: {"$month": "$orderDate"},
+                    amount:{"$sum": "$totalAmount"}
+                }           
+            }
+        ]);
+        return { "status": 200, body: resp };
+    }  catch (error) {
+        if (error.message)
+            message = error.message
+        else
+            message = 'Error while getting monthly statistics';
+        if (error.statusCode)
+            code = error.statusCode
+        else
+            code = 500
+        return { "status": code, body: { message } }
+    }
+}
+
 
 
 
