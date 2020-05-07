@@ -15,12 +15,12 @@ const getProductsforCustomer = async (request) => {
             query = {
                 $or: [{ 'name': { $regex: searchText, $options: 'i' }, 'removed': false },
                 { 'category': { $regex: searchText, $options: 'i' }, 'removed': false },
-                { 'seller.name': { $regex: searchText, $options: 'i' }, 'removed': false }]
+                { 'sellerName': { $regex: searchText, $options: 'i' }, 'removed': false }]
             };
         } else {
             query = {
                 $or: [{ 'name': { $regex: searchText, $options: 'i' }, 'category': filterText, 'removed': false },
-                { 'seller.name': { $regex: searchText, $options: 'i' }, 'category': filterText, 'removed': false }]
+                { 'sellerName': { $regex: searchText, $options: 'i' }, 'category': filterText, 'removed': false }]
             };
         }
         if (sortType === 'PriceLowtoHigh') {

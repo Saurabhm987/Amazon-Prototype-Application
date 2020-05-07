@@ -7,7 +7,7 @@ exports.getProductsFromCart = async (request) => {
     try{
         // console.log(request.params)
         const resp = await buyer.find({ _id: request.params.id }).
-        populate('cart.productId', { name: 1, price: 1, _id: 1, images: 1, description:1, removed:1,'seller.sellerId':1,'seller.sellerName':1 })
+        populate('cart.productId', { name: 1, price: 1, _id: 1, images: 1, description:1, removed:1,sellerId:1,sellerName:1  })
         // console.log("a")
         // console.log(resp)  
         return { "status": 200, body: resp[0].cart }
@@ -100,7 +100,7 @@ exports.updateProductInCart = async (request) => {
         let resp = await queries.updateField(buyer,{ _id:request.params.customer_id,'cart.productId':request.params.product_id},update)
 
         resp = await buyer.findOne({ _id: request.params.customer_id }).
-        populate('cart.productId', { name: 1, price: 1, _id: 1, images: 1, description: 1, removed: 1,'seller.sellerId':1 ,'seller.sellerName':1})
+        populate('cart.productId', { name: 1, price: 1, _id: 1, images: 1, description: 1, removed: 1,sellerId:1,sellerName:1 })
         console.log(resp)
         return { "status": 200, body: resp.cart }
     } 
@@ -147,8 +147,8 @@ exports.deleteProductInCart = async (request) => {
        
         }
         resp = await buyer.find({ _id: request.params.customer_id }).
-        populate('saveForLater.productId', { name: 1, price: 1, _id: 1, images: 1, description: 1, removed:1,'seller.sellerId':1,'seller.sellerName':1}).
-        populate('cart.productId', { name: 1, price: 1, _id: 1, images: 1, description: 1, removed:1,'seller.sellerId':1,'seller.sellerName':1})
+        populate('saveForLater.productId', { name: 1, price: 1, _id: 1, images: 1, description: 1, removed:1,sellerId:1,sellerName:1 }).
+        populate('cart.productId', { name: 1, price: 1, _id: 1, images: 1, description: 1, removed:1,sellerId:1,sellerName:1 })
         return { "status": 200, body: resp[0] }
     // return { "status": 200, body: resp[0].cart }
 
