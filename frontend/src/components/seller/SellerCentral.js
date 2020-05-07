@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Container, Grid, Segment, Menu, Header, Placeholder, Dropdown, Button, Card } from 'semantic-ui-react'
+import { Container, Grid, Segment, Menu, Header, Placeholder, Dropdown, Button, Card, Image } from 'semantic-ui-react'
 import CentralHeader from '../header/CentralHeader'
 import AddProduct from '../product/AddProduct'
 import { Link, withRouter } from 'react-router-dom'
@@ -12,7 +12,7 @@ import { getUserOrder, updateStatus } from '../../actions/order';
 import { orderStatus } from '../controller/config';
 import axios from 'axios'
 import Graph from '../common/Graph'
-var _ = require('lodash');
+import OrderCard from '../order/OrderCard'
 
 class SellerCentral extends Component {
     constructor(props) {
@@ -22,24 +22,7 @@ class SellerCentral extends Component {
         this.state = {
             activeNavItem: 'Add Product',
             activeItem: 'Growth',
-            orders: [
-                {
-                    id: '1234',
-                    products: [{
-                        name: 'Headphones'
-                    }, {
-                        name: 'Mobile'
-                    }]
-                },
-                {
-                    id: '5678',
-                    products: [{
-                        name: 'Demo'
-                    }, {
-                        name: 'Mobile'
-                    }]
-                }
-            ],
+            orderStatus: '',
             stats: [],
             statsMonthly : []
         }
@@ -108,119 +91,52 @@ class SellerCentral extends Component {
         }
 
         else if (activeNavItem == 'ORDERS') {
+
             console.log(this.props.order.userOrders);
-            var orders = _.mapValues(_.groupBy(this.props.order.userOrders, 'orderId'),clist => clist.map(order => _.omit(order, 'orderId')));
-            console.log(orders);
-
-            // console.log('====================================')
-            // console.log(Object.keys(orders).map(order => {return('a')}))
-            // console.log('====================================')
-            // console.log(Object.keys(orders))
-            const options = [
-                { key: 1, text: 'Ordered', value: 1 },
-                { key: 2, text: 'Packing', value: 2 },
-                { key: 3, text: 'Out For Delivery', value: 3 },
-            ]
-            
-            contentPage = Object.keys(orders).map(orderId => {
-
-                return (
-                    <Card fluid>
-                        <Card.Content>
-                            <Header as='h3'>ORDER ID: {orderId}</Header>
-                        </Card.Content>
-                        {orders[orderId].map(product => {
-                            return (
-                                <Card.Content>
-                                    <Grid columns={3}>
-                                        <Grid.Column width={3}>
-                                            <Placeholder>
-                                                <Placeholder.Image style={{ width: '100px', height: '100px' }}></Placeholder.Image>
-                                            </Placeholder>
-                                        </Grid.Column>
-                                        <Grid.Column width={8}>
-                                            <Grid.Row>
-                                                <Header as='h4'>{product.productId}</Header>
-                                            </Grid.Row>
-                                            <br></br>
-                                            <Grid.Row>
-                                                <Header as='h5' color='grey'>Current Status: {product.status.status}</Header>
-                                            </Grid.Row>
-                                            <br></br>
-                                            <Grid.Row>
-                                                <Menu compact>
-                                                    <Dropdown placeholder='Change Status' options={options} simple item compact/>
-                                                </Menu>
-                                            </Grid.Row>
-                                        </Grid.Column>
-                                        <Grid.Column width={5}>
-                                            <Grid.Row>
-                                                <Button color='blue' floated='right' style={{ height: '35px', width: '150px', margin: '5px' }}>Billing Details</Button>
-                                            </Grid.Row>
-                                            <Grid.Row>
-                                                <Button color='blue' floated='right' style={{ height: '35px', width: '150px', margin: '5px' }}>Payment Details</Button>
-                                            </Grid.Row>
-                                            <Grid.Row>
-                                                <Button color='blue' floated='right' style={{ height: '35px', width: '150px', margin: '5px' }}>Delivery Address</Button>
-                                            </Grid.Row>
-                                        </Grid.Column>
-                                    </Grid>
-                                </Card.Content>
-                            )
-                        }
-                        )}
-                    </Card>
-                )
+            const orders = this.props.order.userOrders.filter(order => {
+                return (order.status.status.indexOf(this.state.orderStatus) !== -1)
             })
-        }
-
-
-        return (
-            <Container style={{ marginBottom: '20px' }}>
-                <CentralHeader handleNavItem={this.handleNavItem}></CentralHeader>
-                <br></br>
-
+            
+            contentPage = (
                 <Grid columns={2}>
                     <Grid.Column width={5}>
                         <Segment textAlign='left'>
                             <Header as='h3'>Your Orders</Header>
                             <Segment inverted color='blue' tertiary key='mini' size='mini'>
                                 <Grid columns={2}>
-                                    <Grid.Column width={14}>
+                                    <Grid.Column width={14} onClick={() => this.setState({...this.state,orderStatus:''})}>
                                         <Header as='h3' color='blue'>All</Header>
                                     </Grid.Column>
                                     <Grid.Column width={2}>
-                                        <Header as='h3' color='blue'>0</Header>
+                                        <Header as='h3' color='blue'>{this.props.order.userOrders.length}</Header>
                                     </Grid.Column>
                                 </Grid>
                             </Segment>
                             <Segment inverted color='blue' tertiary key='mini' size='mini'>
                                 <Grid columns={2}>
-                                    <Grid.Column width={14}>
-                                        <Header as='h3' color='blue'>Open</Header>
-                                    </Grid.Column>
-                                    <Grid.Column width={2}>
-                                        <Header as='h3' color='blue'>0</Header>
+                                    <Grid.Column width={14} onClick={() => this.setState({...this.state,orderStatus:'Ordered'})}>
+                                        <Header as='h3' color='blue'>Ordered</Header>
                                     </Grid.Column>
                                 </Grid>
                             </Segment>
                             <Segment inverted color='blue' tertiary key='mini' size='mini'>
                                 <Grid columns={2}>
-                                    <Grid.Column width={14}>
-                                        <Header as='h3' color='blue'>Delivered</Header>
-                                    </Grid.Column>
-                                    <Grid.Column width={2}>
-                                        <Header as='h3' color='blue'>0</Header>
+                                    <Grid.Column width={14} onClick={() => this.setState({...this.state,orderStatus:'Packing'})}>
+                                        <Header as='h3' color='blue'>Packing</Header>
                                     </Grid.Column>
                                 </Grid>
                             </Segment>
                             <Segment inverted color='blue' tertiary key='mini' size='mini'>
                                 <Grid columns={2}>
-                                    <Grid.Column width={14}>
+                                    <Grid.Column width={14} onClick={() => this.setState({...this.state,orderStatus:'Out for Delivery'})}>
+                                        <Header as='h3' color='blue'>Out for Delivery</Header>
+                                    </Grid.Column>
+                                </Grid>
+                            </Segment>
+                            <Segment inverted color='blue' tertiary key='mini' size='mini'>
+                                <Grid columns={2}>
+                                    <Grid.Column width={14} onClick={() => this.setState({...this.state,orderStatus:'Cancelled'})}>
                                         <Header as='h3' color='blue'>Cancelled</Header>
-                                    </Grid.Column>
-                                    <Grid.Column width={2}>
-                                        <Header as='h3' color='blue'>0</Header>
                                     </Grid.Column>
                                 </Grid>
                             </Segment>
@@ -280,10 +196,19 @@ class SellerCentral extends Component {
                     </Grid.Column>
                     <Grid.Column width={11}>
                         <Segment textAlign='left'>
-                            {contentPage}
+                            <OrderCard orders={orders}></OrderCard>
                         </Segment>
                     </Grid.Column>
                 </Grid>
+            )
+        }
+
+
+        return (
+            <Container style={{ marginBottom: '20px' }}>
+                <CentralHeader handleNavItem={this.handleNavItem}></CentralHeader>
+                <br></br>
+                {contentPage}
             </Container>
         )
     }
