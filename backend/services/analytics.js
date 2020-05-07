@@ -2,6 +2,8 @@ var mongoose = require('mongoose');
 const order = require('../dbModels/order');
 const product = require('../dbModels/product');
 const seller = require('../dbModels/seller');
+const buyer = require('../dbModels/buyer');
+
 const { orderStatus } = require('../config/types');
 const ObjectID= require('mongodb').ObjectID
 
@@ -200,15 +202,16 @@ exports.getTopFiveSellersAmount = async (req) => {
                 }           
             },
             {
-                $sort: { "counts": -1 }
+                $sort: { "counts": -1 },
+                
             },
             {
                 $limit: 5
             }
         ]);
-        // let opts = {path: '_id', select:'_id name' };
-        // let results = await seller.populate(topFiveSellersAmount, opts);
-        return { "status": 200, body: topFiveSellersAmount };
+        let opts = {path: '_id', select:'_id name' };
+        let results = await seller.populate(topFiveSellersAmount, opts);
+        return { "status": 200, body: results };
     } catch (error) {
         if (error.message)
             message = error.message
@@ -239,7 +242,9 @@ exports.getTopFiveCustomerAmount = async (req) => {
                 $limit: 5
             }
         ]);
-        return { "status": 200, body: topFiveCustomerAmount };
+        let opts = {path: '_id', select:'_id name' };
+        let results = await buyer.populate(topFiveCustomerAmount, opts);
+        return { "status": 200, body: results };
     } catch (error) {
         if (error.message)
             message = error.message
@@ -285,6 +290,31 @@ exports.sellermonthlystatictics  = async (request) => {
     try{
         let resp = await order.aggregate([
             { "$match": { sellerId: ObjectID(request.user.userId) } },
+            {
+                "$group": {
+                    _id: {"$month": "$orderDate"},
+                    amount:{"$sum": "$totalAmount"}
+                }           
+            }
+        ]);
+        return { "status": 200, body: resp };
+    }  catch (error) {
+        if (error.message)
+            message = error.message
+        else
+            message = 'Error while getting monthly statistics';
+        if (error.statusCode)
+            code = error.statusCode
+        else
+            code = 500
+        return { "status": code, body: { message } }
+    }
+}
+
+exports.staticticsmonthlyseller  = async (request) => {
+    try{
+        let resp = await order.aggregate([
+            { "$match": { sellerId: ObjectID(request.params.sellerId) } },
             {
                 "$group": {
                     _id: {"$month": "$orderDate"},

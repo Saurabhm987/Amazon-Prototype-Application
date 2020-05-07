@@ -8,7 +8,7 @@ exports.getProductsFromSaveForLater = async (request) => {
     try{
         console.log(request.params)
         const resp = await buyer.find({ _id: request.params.id }).
-        populate('saveForLater.productId', { name: 1, price: 1, _id: 1, images: 1, description:1, removed:1 })
+        populate('saveForLater.productId', { name: 1, price: 1, _id: 1, images: 1, description:1, removed:1,'seller.sellerId':1,'seller.sellerName':1  })
         console.log(resp)
         return { "status": 200, body: resp[0].saveForLater }
     }
@@ -113,8 +113,8 @@ exports.deleteProductInSaveForLater = async (request) => {
       
         }
         resp = await buyer.find({ _id: request.params.customer_id }).
-        populate('saveForLater.productId', { name: 1, price: 1, _id: 1, images: 1, description: 1, removed:1  }).
-        populate('cart.productId', { name: 1, price: 1, _id: 1, images: 1, description: 1, removed:1  })
+        populate('saveForLater.productId', { name: 1, price: 1, _id: 1, images: 1, description: 1, removed:1 ,'seller.sellerId':1,'seller.sellerName':1  }).
+        populate('cart.productId', { name: 1, price: 1, _id: 1, images: 1, description: 1, removed:1,'seller.sellerId':1,'seller.sellerName':1   })
 
         console.log(resp[0])
         // return { "status": 200, body: resp[0].saveForLater }
