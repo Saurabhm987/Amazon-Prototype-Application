@@ -21,10 +21,6 @@ const findDocumentsByQueryFilter = async (modelObject, query, projection, filter
         if (!filter) {
             filter = {}
         }
-        console.log(query)
-        console.log(projection)
-        console.log(filter)
-
 
         return await modelObject.find(query, projection, options).lean().sort(filter.sort).skip(filter.skip).limit(filter.limit);
     } catch (error) {
@@ -62,9 +58,9 @@ const createDocument = async (modelObject, data) => {
     }
 }
 
-const findDocumets = async (modelObject, findQuery) => {
+const findDocumets = async (modelObject, findQuery, projection) => {
     try {
-        const response = await modelObject.find(findQuery);
+        const response = await modelObject.find(findQuery, projection).lean();
         if (response.length > 0) {
             return response;
         }
@@ -72,6 +68,16 @@ const findDocumets = async (modelObject, findQuery) => {
             throw ("Record not found");
         }
 
+    } catch (error) {
+        throw new Error(error)
+    }
+}
+
+const deleteDocuments = async (modelObject, findQuery, projection) => {
+
+    try {
+        return response = await modelObject.deleteOne(findQuery, projection);
+        
     } catch (error) {
         throw new Error(error)
     }
@@ -96,4 +102,5 @@ module.exports = {
     createDocument: createDocument,
     findDocumets: findDocumets,
     findDocumentsById: findDocumentsById,
+    deleteDocuments:deleteDocuments
 }

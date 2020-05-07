@@ -1,29 +1,27 @@
-
 const express = require('express')
 const router = express.Router()
 var mongoose = require('mongoose');
-const checkAuth = require('../config/passport');
 const cardServices = require('../services/card')
-var kafka = require('../kafka/client');
+const checkAuth = require('../config/passport')
 
 
-router.get('/getCard', checkAuth, async (request, response) => {  
+router.get('/getCard/:customer_id', async (request, response) => {
+
     try {
         const data = {
-            "body": request.user.userId,
             "params": request.params,
             "query": request.query,
         }
-        console.log(data)
-        let res =await cardServices.getCard(data);
-        response.status(res.status).json(res.body);     
-    }  
+
+        let res = await cardServices.getCard(data);
+        response.status(res.status).json(res.body);
+    }
     catch (error) {
         if (error.message)
             message = error.message
         else
-            message = 'Error while getting Card details'
-        
+            message = 'Error while getting address details'
+
         if (error.statusCode)
             code = error.statusCode
         else
@@ -35,24 +33,26 @@ router.get('/getCard', checkAuth, async (request, response) => {
 
 
 
-router.post('/addCard', checkAuth, async (request, response) => {  
+router.post('/addCard', checkAuth, async (request, response) => {
+
     try {
         const data = {
             "body": request.body,
             "id": request.user.userId,
             "params": request.params,
             "query": request.query,
+            "user": request.user
         }
         console.log(data)
         let res = await cardServices.addCard(data);
         response.status(res.status).json(res.body);
-    }  
+    }
     catch (error) {
         if (error.message)
             message = error.message
         else
             message = 'Error while adding address details'
-        
+
         if (error.statusCode)
             code = error.statusCode
         else
@@ -62,22 +62,25 @@ router.post('/addCard', checkAuth, async (request, response) => {
     }
 });
 
-router.put('/updateCard/:customer_id/card/:id', async (request, response) => {  
+router.put('/updateCard/:customer_id/card/:id', async (request, response) => {
     try {
         const data = {
             "body": request.body,
             "params": request.params,
             "query": request.query,
         }
-        let res =await cardServices.updateCard(data);
+        let res = await cardServices.updateCard(data);
+
+        console.log('updated response ----', res)
+
         response.status(res.status).json(res.body);
-    }     
+    }
     catch (error) {
         if (error.message)
             message = error.message
         else
             message = 'Error while updating address'
-        
+
         if (error.statusCode)
             code = error.statusCode
         else
@@ -89,7 +92,7 @@ router.put('/updateCard/:customer_id/card/:id', async (request, response) => {
 
 
 
-router.delete('/deleteCard/:customer_id/card/:card_id', async (request, response) => {  
+router.delete('/deleteCard/:customer_id/card/:card_id', async (request, response) => {
     try {
         const data = {
             "body": request.body,
@@ -103,7 +106,7 @@ router.delete('/deleteCard/:customer_id/card/:card_id', async (request, response
             message = error.message
         else
             message = 'Error while deleting address'
-        
+
         if (error.statusCode)
             code = error.statusCode
         else

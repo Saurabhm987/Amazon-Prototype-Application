@@ -53,10 +53,10 @@ const sellerSchema = new mongoose.Schema({
         default: null
     },
     products: [{
-        id:{type:  mongoose.Schema.Types.ObjectId}
+        id:{type:  mongoose.Schema.Types.ObjectId, ref:'product'}
     }],
     orders: [{
-        id:{type:  mongoose.Schema.Types.ObjectId}
+        id:{type:  mongoose.Schema.Types.ObjectId, ref:'order'}
     }]
 });
 
