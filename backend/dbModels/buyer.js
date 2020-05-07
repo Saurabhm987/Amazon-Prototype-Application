@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const cardSchema = require('./card')
+const cardSchema = require('./card');
+const reviewSchema = require('./review');
 const uniqueValidator = require('mongoose-unique-validator');
 
 
@@ -40,9 +41,8 @@ const commentSchema = new mongoose.Schema ({
         required: true,
         ref: "product" 
     },
-    
-    commentId: {
-        type: mongoose.Schema.Types.ObjectId,
+    review: {
+        type: reviewSchema,
         required: true
     },
 });
@@ -76,6 +76,7 @@ const saveForLaterSchema = new mongoose.Schema ({
     //     required: true
     // }
 });
+
 
 const buyerSchema = new mongoose.Schema({
     name: {
