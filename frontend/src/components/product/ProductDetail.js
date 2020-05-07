@@ -4,6 +4,12 @@ import { connect } from 'react-redux'
 import queryString from 'query-string';
 import { getproductDetail } from '../../actions/product'
 import ProductComment from './ProductComment'
+import { Redirect } from 'react-router';
+import { addToCart} from '../../actions/cart';
+import { addSaveForLater } from '../../actions/saveforlater';
+
+
+
 
 import {
     Grid,
@@ -27,6 +33,7 @@ class ProductDetail extends Component {
         this.state = {
             imgUrl: '',
             hovered: false,
+            quantity: 1,
             options: [
                 { key: 1, text: '1', value: 1 },
                 { key: 2, text: '2', value: 2 },
@@ -50,7 +57,33 @@ class ProductDetail extends Component {
         await this.props.getproductDetail(productId.id)
 
     }
+    /////////////////////////////////////////////
+    moveToCart = (e) => {
+        e.preventDefault();
+        const data = {
+          
+                product_id: this.props.productDetail._id,
+                gift: false,
+                quantity: this.state.quantity
+         
+           
+            // id: localStorage.getItem("id")
+        }
+        console.log(data)
 
+        this.props.addToCart( "5ea6217130c53720685db7dd",data);
+    }
+    moveToSaveForLater = (e) => {
+        e.preventDefault();
+        this.props.addSaveForLater("5ea6217130c53720685db7dd", this.props.productDetail._id);
+    }
+    changeQuantity = (e,{value}) => {
+        console.log(value)
+        this.setState({
+            quantity: value
+        })
+    }
+////////////////////////////////////////////////////////
     onClickImage = async (e) => {
         e.preventDefault()
 
@@ -62,13 +95,27 @@ class ProductDetail extends Component {
     render() {
 
         var images = []
+////////////////////
+var redirect=null
+// var redirectToSaveForLater =null
+console.log(this.props.cartRedirect)
+if (this.props.cartRedirect === true) {
+    redirect = <Redirect to={`/cart`} />
+}
+// if (this.props.saveforlaterRedirect === true) {
+//     redirectToSaveForLater = <Redirect to={`/cart`} />
+// }
 
+
+/////////////////////////
         if (this.props.productDetail) {
             images = this.props.productDetail.images
         }
 
         return (
             <div style={{ margin: '80px 5px 10px 0px', backgroundColor: 'white' }}>
+                {redirect}
+                {/* {redirectToSaveForLater} */}
                 <Grid columns='equal'>
                     <Grid.Column width={1}>
                         {
@@ -227,20 +274,22 @@ class ProductDetail extends Component {
                                         <br />
                                         <Grid.Row>
                                             <label>Qty:</label>
-                                            <Dropdown clearable options={this.state.options} selection placeholder='Quantity' />
+                                            <Dropdown clearable options={this.state.options} selection placeholder='Quantity'  onChange={this.changeQuantity}/>
                                         </Grid.Row>
                                         <br />
                                         <Grid.Row>
-                                            <Button icon labelPosition='left' color='yellow' icon='shopping cart' size='small' fluid style={{ background: '#febd69', backgroundColor: '#a88734 #9c7e31 #846a29', color: 'rgb(17, 17, 17)', width: '184px', height: '29px' }}>
+                                            <Button icon labelPosition='left' color='yellow' icon='shopping cart' size='small' fluid style={{ background: '#febd69', backgroundColor: '#a88734 #9c7e31 #846a29', color: 'rgb(17, 17, 17)', width: '184px', height: '29px' }}
+                                            onClick={this.moveToCart}>
                                                 <Icon name='shopping cart'></Icon>
                                                 Add to cart
                                             </Button>
                                         </Grid.Row>
                                         <br />
                                         <Grid.Row>
-                                            <Button icon labelPosition='left' color='yellow' size='small' fluid style={{ background: 'linear-gradient(rgb(246, 200, 143), rgb(237, 146, 32))', color: '#111', width: '184px', height: '29px' }}>
+                                            <Button icon labelPosition='left' color='yellow' size='small' fluid style={{ background: 'linear-gradient(rgb(246, 200, 143), rgb(237, 146, 32))', color: '#111', width: '184px', height: '29px' }}
+                                            onClick={this.moveToSaveForLater}>
                                                 <Icon name='play'></Icon>
-                                                Buy Now
+                                                Save For Later
                                             </Button>
                                         </Grid.Row>
                                         <br />
@@ -299,10 +348,20 @@ class ProductDetail extends Component {
 
 ProductDetail.propTypes = {
     productDetail: PropTypes.object.isRequired,
+    addToCart: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
-    productDetail: state.product.productDetail
+    productDetail: state.product.productDetail,
+    cartRedirect:state.cart.cartRedirect,
+    // saveforlaterRedirect:state.cart.saveforlaterRedirect
 })
-
-export default connect(mapStateToProps, { getproductDetail })(ProductDetail);
+// function mapDispatchToProps(dispatch) {
+//     return {
+//         getproductDetail: (id) => dispatch(getproductDetail(id)),
+//         addToCart: payload => dispatch(addToCart(payload)),
+//         addSaveForLater: (id, productid) => dispatch(addSaveForLater(id, productid))
+//     };
+// }
+export default connect(mapStateToProps, {addToCart,addSaveForLater, getproductDetail})(ProductDetail);
+// export default connect(mapStateToProps, { getproductDetail })(ProductDetail);

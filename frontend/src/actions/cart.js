@@ -28,9 +28,9 @@ export const getCustomerCart = (id) => dispatch => {
         });
 }
 
-export const moveToCartFromProductPage = (data) => dispatch => {
+export const addToCart = (id,data) => dispatch => {
     axios.defaults.withCredentials = true;
-    axios.post(`${API_ENDPOINT}/user/addToCart/${sessionStorage.getItem("id")}/cart`, data.body)
+    axios.post(`${API_ENDPOINT}/user/addToCart/${id}`, data)
         .then(response => {
             dispatch({
                 type: ADD_TO_CART_PRODUCT_DETAIL_PAGE

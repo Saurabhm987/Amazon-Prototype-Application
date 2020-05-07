@@ -9,6 +9,7 @@ exports.getProductsFromSaveForLater = async (request) => {
         console.log(request.params)
         const resp = await buyer.find({ _id: request.params.id }).
         populate('saveForLater.productId', { name: 1, price: 1, _id: 1, images: 1, description:1, removed:1 })
+        console.log(resp)
         return { "status": 200, body: resp[0].saveForLater }
     }
     catch (error) {
@@ -27,6 +28,7 @@ exports.getProductsFromSaveForLater = async (request) => {
 }
 exports.addProductInSaveForLater = async (request) => {
     try{
+        console.log("addddd")
         console.log(request.body)
         update =  {$push:{"saveForLater":{
                 "productId" : request.body.product_id

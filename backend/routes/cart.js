@@ -7,7 +7,9 @@ const cartServices = require('../services/cart')
 const cachedcart = require('../redis/cachedcart')
 const client = require('../index')
 
-router.get('/getCart/:id', cachedcart, async (request, response, next) => {  
+// router.get('/getCart/:id', cachedcart, async (request, response, next) => {  
+    router.get('/getCart/:id', async (request, response, next) => {  
+
 
     try {
 
@@ -22,7 +24,7 @@ router.get('/getCart/:id', cachedcart, async (request, response, next) => {
         let res =await cartServices.getProductsFromCart(data);
 
         const {id} = request.params
-        client.set(`"cart-${id}"`,JSON.stringify(item))
+        // client.set(`"cart-${id}"`,JSON.stringify(item))
 
         response.status(res.status).json(res.body);     
     }  

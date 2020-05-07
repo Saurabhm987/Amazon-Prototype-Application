@@ -5,12 +5,18 @@ const ObjectID= require('mongodb').ObjectID
 
 exports.getProductsFromCart = async (request) => {
     try{
-        console.log(request.params)
+        // console.log(request.params)
         const resp = await buyer.find({ _id: request.params.id }).
         populate('cart.productId', { name: 1, price: 1, _id: 1, images: 1, description:1, removed:1 })
+        // console.log("a")
+        // console.log(resp)
         return { "status": 200, body: resp[0].cart }
     }
     catch (error) {
+        // console.log("b")
+
+        console.log(error)
+
         if (error.message)
             message = error.message
         else
@@ -30,7 +36,7 @@ exports.addProductInCart = async (request) => {
         update =  {$push:{"cart":{
                 "productId" : request.body.product_id,
                 "gift"    : request.body.gift,
-                "giftMessage"    : request.body.giftMessage,
+                // "giftMessage"    : request.body.giftMessage,
                 "quantity"  : request.body.quantity
             }}}
         console.log(update)
