@@ -28,6 +28,34 @@ exports.getProductsFromSaveForLater = async (request) => {
 }
 exports.addProductInSaveForLater = async (request) => {
     try{
+
+//////////////////////////
+        const res = await queries.findDocumentsByQuery(buyer, { _id: request.params.customer_id, saveForLater: { $elemMatch: { productId: request.body.product_id } } })
+        console.log("a")
+        if (res.length) {
+            return { "status": 200, body: res[0].saveForLater }
+
+            // let productindex = 0
+            // console.log(res[0].saveForLater)
+            // res[0].saveForLater.forEach((item, index) => {
+            
+            //     if ((item.productId).toString() === (request.body.product_id)) {
+
+            //         productindex = index
+            //     }
+            // });
+            // console.log(productindex)
+            // update = {
+            //     'cart.$.gift': res[0].cart[productindex].gift,
+            //     'cart.$.quantity': res[0].cart[productindex].quantity + request.body.quantity
+            // }
+            // console.log(update)
+            // resp = await queries.updateField(buyer, { _id: request.params.customer_id, 'cart.productId': request.body.product_id }, update)
+        } else {
+
+
+
+////////////////////////////
         console.log("addddd")
         console.log(request.body)
         update =  {$push:{"saveForLater":{
@@ -38,6 +66,7 @@ exports.addProductInSaveForLater = async (request) => {
         console.log(update)
         const resp = await queries.updateField(buyer,{ _id:request.params.customer_id},update)
         console.log(resp)
+        }
         return { "status": 200, body: resp.saveForLater }
     } 
     catch (error) {
