@@ -167,6 +167,7 @@ class Cart extends Component {
         let gift = false;
         let redirectVar = null;
         customercart = this.state.cart;
+        console.log(this.state.userId)
         const options = [
             { key: 1, text: '1', value: 1 },
             { key: 2, text: '2', value: 2 },
