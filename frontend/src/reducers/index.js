@@ -6,7 +6,8 @@ import product from "./reducer/product";
 import order from "./reducer/order";
 import cart from "./reducer/cart";
 import saveforlater from "./reducer/saveforlater";
-
+import customer from './reducer/customer'
+import seller from './reducer/seller'
 
 
 export default combineReducers({
@@ -15,5 +16,7 @@ export default combineReducers({
     product: product,
     order: order,
     cart:cart,
-    saveforlater:saveforlater
+    saveforlater:saveforlater,
+    customer: customer,
+    seller: seller,
 });

@@ -10,24 +10,24 @@ import {
     Select,
     Divider,
     Grid,
-   
-  } from 'semantic-ui-react';
+
+} from 'semantic-ui-react';
 
 class Saveforlater extends Component {
     constructor(props) {
         super(props);
         this.state = {
             cart: [],
-            
+
             rendercheckout: false,
-            userId:""
+            userId: ""
 
         };
     }
-    componentDidMount=async()=> {
+    componentDidMount = async () => {
         if (localStorage.getItem("token") !== null) {
             var user = jwtDecode(localStorage.getItem("token"));
-           await  this.setState({ userId: user.userId });
+            await this.setState({ userId: user.userId });
 
         }
         // 5ea6217130c53720685db7dd
@@ -38,7 +38,7 @@ class Saveforlater extends Component {
     componentWillReceiveProps(nextProps) {
         this.setState({
             cart: nextProps.cart,
-         
+
         });
     }
 
@@ -48,8 +48,8 @@ class Saveforlater extends Component {
         })
     }
 
-    
-   
+
+
 
     deleteProduct = (product_id, type) => {
         console.log(type)
@@ -65,7 +65,7 @@ class Saveforlater extends Component {
     render() {
         let saveforlaterlist = null;
         let customersaveforlater = [];
-      
+
         let gift = false;
         let redirectVar = null;
         customersaveforlater = this.state.cart;
@@ -80,7 +80,7 @@ class Saveforlater extends Component {
             { key: 8, text: '8', value: 8 },
             { key: 9, text: '9', value: 9 },
             { key: 10, text: '10', value: 10 }
-            ]
+        ]
 
         if (this.state.rendercheckout)
             redirectVar = <Redirect to={`/customer/${sessionStorage.getItem('id')}/checkout`} />
@@ -143,36 +143,36 @@ class Saveforlater extends Component {
             <div class="cartContainer">
                 {redirectVar}
                 <Grid>
-                    <Grid.Column width={12} style={{marginTop:'60px'}}>
+                    <Grid.Column width={12} style={{ marginTop: '60px' }}>
                         <Grid.Row>
                         </Grid.Row>
                         <Grid.Row> </Grid.Row>
-                    {(customersaveforlater.length === 0) ? <h2 class='shoppingcart'></h2> :
-                        <div>
-                             <Grid.Row>
-                            <h2 class='shoppingcart'>Save for Later</h2>
-                        </Grid.Row>
-                            <Grid.Row>
-                                <Grid.Column width={12}>
-                                    
-                                </Grid.Column>
-                              
-                            </Grid.Row>
-                           
-                             <Grid.Row style={{marginTop:'20px'}}>
-                            {saveforlaterlist}
-                            </Grid.Row>
-                           
+                        {(customersaveforlater.length === 0) ? <h2 class='shoppingcart'></h2> :
+                            <div>
+                                <Grid.Row>
+                                    <h2 class='shoppingcart'>Save for Later</h2>
+                                </Grid.Row>
+                                <Grid.Row>
+                                    <Grid.Column width={12}>
 
-                        </div>}
+                                    </Grid.Column>
+
+                                </Grid.Row>
+
+                                <Grid.Row style={{ marginTop: '20px' }}>
+                                    {saveforlaterlist}
+                                </Grid.Row>
+
+
+                            </div>}
                     </Grid.Column>
                     <Grid.Column width={1}>
 
                     </Grid.Column>
-                  
+
                 </Grid>
 
-         </div>
+            </div>
         )
 
 
@@ -182,8 +182,8 @@ class Saveforlater extends Component {
 const mapStateToProps = state => {
     return {
         cart: state.cart.saveforlaterlist,
-     
-      
+
+
     };
 };
 
