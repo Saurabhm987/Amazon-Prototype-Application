@@ -165,6 +165,12 @@ const orderSchema = new mongoose.Schema({
         type: statusSchema,
         required: true
     },
+    gift: {
+        type : Boolean
+    },
+    giftMessage: {
+        type : String
+    },
     statusHistory: [statusSchema]    
 });
 
