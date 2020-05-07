@@ -14,6 +14,7 @@ import {
   Segment,
   Form,
   Dropdown,
+  Popup
 } from 'semantic-ui-react'
 
 class AddProduct extends Component {
@@ -21,7 +22,7 @@ class AddProduct extends Component {
     super(props);
 
     this.state = {
-      name: '',
+      productname: '',
       description: '',
       test: '',
       quantity: '',
@@ -30,7 +31,13 @@ class AddProduct extends Component {
       modalOpen: false,
       files: [],
       data: [{ key: '', text: '', value: '' }],
-      selectedCategory:''
+      selectedCategory: ''
+    }
+
+    const style = {
+      borderRadius: 0,
+      opacity: 0.7,
+      padding: '2em',
     }
 
     this.handleInputChange = this.handleInputChange.bind(this)
@@ -41,6 +48,10 @@ class AddProduct extends Component {
 
     await this.props.productCategories()
     await this.createOptions()
+
+    // if(this.props.open){
+    //   this.setState({modalOpen: true});
+    // }
 
   }
 
@@ -54,14 +65,18 @@ class AddProduct extends Component {
 
   hanldeFileChange = async (e) => {
     e.preventDefault()
-    await this.setState({
-      files: [...this.state.files, ...e.target.files],
-    });
 
+    if (this.state.files.length < 6) {
+      await this.setState({
+        files: [...this.state.files, ...e.target.files],
+      });
+    } else {
+      this.setState({ error: true });
+    }
   }
 
-  categoryHandler = (e, {value}) => {
-    this.setState({selectedCategory: value});
+  categoryHandler = (e, { value }) => {
+    this.setState({ selectedCategory: value });
   }
 
   handleClose = () => {
@@ -74,7 +89,7 @@ class AddProduct extends Component {
     })
   }
 
-  
+
 
   addproduct = async () => {
 
@@ -88,18 +103,18 @@ class AddProduct extends Component {
       console.log(pair[0] + ', ' + JSON.stringify(pair[1]));
     }
 
-    const { name, description, quantity, price, selectedCategory, giftPrice } = this.state
+    const { productname, description, quantity, price, selectedCategory, giftPrice } = this.state
 
-    const { userId } = this.props.user
+    const { userId, name } = this.props.user
 
-    formdata.append('name', name)
+    formdata.append('name', productname)
     formdata.append('description', description)
     formdata.append('quantity', quantity)
     formdata.append('price', price)
     formdata.append('category', selectedCategory)
     formdata.append('giftPrice', giftPrice)
     formdata.append('sellerId', userId)
-    formdata.append('sellerName', 'selllerName1')
+    formdata.append('sellerName', name)
 
     for (var pair of formdata.entries()) {
       console.log(pair[0] + ', ' + pair[1]);
@@ -138,6 +153,14 @@ class AddProduct extends Component {
               <Grid.Row>
                 <Input type="file" multiple onChange={this.hanldeFileChange} />
               </Grid.Row>
+              <Grid.Row>
+                <Popup
+                  trigger={true}
+                  content='Popup with a custom style prop'
+                  style={this.style}
+                  inverted
+                />
+              </Grid.Row>
             </Grid.Column>
             <Modal.Description>
               <Grid columns={1}>
@@ -146,7 +169,7 @@ class AddProduct extends Component {
                   <Grid.Column>
                     <Form onSubmit={this.addproduct}>
                       <Segment stacked >
-                        <Form.TextArea name='name' type="text" label="Product Name" value={this.state.name || ""} onChange={this.handleInputChange} />
+                        <Form.TextArea name='productname' type="text" label="Product Name" value={this.state.name || ""} onChange={this.handleInputChange} />
                         <Form.TextArea name='description' type="text" label="Product Description" value={this.state.description || ""} onChange={this.handleInputChange} />
                         <Form.Input name='quantity' type="number" label="Quantity" value={this.state.quantity || ''} onChange={this.handleInputChange} />
                         <Form.Input name='price' type="number" label="Standard Price" value={this.state.price || ''} onChange={this.handleInputChange} />

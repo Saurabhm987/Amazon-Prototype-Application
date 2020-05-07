@@ -5,17 +5,10 @@ const buyer = require('../dbModels/buyer')
 const ObjectID = require('mongodb').ObjectID
 
 exports.getCard = async (request) => {
-<<<<<<< HEAD
-    try {
-        console.log(request.params)
-        const resp = await buyer.findOne({ _id : request.params.customer_id })
-=======
     try{
-        console.log('aaaaaaaaa')
 
         const resp = await queries.findDocumentsById(buyer, '5ea6217130c53720685db7dd')
->>>>>>> 489282b02576151687d46a0396ee57490e4a4f58
-        console.log(resp)
+
         return { "status": 200, body: resp.card }
     }
     catch (error) {
@@ -34,6 +27,7 @@ exports.getCard = async (request) => {
 }
 
 exports.addCard = async (request) => {
+
     try {
         console.log(request.body)
         update = {
@@ -47,12 +41,8 @@ exports.addCard = async (request) => {
             }
         }
         console.log(update)
-<<<<<<< HEAD
-        const resp = await queries.updateField(buyer, { email: request.user.email }, update)
-=======
+
         const resp = await queries.updateField(buyer,{ _id:'5ea6217130c53720685db7dd'},update)
->>>>>>> 489282b02576151687d46a0396ee57490e4a4f58
-        console.log(resp)
         return { "status": 200, body: resp.card }
     }
     catch (error) {

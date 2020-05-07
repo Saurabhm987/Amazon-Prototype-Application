@@ -1,17 +1,10 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
-import HeaderView from './header/Header'
 import sellerCentral from './seller/SellerCentral'
 import SignupForm from './signup/Signup'
 import LoginForm from './login/Login'
 import Cart from './customer/cart'
-import Address from './customer/address'
-import Cards from './customer/card'
-import AddAddress from './customer/addAddress'
-import AddCard from './customer/addCard'
 import Checkout from './customer/checkout'
-
-
 import CustomerProfile from './customer/customerProfile'
 import ProductDetail from './product/ProductDetail'
 import CustomerDashboard from './dashboard/CustomerDashboard'

@@ -50,10 +50,6 @@ const sellerSchema = new mongoose.Schema({
     },
     address: {
         type: addressSchema,
-        // required: true
-    },
-    description: {
-        type: String,
         default: null
     },
     products: [{

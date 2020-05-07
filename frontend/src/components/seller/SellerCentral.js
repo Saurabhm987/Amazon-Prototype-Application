@@ -12,6 +12,7 @@ import { getUserOrder, updateStatus } from '../../actions/order';
 import { orderStatus } from '../controller/config';
 import axios from 'axios'
 import Graph from '../common/Graph'
+import JwtDecode from 'jwt-decode'
 var _ = require('lodash');
 
 class SellerCentral extends Component {
@@ -41,7 +42,8 @@ class SellerCentral extends Component {
                 }
             ],
             stats: [],
-            statsMonthly : []
+            statsMonthly : [],
+            user:{}
         }
 
     }
@@ -54,6 +56,10 @@ class SellerCentral extends Component {
         if (token === null) {
             this.props.history.push('/login')
         }
+
+        let user = JwtDecode(token)
+        this.setState({user : user});
+
         await this.props.getUserOrder();
         const stat = () => {
             return axios
@@ -84,6 +90,10 @@ class SellerCentral extends Component {
         })
     }
 
+    redirect = async () => {
+        this.props.history.push(`/sellerproducts/?id=${this.state.user.userId}`)
+    }
+
 
     handleNavItem = (name) => this.setState({ activeNavItem: name })
 
@@ -99,10 +109,10 @@ class SellerCentral extends Component {
         console.log(activeNavItem);
 
         if (activeNavItem == 'Manage Inventory') {
-            contentPage = (<SellerProduct />)
+           this.redirect()
         }
         else if (activeNavItem == 'Add a Product') {
-            contentPage = (<AddProduct />)
+            contentPage = (<AddProduct open ={true} />)
         }
         else if (activeNavItem == 'REPORTS') {
             console.log(this.state.statsMonthly);

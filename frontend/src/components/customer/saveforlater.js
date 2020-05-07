@@ -18,16 +18,16 @@ class Saveforlater extends Component {
         super(props);
         this.state = {
             cart: [],
-            
+
             rendercheckout: false,
-            userId:""
+            userId: ""
 
         };
     }
-    componentDidMount=async()=> {
+    componentDidMount = async () => {
         if (localStorage.getItem("token") !== null) {
             var user = jwtDecode(localStorage.getItem("token"));
-           await  this.setState({ userId: user.userId });
+            await this.setState({ userId: user.userId });
 
         }
         // 5ea6217130c53720685db7dd
@@ -85,56 +85,53 @@ class Saveforlater extends Component {
         if (this.state.rendercheckout)
             redirectVar = <Redirect to={`/customer/${sessionStorage.getItem('id')}/checkout`} />
 
-<<<<<<< HEAD
-        if (customersaveforlater) {
-
-=======
         if (customersaveforlater.length) {
-           
->>>>>>> 489282b02576151687d46a0396ee57490e4a4f58
-            saveforlaterlist = (<div >
-                {customersaveforlater.map((cartitem, index) => {
-                    return (
-                        <div>
-                            <Divider fitted />
 
-                            <div style={{ marginTop: '20px' }}>
-                                <Grid>
-                                    <Grid.Column width={2}>
-                                        <img class='productImage' src={cartitem.productId.images[0]} alt={cartitem.productId.name}></img>
-                                    </Grid.Column>
-                                    <Grid.Column width={10}>
-                                        <Grid.Row>
-                                            <Link class='productlink' to={"/product/" + cartitem.productId._id}>
-                                                <div class='productTitle'>{cartitem.productId.name}</div>
-                                            </Link>
-                                        </Grid.Row>
-                                        <Grid.Row>
-                                            <div class='stocklabel'>
-                                                Only few left in stock - order soon.
-                                    </div>
-                                        </Grid.Row>
+            saveforlaterlist = (
+                <div >
+                    {
+                        customersaveforlater.map((cartitem, index) => {
+                            return (
+                                <div>
+                                    <Divider fitted />
 
-                                        <Grid.Row>
-                                            <div class='qtyContainer'>
+                                    <div style={{ marginTop: '20px' }}>
+                                        <Grid>
+                                            <Grid.Column width={2}>
+                                                <img class='productImage' src={cartitem.productId.images[0]} alt={cartitem.productId.name}></img>
+                                            </Grid.Column>
+                                            <Grid.Column width={10}>
+                                                <Grid.Row>
+                                                    <Link class='productlink' to={"/product/" + cartitem.productId._id}>
+                                                        <div class='productTitle'>{cartitem.productId.name}</div>
+                                                    </Link>
+                                                </Grid.Row>
+                                                <Grid.Row>
+                                                    <div class='stocklabel'>
+                                                        Only few left in stock - order soon.
+                                                    </div>
+                                                </Grid.Row>
 
-                                                <span class='deleteProduct' onClick={() => { this.deleteProduct(cartitem.productId._id, "delete") }}>Delete</span>
-                                                <span class="separator"></span>
-                                                <span class='deleteProduct' onClick={() => { this.deleteProduct(cartitem.productId._id, "movetocart") }}>Move to cart</span>
-                                            </div>
-                                        </Grid.Row>
+                                                <Grid.Row>
+                                                    <div class='qtyContainer'>
 
-                                    </Grid.Column>
-                                    <Grid.Column width={2}>
-                                        <div class='col-md-2 productprice'>
-                                            ${cartitem.productId.price}
-                                        </div>                            </Grid.Column>
-                                </Grid>
-                            </div></div>
+                                                        <span class='deleteProduct' onClick={() => { this.deleteProduct(cartitem.productId._id, "delete") }}>Delete</span>
+                                                        <span class="separator"></span>
+                                                        <span class='deleteProduct' onClick={() => { this.deleteProduct(cartitem.productId._id, "movetocart") }}>Move to cart</span>
+                                                    </div>
+                                                </Grid.Row>
 
-                    )
-                })}
-            </div>)
+                                            </Grid.Column>
+                                            <Grid.Column width={2}>
+                                                <div class='col-md-2 productprice'>
+                                                    ${cartitem.productId.price}
+                                                </div>
+                                            </Grid.Column>
+                                        </Grid>
+                                    </div></div>
+                            )
+                        })}
+                </div>)
 
 
         }

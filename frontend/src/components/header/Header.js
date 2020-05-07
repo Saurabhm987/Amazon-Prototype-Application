@@ -18,6 +18,7 @@ import {
   Menu,
   Segment,
 } from 'semantic-ui-react';
+import JwtDecode from 'jwt-decode';
 
 
 class AppHeader extends Component {
@@ -29,6 +30,7 @@ class AppHeader extends Component {
       searchText: '',
       data: [{ key: '', text: '', value: '' }],
       searchCategory: '',
+      user: ''
     }
   }
 
@@ -39,7 +41,10 @@ class AppHeader extends Component {
     if (token === null) {
       this.props.history.push('/login')
     }
-    
+
+    let user = JwtDecode(token)
+    this.setState({ user: user });
+
     await this.props.productCategories()
     await this.createOptions()
   }
@@ -144,7 +149,7 @@ class AppHeader extends Component {
             </Grid.Column>
           </Grid.Row>
 
-          <Dropdown item simple text='Hello Your Name'>
+          <Dropdown item simple text={this.state.user.name}>
             <Dropdown.Menu>
               <Dropdown.Item onClick={this.onProfileClick}>Profile</Dropdown.Item>
               {
@@ -154,34 +159,49 @@ class AppHeader extends Component {
                   : null
               }
               <Dropdown.Divider />
-              <Dropdown.Header>Header Item</Dropdown.Header>
-              <Dropdown.Item>
-                <i className='dropdown icon' />
-                <span className='text'>Account</span>
-                <Dropdown.Menu>
-                  <Dropdown.Item as='a' header>
-                  <Link  style={{ color: 'black' }} to={"/youraddresses"}>
-                    Your Addresses
-                  </Link>
-                  </Dropdown.Item>
-                  <Dropdown.Item as='a' header>
-                  <Link  style={{ color: 'black' }} to={"/yourpayments"}>
-                    Your Payments
-                  </Link>
-                  </Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown.Item>
+              {
+                this.state.user.userType === 'customer'
+                  ? (
+                    <Dropdown.Item>
+                      <i className='dropdown icon' />
+                      <span className='text'>Account</span>
+                      <Dropdown.Menu>
+                        <Dropdown.Item as='a' header>
+                          <Link style={{ color: 'black' }} to={"/youraddresses"}>
+                            Your Addresses
+                          </Link>
+                        </Dropdown.Item>
+                        <Dropdown.Item as='a' header>
+                          <Link style={{ color: 'black' }} to={"/yourpayments"}>
+                            Your Payments
+                          </Link>
+                        </Dropdown.Item>
+                      </Dropdown.Menu>
+                    </Dropdown.Item>
+                  )
+                  :
+                  null
+              }
               <Dropdown.Item onClick={this.onLogout}>Sign Out</Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
-          <Menu.Item as='a' header>
-            Return &  Orders
-          </Menu.Item>
-          <Menu.Item as='a' header>
-            <Link to={"/cart"}>
-              Cart
-            </Link>
-          </Menu.Item>
+          {
+            this.state.user.userType === 'customer'
+              ?
+              (
+                <div>
+                  <Menu.Item as='a' header>
+                    Return &  Orders
+                  </Menu.Item>
+                  <Menu.Item as='a' header>
+                    <Link to={"/cart"}>
+                      Cart
+                  </Link>
+                  </Menu.Item>
+                </div>
+              )
+              : null
+          }
         </Menu>
         <Segment inverted vertical style={{ margin: '5em 0em 0em 0em', padding: '2em 0em ' }}>
           <Container textAlign='center'>

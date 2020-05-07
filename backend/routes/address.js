@@ -2,7 +2,6 @@
 const express = require('express')
 const router = express.Router()
 var mongoose = require('mongoose');
-const checkAuth = require('../config/passport');
 const addressServices = require('../services/address')
 const checkAuth = require('../config/passport')
 
