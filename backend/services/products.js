@@ -1,6 +1,7 @@
 const queries = require('../queries/mongoQueries')
 products = require('../dbModels/product')
 productCategory = require('../dbModels/productCategory')
+buyer = require('../dbModels/buyer')
 mongoose = require('mongoose')
 
 const getProductsforCustomer = async (request) => {
@@ -154,7 +155,7 @@ const updateProduct = async (request) => {
 const addReview = async (request) => {
 
     try {
-        const { body, params } = request
+        const { body, params, user } = request
 
         const {
             userId,
@@ -163,6 +164,27 @@ const addReview = async (request) => {
             header,
         } = body
 
+        // add review to buyer schema
+        let findUserQuery = {
+            _id: user.userId
+        }
+        let insertQuery = {
+            '$push': {
+                comments: {
+                    'productId': params.product_id,
+                    'review': {
+                        userId: user.userId,
+                        comment: comment,
+                        rating: rating,
+                        header: header,
+                    }
+                }
+            }
+        }
+        const dbResp = await queries.updateField(buyer, findUserQuery, insertQuery);
+        console.log('review added in buyer model', dbResp);
+
+        // add review to product schema
         let _id = mongoose.Types.ObjectId(params.product_id)
 
         //currently no user id 
@@ -178,7 +200,7 @@ const addReview = async (request) => {
             {
                 'review':
                 {
-                    userId: new mongoose.Types.ObjectId(),
+                    userId: user.userId,
                     comment: comment,
                     rating: rating,
                     header: header,
