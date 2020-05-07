@@ -36,7 +36,7 @@ const getProductsforCustomer = async (request) => {
         // console.log(sortBy)
         // console.log(offset)
         // const cate = await queries.findDocumentsByQuery(productCategory, {}, { _id: 0 }, {})
-        const resp = await queries.findDocumentsByQueryFilter(products, query, { _id: 1, name: 1, price: 1, overallRating: 1, images: 1, "seller": 1 }, { skip: (Number(offset) - 1)*12, limit: 12, sort: sortBy })
+        const resp = await queries.findDocumentsByQueryFilter(products, query, { _id: 1, name: 1, price: 1, overallRating: 1, images: 1, "seller": 1 }, { skip: (Number(offset) - 1) * 12, limit: 12, sort: sortBy })
         // let countQuery = {removed:false}
         const count = await queries.countDocumentsByQuery(products, query)
         // console.log(resp)
@@ -106,8 +106,6 @@ const updateProduct = async (request) => {
 
         const { body, params } = request
 
-        const _id = params.product_id
-
         const {
             name,
             category,
@@ -116,6 +114,24 @@ const updateProduct = async (request) => {
             description,
             giftPrice,
         } = body
+
+        const _id = params.product_id
+
+        const getProdData = await getProduct(_id)
+
+        let currquantity = getProdData.body.quantity
+
+        if (currquantity !== quantity) {
+
+            dcrres = await dcrproductCount(category, currquantity)
+
+            if (dcrres.numOfProducts < 0 && null) {
+
+                throw new Error('Can not update product!')
+            }
+
+            await incproductCount(category, quantity)
+        }
 
         let upadateQuery = {
             $set:
@@ -128,8 +144,6 @@ const updateProduct = async (request) => {
                 giftPrice: giftPrice
             }
         }
-
-        console.log('function update query - ', upadateQuery)
 
         let findQuery = { _id: mongoose.Types.ObjectId(_id) }
 
@@ -186,10 +200,7 @@ const addReview = async (request) => {
 
         // add review to product schema
         let _id = mongoose.Types.ObjectId(params.product_id)
-
-        //currently no user id 
-        // userId = new mongoose.Types.ObjectId(userId)
-
+        
         let findQuery = {
             _id: _id
         }
@@ -208,7 +219,17 @@ const addReview = async (request) => {
             }
         }
 
-        const result = await queries.updateField(products, findQuery, upadateQuery)
+        await console.log('udpate comment - ', upadateQuery)
+
+        const updateReview = await queries.updateField(products, findQuery, upadateQuery)
+
+        let ratingQuery = { _id: _id, 'review.rating': { gt: 0 } }
+
+        const ratingCount = await queries.countDocumentsByQuery(products, ratingQuery)
+
+        let averageRating = (averageRating + rating) / ratingCount
+
+        const result = await queries.updateField(products, { _id: mongoose.Types.ObjectId(_id) }, { $set: { averageRating: averageRating } })
 
         return { status: 200, body: result }
 
@@ -400,7 +421,7 @@ const incproductCount = async (category, quantity) => {
 const dcrproductCount = async (category, quantity) => {
     try {
 
-        let findQuery = { name: category, numOfProducts: { $gt: -1 } }
+        let findQuery = { name: category, numOfProducts: { $gte: 0 } }
         let updateQuery = { $inc: { numOfProducts: -quantity } }
 
         const result = await queries.updateField(productCategory, findQuery, updateQuery)
@@ -433,6 +454,7 @@ const dcrproductCount = async (category, quantity) => {
 
 
 const getProductsforSeller = async (request) => {
+
     try {
         const { searchText, filterText, offset, sortType, sellerId } = request.query;
         if (searchText === "" && filterText === "") {
@@ -475,9 +497,7 @@ const getProductsforSeller = async (request) => {
             sortBy = {}
         }
 
-        const resp = await queries.findDocumentsByQueryFilter(products, query, { _id: 1, name: 1, description:1, quantity:1, category:1, giftPrice:1, sellerId:1, sellerName:1, price: 1, overallRating: 1, images: 1}, { skip: ((Number(offset) - 1)*3), limit: 3, sort: sortBy })
-
-        // let countQuery = {sellerId: sellerId, removed:false}
+        const resp = await queries.findDocumentsByQueryFilter(products, query, { _id: 1, name: 1, description: 1, quantity: 1, category: 1, giftPrice: 1, sellerId: 1, sellerName: 1, price: 1, overallRating: 1, images: 1 }, { skip: ((Number(offset) - 1) * 3), limit: 3, sort: sortBy })
 
         const count = await queries.countDocumentsByQuery(products, query)
 
@@ -490,6 +510,51 @@ const getProductsforSeller = async (request) => {
             message = error.message
         else
             message = 'Error while fetching products'
+
+        if (error.statusCode)
+            code = error.statusCode
+        else
+            code = 500
+
+        return { "status": code, body: { message } }
+    }
+}
+
+
+
+const deleteCategory = async (request) => {
+
+    try {
+
+        const { params } = request
+        let name = params.category_name
+
+        let findQuery = { name: name }
+
+        const result = await queries.findDocumets(productCategory, findQuery)
+
+        if (result[0].numOfProducts === 0) {
+
+            const res = await queries.deleteDocuments(productCategory, findQuery)
+
+            if (res.deletedCount === 1) {
+
+                return { status: 200, body: 'category deleted' }
+
+            }else{
+                throw new Error('Error while deleting category')
+            }
+        } else {
+
+            throw new Error('Category can not delete')
+        }
+
+    } catch (error) {
+
+        if (error.message)
+            message = error.message
+        else
+            message = 'Error while getting product'
 
         if (error.statusCode)
             code = error.statusCode
@@ -514,4 +579,5 @@ module.exports = {
     incproductCount: incproductCount,
     dcrproductCount: dcrproductCount,
     getProductsforSeller: getProductsforSeller,
+    deleteCategory: deleteCategory,
 }

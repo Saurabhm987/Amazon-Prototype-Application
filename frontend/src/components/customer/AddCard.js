@@ -1,15 +1,10 @@
 import React, {Component} from 'react'
 import { Button, Form, Grid, Header, Segment} from 'semantic-ui-react'
-import axios from 'axios'
-const qs = require('querystring')
+import {addCard} from '../../actions/customer'
+import PropTypes from 'prop-types'
+import {connect} from 'react-redux'
 
-const config = {
-  headers: {
-    'Content-Type': 'application/x-www-form-urlencoded'
-  }
-}
-
-class addCard extends Component {
+class AddCard extends Component {
     constructor(props) {
       super(props)
       this.state = {
@@ -35,23 +30,12 @@ class addCard extends Component {
             cvv: this.state.cvv,
         }
 
-        console.log(newCard)
+        console.log('card details',newCard)
 
-        const card = (newCard) => {
-            return axios
-              .post('http://localhost:3001/card/addCard', qs.stringify(newCard),config)
-              .then(response => {
-                console.log(response.data)
-                this.props.history.push('/yourpayments')
-                return response.data
-              })
-              .catch(err => {
-                console.log(err)
-              })
-          }
-        const cardDetails = await card()
-        console.log(cardDetails);
-        
+        await this.props.addCard(newCard)
+
+        this.props.history.push('/customer/card')
+
     }
 
 render(){
@@ -103,5 +87,13 @@ render(){
     }
   }
 
+  AddCard.propTypes = {
+    addCard : PropTypes.func.isRequired,
+    cardList: PropTypes.array.isRequired,
+  }
 
-  export default addCard;
+  const mapStateToProps = state => ({
+    cardList: state.customer.cardlist
+  })
+
+  export default connect(mapStateToProps, {addCard})(AddCard);

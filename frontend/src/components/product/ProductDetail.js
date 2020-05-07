@@ -36,6 +36,7 @@ class ProductDetail extends Component {
             userId:"",
             hovered: false,
             quantity: 1,
+            productId:'',
             options: [
                 { key: 1, text: '1', value: 1 },
                 { key: 2, text: '2', value: 2 },
@@ -61,9 +62,16 @@ class ProductDetail extends Component {
 
         const productId = await queryString.parse(this.props.location.search);
 
+        this.setState({productId: productId.id});
+
         await this.props.getproductDetail(productId.id)
 
     }
+
+    handleComment = async () => {
+        this.props.history.push(`/customer/reviews/?pid=${this.state.productId}`)
+    }
+
     /////////////////////////////////////////////
     moveToCart = (e) => {
         e.preventDefault();
@@ -339,6 +347,12 @@ if (this.props.cartRedirect === true) {
                 <br />
                 <Grid style={{ margin: '0px 20px 20px 30px' }}>
                     <Header>Customer reviews</Header>
+                    <Grid.Row>
+                        <Button 
+                        onClick={this.handleComment}
+                        style={{borderColor:'#ADB1B8 #A2A6AC #8D9096'}}
+                        >Write a Customer Review</Button>
+                    </Grid.Row>
                     <br />
                     <Grid.Row>
                         <Segment style={{ width: '100%' }}>
