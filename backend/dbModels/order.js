@@ -66,39 +66,39 @@ const billingAddress = new mongoose.Schema({
     },
 });
 
-productSchema = new mongoose.Schema ({
-    productId: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-    },
-    trackingId: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-    },
-    sellerId: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-    },
-    name: {
-        type: String,
-        required: true,
-    },
-    quantity: {
-        type: Number,
-        required: true,
-    },
-    update: [{
-        updatedDate: {
-            type: Date
-        },
-        status: {
-            type: String
-        },
-        location: {
-            type: String
-        }
-    }]
-});
+// productSchema = new mongoose.Schema ({
+//     productId: {
+//         type: mongoose.Schema.Types.ObjectId,
+//         required: true,
+//     },
+//     trackingId: {
+//         type: mongoose.Schema.Types.ObjectId,
+//         required: true,
+//     },
+//     sellerId: {
+//         type: mongoose.Schema.Types.ObjectId,
+//         required: true,
+//     },
+//     name: {
+//         type: String,
+//         required: true,
+//     },
+//     quantity: {
+//         type: Number,
+//         required: true,
+//     },
+//     update: [{
+//         updatedDate: {
+//             type: Date
+//         },
+//         status: {
+//             type: String
+//         },
+//         location: {
+//             type: String
+//         }
+//     }]
+// });
 
 const statusSchema = new mongoose.Schema({
     status: {
@@ -152,6 +152,13 @@ const orderSchema = new mongoose.Schema({
     
     totalAmount: {
         type: Number
+    },
+    gift: {
+        type: Boolean
+    }
+    ,
+    giftMessage: {
+        type: String
     },
     quantity: {
         type: Number,

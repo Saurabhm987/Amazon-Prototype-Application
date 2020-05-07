@@ -11,7 +11,8 @@ const keys = require('../config/keys'),
     cachedcategories = require('../redis/cachedcategories'),
     cachedsearch = require('../redis/cachedsearch'),
     client = require('../index'),
-    fakeproduct = require('../config/faker')
+    fakeproduct = require('../config/faker'),
+    checkAuth = require('../config/passport');
 
 
 AWS.config.update({
@@ -181,12 +182,12 @@ router.post('/addproduct', uploadMultiple, async (request, response) => {
     }
 
 */
-router.post('/addreview/:product_id', async (request, response) => {
+router.post('/addreview/:product_id', checkAuth, async (request, response) => {
 
     console.log('hitting adreview')
 
     try {
-        const requestBody = { body: request.body, params: request.params }
+        const requestBody = { body: request.body, params: request.params, user:request.user }
 
         const result = await productServices.addReview(requestBody)
 
@@ -388,7 +389,7 @@ router.get('/search', async (request, response) => {
         }
         let res = await productServices.getProductsforCustomer(data);
 
-        client.set('products', JSON.stringify(res.body))
+        // client.set('products', JSON.stringify(res.body))
 
         response.status(res.status).json(res.body);
 

@@ -1,13 +1,13 @@
 const queries = require('../queries/mongoQueries')
-userAuth = require('../dbModels/userAuth')
+seller = require('../dbModels/seller')
 
 const getAllSeller = async () => {
 
     try {
 
-        let findQuery = { 'userType': 'seller' }
+        let findQuery = {}
 
-        const result = await queries.findDocumets(userAuth, findQuery)
+        const result = await queries.findDocumets(seller, findQuery)
 
         return { status: 200, body: result }
 
