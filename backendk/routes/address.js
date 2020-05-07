@@ -4,6 +4,7 @@ const router = express.Router()
 var mongoose = require('mongoose');
 const addressServices = require('../services/address')
 const checkAuth = require('../config/passport')
+var kafka = require('../kafka/client');
 
 router.get('/getAddress/:customer_id', async (request, response) => {
     try {
@@ -11,9 +12,16 @@ router.get('/getAddress/:customer_id', async (request, response) => {
             "params": request.params,
             "query": request.query,
             "user": request.user,
+            "type": "getAddress"
         }
-        let res = await addressServices.getAddress(data);
-        response.status(res.status).json(res.body);
+        ///
+          await kafka.make_request('address-card', data, async (err, data) => {
+            if (err) throw new Error(err)
+            await response.status(data.status).json(data.body);
+        });
+        ///
+        // let res = await addressServices.getAddress(data);
+        // response.status(res.status).json(res.body);
     }
     catch (error) {
         if (error.message)
@@ -39,11 +47,19 @@ router.post('/addAddress', checkAuth, async (request, response) => {
             "id": request.params.customer_id,
             "params": request.params,
             "query": request.query,
-            "user": request.user
+            "user": request.user,
+            "type": "addAddress"
+
         }
         // response.end()
-        let res = await addressServices.addAddress(data);
-        response.status(res.status).json(res.body);
+        ///
+        await kafka.make_request('address-card', data, async (err, data) => {
+            if (err) throw new Error(err)
+            await response.status(data.status).json(data.body);
+        });
+        ///
+        // let res = await addressServices.addAddress(data);
+        // response.status(res.status).json(res.body);
     }
     catch (error) {
         if (error.message)
@@ -66,12 +82,19 @@ router.put('/updateAddress/:customer_id/address/:id', async (request, response) 
             "body": request.body,
             "params": request.params,
             "query": request.query,
+            "type": "updateAddress"
+
         }
 
         console.log('updating address - ', data)
-
-        let res =await addressServices.updateAddress(data);
-        response.status(res.status).json(res.body);
+///
+await kafka.make_request('address-card', data, async (err, data) => {
+    if (err) throw new Error(err)
+    await response.status(data.status).json(data.body);
+});
+///
+        // let res =await addressServices.updateAddress(data);
+        // response.status(res.status).json(res.body);
     }
     catch (error) {
         if (error.message)
@@ -96,9 +119,17 @@ router.delete('/deleteAddress/:customer_id/address/:address_id', async (request,
             "body": request.body,
             "params": request.params,
             "query": request.query,
+            "type": "deleteAddress"
+
         }
-        let res = await addressServices.deleteAddress(data);
-        response.status(res.status).json(res.body);
+        ///
+        await kafka.make_request('address-card', data, async (err, data) => {
+            if (err) throw new Error(err)
+            await response.status(data.status).json(data.body);
+        });
+        ///
+        // let res = await addressServices.deleteAddress(data);
+        // response.status(res.status).json(res.body);
     } catch (error) {
         if (error.message)
             message = error.message
@@ -119,10 +150,17 @@ router.get('/:customer_id/detail/:address_id', async (request, response) => {
     try {
         const data = {
             "params": request.params,
+            "type": getAddressDetail
         }
-        let res = await addressServices.getAddressDetail(data);
-        let result = res.body[0]
-        response.status(res.status).json(result)
+          ///
+          await kafka.make_request('address-card', data, async (err, data) => {
+            if (err) throw new Error(err)
+            await response.status(data.status).json(data.body[0]);
+        });
+        ///
+        // let res = await addressServices.getAddressDetail(data);
+        // let result = res.body[0]
+        // response.status(res.status).json(result)
     }
     catch (error) {
         if (error.message)
