@@ -21,7 +21,7 @@ class Address extends Component {
         if (token !== null) {
             let userData = JwtDecode(token)
             this.setState({ userId: userData.userId });
-            await this.props.getAddress('5ea91dccebe1b9a0fc721a67')
+            await this.props.getAddress(userData.userId)
 
         } else {
             this.props.history.push('/login')
@@ -37,7 +37,7 @@ class Address extends Component {
 
         let selectedAddress = e.currentTarget.dataset.id
 
-        await this.props.removeAddress('5ea91dccebe1b9a0fc721a67', selectedAddress);
+        await this.props.removeAddress(this.state.userId, selectedAddress);
     }
 
     handleEdit = async (e) => {

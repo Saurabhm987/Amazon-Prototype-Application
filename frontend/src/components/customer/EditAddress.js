@@ -17,7 +17,7 @@ class EditAddress extends Component {
             country: '',
             pincode: '',
             phone: '',
-            fullname:'',
+            fullname: '',
         }
     }
 
@@ -28,34 +28,22 @@ class EditAddress extends Component {
 
             const { id, userId } = await this.props.location.state
 
-            await this.props.getAddressDetail('5ea91dccebe1b9a0fc721a67', id)
+            let user = JwtDecode(token)
+
+            await this.props.getAddressDetail(user.userId, id)
 
         } else {
             this.props.history.push('/login')
         }
+    }
 
-
-        // const { street1, street2, city, state, country, pincode, phone} = await this.props.addressDetail
-        // await this.setState({
-        //     street1: street1,
-        //     street2: street2,
-        //     city:city,
-        //     state: state,
-        //     coutnry:country,
-        //     pincode: pincode,
-        //     phone: phone
-        // });
-
+    handleCancel = async () => {
+        this.props.history.push('address')
     }
 
     handleInput = async (e, { value, name }) => {
         this.setState({ [name]: value });
     }
-
-    // handleSubmit = async () => {
-
-    //     this.props.udpdateAddress()
-    // }
 
     handleSave = async (e) => {
 
@@ -85,14 +73,12 @@ class EditAddress extends Component {
         }
 
         console.log('update data --', data)
-        
+
 
         await this.props.updateAddress(userId, selectedAddress, data);
 
         this.props.history.push('/customer/address')
-        // await this.props.getCard('5ea91dccebe1b9a0fc721a67')
-        // this.setState({ editmode: false });
-        // window.location.reload();
+    
     }
 
     render() {
@@ -192,9 +178,8 @@ class EditAddress extends Component {
                                             name='state'
                                             defaultValue={addressDetail.state || ''}
                                         />
-                                        <Button fluid
+                                        <Button
                                             onClick={this.handleSave}
-                                            size='large'
                                             style={{ background: '#febd69', backgroundColor: '#a88734 #9c7e31 #846a29', color: 'rgb(17, 17, 17)' }}
                                             data-city={addressDetail.city}
                                             data-street1={addressDetail.street1}
@@ -204,10 +189,14 @@ class EditAddress extends Component {
                                             data-state={addressDetail.state}
                                             data-country={addressDetail.country}
                                             data-name={addressDetail.name}
-                                            data-selectedid = {addressDetail._id}
-                                        >   
+                                            data-selectedid={addressDetail._id}
+                                        >
                                             Save Changes
                                         </Button>
+                                        <Button
+                                            style={{ background: '#febd69', backgroundColor: '#a88734 #9c7e31 #846a29', color: 'rgb(17, 17, 17)' }}
+                                            onClick={this.handleCancel}
+                                        >Cancel</Button>
                                     </Form>
                                 </Grid.Column>
                             </Grid>

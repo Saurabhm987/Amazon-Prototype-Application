@@ -59,7 +59,8 @@ const cartSchema = new mongoose.Schema ({
     },
     gift: {
         type: Boolean
-    },
+    }
+    ,
     giftMessage: {
         type: String
     }
@@ -70,11 +71,7 @@ const saveForLaterSchema = new mongoose.Schema ({
     {   type: mongoose.Schema.Types.ObjectId, 
         ref: "product"
     }
-    // ,
-    // SavedQuantity: {
-    //     type: Number,
-    //     required: true
-    // }
+   
 });
 
 

@@ -7,14 +7,15 @@ const hashPassword = (password) => {
     return bcrypt.hashSync(password, salt);
 }
 
+seller = require('../dbModels/seller')
 
 const getAllSeller = async () => {
 
     try {
 
-        let findQuery = { 'userType': 'seller' }
+        let findQuery = {}
 
-        const result = await queries.findDocumets(userAuth, findQuery)
+        const result = await queries.findDocumets(seller, findQuery)
 
         return { status: 200, body: result }
 

@@ -30,6 +30,8 @@ exports.addCard = async (request) => {
 
     console.log('add card request ---', request)
 
+    const{user} = request
+
     try {
         update = {
             $push: {
@@ -44,7 +46,7 @@ exports.addCard = async (request) => {
 
         // take id from current user
 
-        const resp = await queries.updateField(buyer,{ _id:'5ea91dccebe1b9a0fc721a67'},update)
+        const resp = await queries.updateField(buyer,{ _id:user.userId},update)
         return { "status": 200, body: resp.card }
     }
     catch (error) {

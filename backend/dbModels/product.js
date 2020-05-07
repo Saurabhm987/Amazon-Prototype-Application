@@ -42,6 +42,9 @@ const productSchema = new mongoose.Schema({
     views:{
         type: Number
     },
+    viewData: {
+        type: Date,
+    },
     review: [{
         _id: false,
         type: reviewSchema

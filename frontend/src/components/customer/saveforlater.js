@@ -86,54 +86,56 @@ class Saveforlater extends Component {
             redirectVar = <Redirect to={`/customer/${sessionStorage.getItem('id')}/checkout`} />
 
         if (customersaveforlater.length) {
+           
+            saveforlaterlist = (<div >
+                {customersaveforlater.map((cartitem, index) => {
+                    return (
+                        <div>
+                        <Divider fitted />
 
-            saveforlaterlist = (
-                <div >
-                    {
-                        customersaveforlater.map((cartitem, index) => {
-                            return (
-                                <div>
-                                    <Divider fitted />
+                        <div style={{marginTop:'20px'}}>
+                        <Grid>
+                            <Grid.Column width={2}>
+                            <img class='productImage' src={cartitem.productId.images[0]} alt={cartitem.productId.name}></img>
+                            </Grid.Column>
+                            <Grid.Column width={10}>
+                                <Grid.Row>
+                                    <Link class='productlink' to={"/product/" + cartitem.productId._id}>
+                                        <div class='productTitle'>{cartitem.productId.name}</div>
+                                    </Link>
+                                </Grid.Row>
+                                <Grid.Row>
+                                Sold by 
+                                    <Link class='productlink' to={`/sellerprofile/?id=${cartitem.productId.seller.sellerId}` }>
+                                    <span class='stocklabel'> {cartitem.productId.seller.sellerName?cartitem.productId.seller.sellerName:""}</span>
+                                    </Link>
+                                    <div class='stocklabel'>
+                                        Only few left in stock - order soon.
+                                    </div>
+                                </Grid.Row>
+                              
+                                <Grid.Row>
+                                <div class='qtyContainer'>
+                                       
+                                        <span class='deleteProduct' onClick={() => { this.deleteProduct(cartitem.productId._id, "delete") }}>Delete</span>
+                                        <span class="separator"></span>
+                                        <span class='deleteProduct' onClick={() => { this.deleteProduct(cartitem.productId._id, "movetocart") }}>Move to cart</span>
+                                    </div>
+                                </Grid.Row>
+                             
+                            </Grid.Column>
+                            <Grid.Column width={2}>
+                            <div class='col-md-2 productprice'>
+                                    ${cartitem.productId.price}
+                                </div>                            </Grid.Column>
+                        </Grid>
+                        </div></div>
 
-                                    <div style={{ marginTop: '20px' }}>
-                                        <Grid>
-                                            <Grid.Column width={2}>
-                                                <img class='productImage' src={cartitem.productId.images[0]} alt={cartitem.productId.name}></img>
-                                            </Grid.Column>
-                                            <Grid.Column width={10}>
-                                                <Grid.Row>
-                                                    <Link class='productlink' to={"/product/" + cartitem.productId._id}>
-                                                        <div class='productTitle'>{cartitem.productId.name}</div>
-                                                    </Link>
-                                                </Grid.Row>
-                                                <Grid.Row>
-                                                    <div class='stocklabel'>
-                                                        Only few left in stock - order soon.
-                                                    </div>
-                                                </Grid.Row>
+                    )
+                })}
+            </div>)
 
-                                                <Grid.Row>
-                                                    <div class='qtyContainer'>
-
-                                                        <span class='deleteProduct' onClick={() => { this.deleteProduct(cartitem.productId._id, "delete") }}>Delete</span>
-                                                        <span class="separator"></span>
-                                                        <span class='deleteProduct' onClick={() => { this.deleteProduct(cartitem.productId._id, "movetocart") }}>Move to cart</span>
-                                                    </div>
-                                                </Grid.Row>
-
-                                            </Grid.Column>
-                                            <Grid.Column width={2}>
-                                                <div class='col-md-2 productprice'>
-                                                    ${cartitem.productId.price}
-                                                </div>
-                                            </Grid.Column>
-                                        </Grid>
-                                    </div></div>
-                            )
-                        })}
-                </div>)
-
-
+          
         }
 
 

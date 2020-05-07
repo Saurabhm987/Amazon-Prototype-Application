@@ -68,17 +68,26 @@ class Cart extends Component {
                 giftMessage: "",
                 quantity: quantity
             }
-            this.props.updateCustomerCart(data)
             setmessage[index] = ""
             this.setState({
                 setmessage: setmessage
             })
         } else {
+            data = {
+                customer_id:this.state.userId,
+                // customer_id: "5ea6217130c53720685db7dd",
+                product_id: product_id,
+                gift: true,
+                giftMessage: "",
+                quantity: quantity
+            }
             setmessage[index] = "true"
             this.setState({
                 setmessage: setmessage
             })
         }
+        this.props.updateCustomerCart(data)
+
     }
     giftProduct = (product_id, gift, message, quantity ,index) => {
         let data
@@ -206,8 +215,13 @@ class Cart extends Component {
                                     <Link class='productlink' to={"/product/" + cartitem.productId._id}>
                                         <div class='productTitle'>{cartitem.productId.name}</div>
                                     </Link>
+                                    
                                 </Grid.Row>
                                 <Grid.Row>
+                                    Sold by 
+                                    <Link class='productlink' to={`/sellerprofile/?id=${cartitem.productId.seller.sellerId}` }>
+                                    <span class='stocklabel'> {cartitem.productId.seller.sellerName?cartitem.productId.seller.sellerName:""}</span>
+                                    </Link>
                                     <div class='stocklabel'>
                                         Only few left in stock - order soon.
                                     </div>

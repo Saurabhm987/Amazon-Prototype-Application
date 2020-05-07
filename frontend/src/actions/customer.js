@@ -96,7 +96,7 @@ export const addAddress = (body) => async (dispatch) => {
 
 export const updateCard = (customerId, cardId, body) => async (dispatch) => {
 
-    await axios.put(`${API_ENDPOINT}/card/updateCard/5ea91dccebe1b9a0fc721a67/card/${cardId}`, body)
+    await axios.put(`${API_ENDPOINT}/card/updateCard/${customerId}/card/${cardId}`, body)
         .then(response => {
             if (response.status >= 500) {
                 throw new Error('Bad response from server')

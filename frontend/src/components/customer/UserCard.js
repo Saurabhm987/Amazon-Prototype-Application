@@ -38,7 +38,7 @@ class UserCard extends Component {
         if (token !== null) {
             let userData = JwtDecode(token)
             this.setState({ userId: userData.userId });
-            await this.props.getCard('5ea91dccebe1b9a0fc721a67')
+            await this.props.getCard(userData.userId)
         } else {
             this.props.history.push('/login')
         }
@@ -64,7 +64,7 @@ class UserCard extends Component {
 
         // let userId = this.state.userId
         // userId should go here
-        await this.props.deleteCard('5ea91dccebe1b9a0fc721a67', selecedCard)
+        await this.props.deleteCard(this.state.userId, selecedCard)
     }
 
     handleSave = async (e) => {
@@ -85,7 +85,7 @@ class UserCard extends Component {
             number: number || e.currentTarget.dataset.number,
         }
         await this.props.updateCard(userId, currentCardId, data);
-        await this.props.getCard('5ea91dccebe1b9a0fc721a67')
+        await this.props.getCard(userId)
         this.setState({ editmode: false });
         window.location.reload();
     }
