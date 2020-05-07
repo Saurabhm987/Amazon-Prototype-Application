@@ -9,6 +9,7 @@ import Address from './customer/address'
 import Cards from './customer/card'
 import AddAddress from './customer/addAddress'
 import AddCard from './customer/addCard'
+import Checkout from './customer/checkout'
 
 
 import CustomerProfile from './customer/customerProfile'
@@ -51,6 +52,7 @@ class Main extends Component {
                 <Route path='/addcard' exact component={AddCard} />
                 <Route path="/orderDetails" exact component={OrderDetail} />
                 <Route path="/orderTracking" exact component={OrderTrackingModal} />
+                <Route path='/checkout'  component={Checkout} />
 
                 { 
                     user !== null

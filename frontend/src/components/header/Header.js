@@ -40,9 +40,7 @@ class AppHeader extends Component {
     let token = localStorage.getItem('token')
 
     // if(token !== null){
-<<<<<<< HEAD
     //   this.props.history.push('/dashboard')
-=======
     //   let user = JwtDecode(token);
     //   if (user.userType === USER_CUSTOMER) {
     //     this.props.history.push('/dashboard');
@@ -52,7 +50,6 @@ class AppHeader extends Component {
     //     // his.props.history.push('/sellerCentral');
     //   }
        
->>>>>>> 140922ccd097f50e20046b8ff2e1e0f8936c8719
     // }
 
     await this.props.productCategories()
