@@ -105,6 +105,10 @@ class Saveforlater extends Component {
                                     </Link>
                                 </Grid.Row>
                                 <Grid.Row>
+                                Sold by 
+                                    <Link class='productlink' to={`/sellerprofile/?id=${cartitem.productId.seller.sellerId}` }>
+                                    <span class='stocklabel'> {cartitem.productId.seller.sellerName?cartitem.productId.seller.sellerName:""}</span>
+                                    </Link>
                                     <div class='stocklabel'>
                                         Only few left in stock - order soon.
                                     </div>
