@@ -167,12 +167,12 @@ class AppHeader extends Component {
                       <span className='text'>Account</span>
                       <Dropdown.Menu>
                         <Dropdown.Item as='a' header>
-                          <Link style={{ color: 'black' }} to={"/youraddresses"}>
+                          <Link style={{ color: 'black' }} to={"/customer/address"}>
                             Your Addresses
                           </Link>
                         </Dropdown.Item>
                         <Dropdown.Item as='a' header>
-                          <Link style={{ color: 'black' }} to={"/yourpayments"}>
+                          <Link style={{ color: 'black' }} to={"/customer/card"}>
                             Your Payments
                           </Link>
                         </Dropdown.Item>
@@ -188,20 +188,25 @@ class AppHeader extends Component {
           {
             this.state.user.userType === 'customer'
               ?
-              (
-                <div>
-                  <Menu.Item as='a' header>
-                    Return &  Orders
-                  </Menu.Item>
-                  <Menu.Item as='a' header>
-                    <Link to={"/cart"}>
-                      Cart
-                  </Link>
-                  </Menu.Item>
-                </div>
-              )
+              <Menu.Item as='a' header>
+                <Link to='#'>
+                  Return &  Orders
+                </Link>
+              </Menu.Item>
               : null
           }
+
+          {
+            this.state.user.userType === 'customer'
+              ?
+              <Menu.Item as='a' header>
+                <Link to={"/cart"}>
+                  Cart
+                    </Link>
+              </Menu.Item>
+              : null
+          }
+
         </Menu>
         <Segment inverted vertical style={{ margin: '5em 0em 0em 0em', padding: '2em 0em ' }}>
           <Container textAlign='center'>

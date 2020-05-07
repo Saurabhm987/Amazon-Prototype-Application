@@ -21,6 +21,7 @@ import AddCard from './customer/AddCard';
 import Address from './customer/Address';
 import UserCard from './customer/UserCard';
 import EditAddress from './customer/EditAddress';
+import CustomerReiviews from './customer/CustomerReiviews'
 
 class Main extends Component {
     constructor(props) {
@@ -54,6 +55,7 @@ class Main extends Component {
                 <Route path='/customer/card' exact component={UserCard} />
                 <Route path='/customer/addressupdate' exact component={EditAddress} />
                 <Route path='/checkout'  component={Checkout} />
+                <Route path='/customer/reviews' component={CustomerReiviews} />
 
                 { 
                     user !== null

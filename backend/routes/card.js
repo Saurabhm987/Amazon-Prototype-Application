@@ -9,7 +9,6 @@ router.get('/getCard/:customer_id', async (request, response) => {
 
     try {
         const data = {
-            "body": request.user.userId,
             "params": request.params,
             "query": request.query,
         }

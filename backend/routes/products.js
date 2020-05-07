@@ -182,7 +182,7 @@ router.post('/addproduct', uploadMultiple, async (request, response) => {
     }
 
 */
-router.post('/addreview/:product_id', checkAuth, async (request, response) => {
+router.post('/review/:product_id', checkAuth, async (request, response) => {
 
     console.log('hitting adreview')
 

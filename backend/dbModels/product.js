@@ -21,7 +21,8 @@ const productSchema = new mongoose.Schema({
         required: true
     },
     overallRating: {
-        type: Number
+        type: Number,
+        default: null
     },
     description: {
         type: String,

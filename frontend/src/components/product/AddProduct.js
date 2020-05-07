@@ -27,7 +27,6 @@ class AddProduct extends Component {
       test: '',
       quantity: '',
       price: '',
-      giftPrice: '',
       modalOpen: false,
       files: [],
       data: [{ key: '', text: '', value: '' }],
@@ -66,12 +65,15 @@ class AddProduct extends Component {
   hanldeFileChange = async (e) => {
     e.preventDefault()
 
-    if (this.state.files.length < 6) {
+    console.log('file length --', this.state.files)
+
+    if (this.state.files.length < 5) {
       await this.setState({
         files: [...this.state.files, ...e.target.files],
       });
     } else {
-      this.setState({ error: true });
+      // this.setState({ error: true });
+      alert('Can not add more than 5 images')
     }
   }
 
@@ -99,10 +101,6 @@ class AddProduct extends Component {
       formdata.append('images', this.state.files[x])
     }
 
-    for (var pair of formdata.entries()) {
-      console.log(pair[0] + ', ' + JSON.stringify(pair[1]));
-    }
-
     const { productname, description, quantity, price, selectedCategory, giftPrice } = this.state
 
     const { userId, name } = this.props.user
@@ -112,13 +110,12 @@ class AddProduct extends Component {
     formdata.append('quantity', quantity)
     formdata.append('price', price)
     formdata.append('category', selectedCategory)
-    formdata.append('giftPrice', giftPrice)
     formdata.append('sellerId', userId)
     formdata.append('sellerName', name)
 
-    for (var pair of formdata.entries()) {
-      console.log(pair[0] + ', ' + pair[1]);
-    }
+    // for (var pair of formdata.entries()) {
+    //   console.log(pair[0] + ', ' + pair[1]);
+    // }
 
     await this.props.addProduct(formdata)
 
@@ -154,12 +151,12 @@ class AddProduct extends Component {
                 <Input type="file" multiple onChange={this.hanldeFileChange} />
               </Grid.Row>
               <Grid.Row>
-                <Popup
+                {/* <Popup
                   trigger={true}
                   content='Popup with a custom style prop'
                   style={this.style}
                   inverted
-                />
+                /> */}
               </Grid.Row>
             </Grid.Column>
             <Modal.Description>
@@ -169,11 +166,10 @@ class AddProduct extends Component {
                   <Grid.Column>
                     <Form onSubmit={this.addproduct}>
                       <Segment stacked >
-                        <Form.TextArea name='productname' type="text" label="Product Name" value={this.state.name || ""} onChange={this.handleInputChange} />
+                        <Form.TextArea name='productname' type="text" label="Product Name" value={this.state.productname || ""} onChange={this.handleInputChange} />
                         <Form.TextArea name='description' type="text" label="Product Description" value={this.state.description || ""} onChange={this.handleInputChange} />
                         <Form.Input name='quantity' type="number" label="Quantity" value={this.state.quantity || ''} onChange={this.handleInputChange} />
                         <Form.Input name='price' type="number" label="Standard Price" value={this.state.price || ''} onChange={this.handleInputChange} />
-                        <Form.Input name='giftPrice' type="number" label="Gift Price" value={this.state.giftPrice || ''} onChange={this.handleInputChange} />
                         <Form.Field>
                           <label>Category Options</label>
                           {

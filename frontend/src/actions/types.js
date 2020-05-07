@@ -35,4 +35,9 @@ export const FETCH_ADDRESS = 'FETCH_ADDRESS';
 export const ADD_CARD = 'ADD_CARD'
 export const ADD_ADDRESS = 'ADD_ADDRESS'
 export const ADDRESS_DETAIL='ADDRESS_DETAIL'
+export const ADD_REVIEW='ADD_REVIEW'
 // ...add a new action type
+
+// seller 
+export const FETCH_SELLER_PROFILE = 'FETCH_SELLER_PROFILE'
+export const UPDATE_SELLER_PROFILE = 'UPDATE_SELLER_PROFILE'

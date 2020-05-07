@@ -88,6 +88,8 @@ class EditAddress extends Component {
         
 
         await this.props.updateAddress(userId, selectedAddress, data);
+
+        this.props.history.push('/customer/address')
         // await this.props.getCard('5ea91dccebe1b9a0fc721a67')
         // this.setState({ editmode: false });
         // window.location.reload();
@@ -124,13 +126,13 @@ class EditAddress extends Component {
                                             size='small'
 
                                         />
-                                        <Form.Input fluid
+                                        {/* <Form.Input fluid
                                             name='fullname'
                                             onChange={this.handleInput}
                                             label="Full Name"
                                             size='small'
                                             defaultValue={addressDetail.name || ''}
-                                        />
+                                        /> */}
                                         <Form.Input fluid
                                             name='phone'
                                             onChange={this.handleInput}
@@ -190,9 +192,6 @@ class EditAddress extends Component {
                                             name='state'
                                             defaultValue={addressDetail.state || ''}
                                         />
-                                        <div style={{ marginBottom: "20px" }}>
-                                            By creating an account, you agree to Amazon's Conditions of Use and Privacy Notice.
-                                        </div>
                                         <Button fluid
                                             onClick={this.handleSave}
                                             size='large'
@@ -200,7 +199,7 @@ class EditAddress extends Component {
                                             data-city={addressDetail.city}
                                             data-street1={addressDetail.street1}
                                             data-street2={addressDetail.street2}
-                                            data-phone={addressDetail.street2}
+                                            data-phone={addressDetail.phone}
                                             data-pincode={addressDetail.pincode}
                                             data-state={addressDetail.state}
                                             data-country={addressDetail.country}
@@ -208,7 +207,7 @@ class EditAddress extends Component {
                                             data-selectedid = {addressDetail._id}
                                         >   
                                             Save Changes
-                                </Button>
+                                        </Button>
                                     </Form>
                                 </Grid.Column>
                             </Grid>

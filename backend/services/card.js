@@ -7,7 +7,7 @@ const ObjectID = require('mongodb').ObjectID
 exports.getCard = async (request) => {
     try{
 
-        const resp = await queries.findDocumentsById(buyer, '5ea6217130c53720685db7dd')
+        const resp = await queries.findDocumentsById(buyer, request.params.customer_id)
 
         return { "status": 200, body: resp.card }
     }
@@ -28,8 +28,9 @@ exports.getCard = async (request) => {
 
 exports.addCard = async (request) => {
 
+    console.log('add card request ---', request)
+
     try {
-        console.log(request.body)
         update = {
             $push: {
                 "card": {
@@ -40,9 +41,10 @@ exports.addCard = async (request) => {
                 }
             }
         }
-        console.log(update)
 
-        const resp = await queries.updateField(buyer,{ _id:'5ea6217130c53720685db7dd'},update)
+        // take id from current user
+
+        const resp = await queries.updateField(buyer,{ _id:'5ea91dccebe1b9a0fc721a67'},update)
         return { "status": 200, body: resp.card }
     }
     catch (error) {
@@ -69,6 +71,8 @@ exports.updateCard = async (request) => {
             'card.$.expiryDate': request.body.expiryDate,
             'card.$.cvv': request.body.cvv
         }
+
+        // find query
         let resp = await queries.updateField(buyer, { _id: request.params.customer_id, 'card._id': request.params.id }, update)
         resp = await buyer.findOne({ _id: request.params.customer_id })
         console.log(resp)

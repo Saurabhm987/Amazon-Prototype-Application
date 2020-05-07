@@ -70,38 +70,79 @@ const updateSellerProfile = async (request) => {
 
     try {
 
-        const { body, params } = request
+        const { body, params, file } = request
+
+        console.log('request update seller - ', request)
 
         const {
             email,
             password,
             name,
             image,
-            address,
-            description,
+            street1,
+            city,
+            state,
+            country,
+            pincode,
         } = body
 
         let findQuery = { _id: mongoose.Types.ObjectId(params.sellerId) }
 
-        let updateQuery = {
+        var updateQuery = {}
 
-            $set: {
-                email: email,
-                password: hashPassword(password),
-                name: name,
-                image: image,
-                description: description,
-                address: address
+        var address = {
+            street1: street1,
+            city: city,
+            state: state,
+            country: country,
+            pincode: pincode
+        }
+
+        if (file && file[0] && (file[0].location !== null || file[0].location !== undefined)) {
+
+            updateQuery = {
+                $set: {
+                    email: email,
+                    name: name,
+                    image: file[0].location,
+                    address: address
+                }
+            }
+        } else {
+
+            updateQuery = {
+                $set: {
+                    email: email,
+                    name: name,
+                    address: address,
+                    image: image
+                }
             }
         }
 
-        let authUpdate = {
-            $set: {
-                name: name,
-                email: email,
-                password: hashPassword(password)
+        var authUpdate = {}
+
+        if (password !== null && password !== undefined && password.length > 0) {
+
+            authUpdate = {
+                $set: {
+                    name: name,
+                    email: email,
+                    password: hashPassword(password)
+                }
+            }
+
+            console.log('takin else -----------')
+        } else {
+
+            authUpdate = {
+                $set: {
+                    name: name,
+                    email: email,
+                }
             }
         }
+
 
         const authUpdtateResult = await queries.updateField(userAuth, findQuery, authUpdate)
 

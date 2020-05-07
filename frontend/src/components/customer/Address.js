@@ -84,6 +84,7 @@ class Address extends Component {
                 <br />
                 <br />
                 <br />
+                <br />
                 <div>
                     <Header as='h1'>Your Addresses</Header>
                 </div>

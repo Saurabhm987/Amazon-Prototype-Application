@@ -211,3 +211,26 @@ export const deleteCard = (customerId, cardId) => async (dispatch) => {
             console.log('error', error)
         })
 }
+
+
+
+export const addReview = (productId , body) => async (dispatch) => {
+
+    await axios.post(`${API_ENDPOINT}/product/review/${productId}`, body)
+        .then(response => {
+            if (response.status >= 500) {
+                throw new Error('Bad response from server')
+            }
+            return response.data
+        })
+        .then(payload => {
+            dispatch({
+                type: 'ADD_REVIEW',
+                payload: payload
+            })
+            console.log('update action - ', payload)
+        })
+        .catch(error => {
+            console.log('error', error)
+        })
+}

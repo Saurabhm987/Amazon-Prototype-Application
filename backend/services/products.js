@@ -219,6 +219,8 @@ const addReview = async (request) => {
             }
         }
 
+        await console.log('udpate comment - ', upadateQuery)
+
         const updateReview = await queries.updateField(products, findQuery, upadateQuery)
 
         let ratingQuery = { _id: _id, 'review.rating': { gt: 0 } }

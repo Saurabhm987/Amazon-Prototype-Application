@@ -188,7 +188,7 @@ class UserCard extends Component {
                 <br />
                 <br />
                 <div>
-                    <Link to='/addAddress' className="nav-link">
+                    <Link to='/addCard' className="nav-link">
                         <Button primary>Add Card</Button>
                     </Link>
                 </div>
