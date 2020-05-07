@@ -22,9 +22,9 @@ class AdminDashboard extends Component {
     }
 
     componentDidMount = async () => {
-        if (!this.props.isAuthenticated) {
-            this.props.history.push('/login')
-        }
+        // if (!this.props.isAuthenticated) {
+        //     this.props.history.push('/login')
+        // }
         const sales = () => {
             return axios
               .get('analytics/sales')
@@ -53,6 +53,9 @@ class AdminDashboard extends Component {
             return axios
               .get('seller')
               .then(response => {
+                console.log('====================================')
+                console.log(response.data)
+                console.log('====================================')
                 return response.data
               })
               .catch(err => {

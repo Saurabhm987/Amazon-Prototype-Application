@@ -388,7 +388,7 @@ router.get('/search', async (request, response) => {
         }
         let res = await productServices.getProductsforCustomer(data);
 
-        client.set('products', JSON.stringify(res.body))
+        // client.set('products', JSON.stringify(res.body))
 
         response.status(res.status).json(res.body);
 

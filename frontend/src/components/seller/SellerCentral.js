@@ -135,6 +135,13 @@ class SellerCentral extends Component {
                             </Segment>
                             <Segment inverted color='blue' tertiary key='mini' size='mini'>
                                 <Grid columns={2}>
+                                    <Grid.Column width={14} onClick={() => this.setState({...this.state,orderStatus:'Delivered'})}>
+                                        <Header as='h3' color='blue'>Delivered</Header>
+                                    </Grid.Column>
+                                </Grid>
+                            </Segment>
+                            <Segment inverted color='blue' tertiary key='mini' size='mini'>
+                                <Grid columns={2}>
                                     <Grid.Column width={14} onClick={() => this.setState({...this.state,orderStatus:'Cancelled'})}>
                                         <Header as='h3' color='blue'>Cancelled</Header>
                                     </Grid.Column>

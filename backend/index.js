@@ -40,13 +40,6 @@ mysqlPool
 
 // route handlers
 
-// require('./routes/seller/xyz')(app);
-app.use('/product', require('./routes/products'))
-// app.use('/user', require('./routes/cart'))
-// app.use('/saveForLater', require('./routes/saveForLater'))
-app.use('/product', require('./routes/products'))
-app.use('/user', require('./routes/cart'))
-app.use('/saveForLater', require('./routes/saveForLater'))
 
 app.use('/product', require('./routes/products'))
 app.use('/user', require('./routes/cart'))

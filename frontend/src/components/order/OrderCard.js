@@ -1,22 +1,30 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types'
+import { Link, withRouter } from 'react-router-dom'
+import { getUserOrder, updateStatus } from '../../actions/order';
 import { Container, Grid, Segment, Menu, Header, Placeholder, Dropdown, Button, Card, Image } from 'semantic-ui-react'
+import JwtDecode from 'jwt-decode';
+import { USER_CUSTOMER, USER_SELLER, USER_ADMIN } from '../controller/config';
+
+
+
 var _ = require('lodash');
-
-
-export default class orderCard extends Component {
+class orderCard extends Component {
     constructor(props) {
         super(props);
+        
     }
 
     render() {
-        var orders = _.mapValues(_.groupBy(this.props.orders, 'orderId'),clist => clist.map(order => _.omit(order, 'orderId')));
+        var orders = _.mapValues(_.groupBy(this.props.orders, 'orderId'), clist => clist.map(order => _.omit(order, 'orderId')));
 
         console.log(orders);
-        
+
         const options = [
-            { key: 1, text: 'Ordered', value: 1 },
-            { key: 2, text: 'Packing', value: 2 },
-            { key: 3, text: 'Out For Delivery', value: 3 },
+            { key: 1, text: 'Ordered', value: 'Ordered' },
+            { key: 2, text: 'Packing', value: 'Packing' },
+            { key: 3, text: 'Out For Delivery', value: 'Out For Delivery' },
         ]
         return (
             <div>
@@ -24,7 +32,7 @@ export default class orderCard extends Component {
 
                     return (
                         <Card fluid>
-                            <Card.Content>
+                            <Card.Content textAlign='left'>
                                 <Header as='h3'>ORDER ID: {orderId}</Header>
                             </Card.Content>
                             {orders[orderId].map(product => {
@@ -41,8 +49,8 @@ export default class orderCard extends Component {
 
                                                 </Placeholder>
                                             </Grid.Column>
-                                            <Grid.Column width={8}>
-                                                <Grid.Row>
+                                            <Grid.Column width={8} textAlign='left'>
+                                                <Grid.Row onClick={() => this.props.history.push('/productdetails/?id=' + product.productId._id)}>
                                                     <Header as='h4'>{product.productId.name}</Header>
                                                 </Grid.Row>
                                                 <br></br>
@@ -50,17 +58,19 @@ export default class orderCard extends Component {
                                                     <Header as='h5' color='grey'>Current Status: {product.status.status}</Header>
                                                 </Grid.Row>
                                                 <Grid.Row>
+                                                    {(JwtDecode(localStorage.getItem('token'))).userType === USER_SELLER ? 
                                                     <Menu compact>
-                                                        <Dropdown placeholder='Change Status' options={options} simple item compact />
-                                                    </Menu>
+                                                        <Dropdown placeholder='Change Status' options={options} simple item compact onChange={(e,v) => this.props.updateStatus(orderId,product.productId._id,v.value)} />
+                                                    </Menu> : <div></div>
+                                                    }
                                                 </Grid.Row>
                                             </Grid.Column>
                                             <Grid.Column width={5}>
                                                 <Grid.Row>
-                                                    <Button color='blue' floated='right' style={{ height: '35px', width: '150px', margin: '5px' }}>Details</Button>
+                                                    <Button color='blue' floated='right' style={{ height: '35px', width: '150px', margin: '5px' }} onClick={() => this.props.history.push('/orderdetails')}>Details</Button>
                                                 </Grid.Row>
                                                 <Grid.Row>
-                                                    <Button color='grey' floated='right' style={{ height: '35px', width: '150px', margin: '5px' }}>Products Page</Button>
+                                                    <Button color='red' floated='right' style={{ height: '35px', width: '150px', margin: '5px' }} onClick={() => this.props.updateStatus(orderId,product.productId._id,'Cancelled')}>Cancel</Button>
                                                 </Grid.Row>
                                             </Grid.Column>
                                         </Grid>
@@ -75,3 +85,16 @@ export default class orderCard extends Component {
         )
     }
 }
+
+orderCard.propTypes = {
+    isAuthenticated: PropTypes.bool.isRequired,
+    updateStatus: PropTypes.func.isRequired,
+}
+
+const mapStateToProps = state => ({
+    isAuthenticated: state.auth.isAuthenticated,
+})
+
+export default connect(mapStateToProps, {
+    updateStatus
+})(withRouter(orderCard))

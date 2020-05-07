@@ -40,10 +40,7 @@ class AppHeader extends Component {
     let token = localStorage.getItem('token')
 
     // if(token !== null){
-<<<<<<< HEAD
-=======
     //   this.props.history.push('/dashboard')
->>>>>>> 16b19b10559c0a604b423f1631b669438dcaf06d
     //   let user = JwtDecode(token);
     //   if (user.userType === USER_CUSTOMER) {
     //     this.props.history.push('/dashboard');
@@ -192,7 +189,9 @@ class AppHeader extends Component {
             </Dropdown.Menu>
           </Dropdown>
           <Menu.Item as='a' header>
+          <Link  to={"/customerorders"}>
             Return &  Orders
+            </Link> 
           </Menu.Item>
           <Menu.Item as='a' header>
           <Link  to={"/cart"}>

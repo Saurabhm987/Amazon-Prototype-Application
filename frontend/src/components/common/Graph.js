@@ -159,20 +159,6 @@ export default class Graph extends Component {
         <Menu>
           <Dropdown placeholder={this.state.graph} options={dropdownOptions} simple item onChange={(e, v) => this.setState({ ...this.state, graph: v.value })} />
         </Menu>
-        {/* <Row>
-          <Col xs md="5">
-            <ToggleButtonGroup type="radio" name="options" defaultValue={1}>
-              <ToggleButton value={1} style={{ fontSize: 10 }} onClick={() => this.setState({ ...this.state, graph: 'bar' })}>Alarms</ToggleButton>
-              <ToggleButton value={2} style={{ fontSize: 10 }} onClick={() => this.setState({ ...this.state, graph: 'pie' })}>By Category</ToggleButton>
-            </ToggleButtonGroup>
-          </Col>
-          <Col xs md="2">
-            <ToggleButtonGroup type="radio" name="options" defaultValue={1}>
-              <ToggleButton value={1} style={{ fontSize: 10 }} onClick={() => this.setState({ ...this.state, mode: 'duration' })}>Duration</ToggleButton>
-              <ToggleButton value={2} style={{ fontSize: 10 }} onClick={() => this.setState({ ...this.state, mode: 'frequency' })}>Frequency</ToggleButton>
-            </ToggleButtonGroup>
-          </Col>
-        </Row> */}
         <Card style={{ padding: '10px' }} fluid>
           <div>
             <HighchartsReact
