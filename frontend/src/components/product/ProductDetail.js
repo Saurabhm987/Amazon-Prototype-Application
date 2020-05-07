@@ -7,6 +7,7 @@ import ProductComment from './ProductComment'
 import { Redirect } from 'react-router';
 import { addToCart} from '../../actions/cart';
 import { addSaveForLater } from '../../actions/saveforlater';
+import jwtDecode from 'jwt-decode';
 
 
 
@@ -32,6 +33,7 @@ class ProductDetail extends Component {
 
         this.state = {
             imgUrl: '',
+            userId:"",
             hovered: false,
             quantity: 1,
             options: [
@@ -49,6 +51,11 @@ class ProductDetail extends Component {
     }
 
     componentDidMount = async () => {
+        if (localStorage.getItem("token") !== null) {
+            var user = jwtDecode(localStorage.getItem("token"));
+           await  this.setState({ userId: user.userId });
+
+        }
 
         await window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
 
@@ -71,11 +78,11 @@ class ProductDetail extends Component {
         }
         console.log(data)
 
-        this.props.addToCart( "5ea6217130c53720685db7dd",data);
+        this.props.addToCart(this.state.userId,data);
     }
     moveToSaveForLater = (e) => {
         e.preventDefault();
-        this.props.addSaveForLater("5ea6217130c53720685db7dd", this.props.productDetail._id);
+        this.props.addSaveForLater(this.state.userId, this.props.productDetail._id);
     }
     changeQuantity = (e,{value}) => {
         console.log(value)

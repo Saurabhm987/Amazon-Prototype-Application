@@ -4,6 +4,8 @@ import { addSaveForLater, deleteSaveForLater, fetchSaveForLater, moveToCart } fr
 import { Link } from 'react-router-dom';
 import './cart.css';
 import { Redirect } from 'react-router';
+import jwtDecode from 'jwt-decode';
+
 import {
     Select,
     Divider,
@@ -17,12 +19,19 @@ class Saveforlater extends Component {
         this.state = {
             cart: [],
             
-            rendercheckout: false
+            rendercheckout: false,
+            userId:""
+
         };
     }
-    componentDidMount() {
+    componentDidMount=async()=> {
+        if (localStorage.getItem("token") !== null) {
+            var user = jwtDecode(localStorage.getItem("token"));
+           await  this.setState({ userId: user.userId });
+
+        }
         // 5ea6217130c53720685db7dd
-        this.props.fetchSaveForLater("5ea6217130c53720685db7dd")
+        await this.props.fetchSaveForLater(this.state.userId)
         // this.props.fetchSaveForLater(sessionStorage.getItem("id"))
     }
 
@@ -44,7 +53,7 @@ class Saveforlater extends Component {
 
     deleteProduct = (product_id, type) => {
         console.log(type)
-        this.props.deleteSaveForLater({ customer_id: '5ea6217130c53720685db7dd', product_id: product_id, type: type })
+        this.props.deleteSaveForLater({ customer_id: this.state.userId, product_id: product_id, type: type })
     }
 
     redirectToCheckout = () => {
@@ -96,6 +105,10 @@ class Saveforlater extends Component {
                                     </Link>
                                 </Grid.Row>
                                 <Grid.Row>
+                                Sold by 
+                                    <Link class='productlink' to={`/sellerprofile/?id=${cartitem.productId.seller.sellerId}` }>
+                                    <span class='stocklabel'> {cartitem.productId.seller.sellerName?cartitem.productId.seller.sellerName:""}</span>
+                                    </Link>
                                     <div class='stocklabel'>
                                         Only few left in stock - order soon.
                                     </div>

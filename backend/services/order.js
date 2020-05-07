@@ -40,6 +40,8 @@ exports.paginatedResults = (model,data)=>{
            
             results.results= await order.find().lean().skip(filter.skip).limit(filter.limit)
             .populate('productId', { name: 1, price: 1, _id: 1, images: 1, description:1, removed:1 })
+            .populate('buyerId', { name: 1})
+            .populate('sellerId', { name: 1})
             res.paginatedResults = results
 
             //console.log("res pagiintaed resutls ",res.paginatedResults);
@@ -144,7 +146,10 @@ exports.getUserOrders= async (data)=>{
             console.log("finding customer oder ", userId);
             const findQuery={buyerId:ObjectID(data.userId)};
             
-            return await order.find(findQuery).sort({ orderDate : -1 } ).populate('productId', { name: 1, price: 1, _id: 1, images: 1, description:1, removed:1 })
+            return await order.find(findQuery).sort({ orderDate : -1 } )
+            .populate('productId', { name: 1, price: 1, _id: 1, images: 1, description:1, removed:1 })
+            .populate('buyerId', { name: 1})
+            .populate('sellerId', { name: 1})
 
 
             // return await findDocumets(order, findQuery);
@@ -178,7 +183,10 @@ exports.getUserOrders= async (data)=>{
             const findQuery={sellerId:userId};
             // return await findDocumets(order, findQuery);
             return await order.find(findQuery).sort({ orderDate : -1 } ).populate('productId', { name: 1, price: 1, _id: 1, images: 1, description:1, removed:1 })
-            //return { "status": 200, body: response };
+            .populate('buyerId', { name: 1})
+            .populate('sellerId', { name: 1})
+
+            // return { "status": 200, body: response };
 
         }
         else{

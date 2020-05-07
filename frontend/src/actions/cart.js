@@ -49,6 +49,7 @@ export const updateCustomerCart = (data) => dispatch => {
     let payload={
         gift:data.gift,
         quantity:data.quantity,
+        giftMessage:data.giftMessage
     }
     axios.defaults.withCredentials = true;
     axios.put(`${API_ENDPOINT}/user/updateCart/${data.customer_id}/product/${data.product_id}`,payload)
