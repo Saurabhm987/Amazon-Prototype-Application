@@ -18,7 +18,7 @@ export const productCategories = () => async (dispatch) => {
             return response.data;
         })
         .then((payload) => {
-            
+
             console.log('payload of getcategories: ', payload);
 
             dispatch({
@@ -53,7 +53,7 @@ export const addProduct = (payload) => async (dispatch) => {
 }
 
 
-export const fetchProduct = (searchText = '', filterText = '', offset = 1, sortType = '') => async (dispatch) => {
+export const fetchProduct = (searchText = '', filterText = '', offset = 1, sortType = '',ratingFilter=0, price=-1 ) => async (dispatch) => {
 
     if (offset === '') {
         offset = 1
@@ -62,7 +62,7 @@ export const fetchProduct = (searchText = '', filterText = '', offset = 1, sortT
     await axios.get(
         `${API_ENDPOINT}/product/search`,
         {
-            params: { searchText: searchText, offset: offset, filterText: filterText, sortType: sortType }
+            params: { searchText: searchText, offset: offset, filterText: filterText, sortType: sortType, ratingFilter: ratingFilter, price:price }
         },
         {
             headers: { 'Content-Type': 'application/json' }

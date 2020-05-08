@@ -142,7 +142,9 @@ class AddProduct extends Component {
     formdata.append('sellerId', userId)
     formdata.append('sellerName', name)
 
-    if (!error && selectedCategory !== undefined ) {
+    console.log('selecte cat - ', selectedCategory)
+
+    if (!error && selectedCategory !== undefined && selectedCategory !=='' && selectedCategory !== null ) {
       await this.props.addProduct(formdata)
       await this.setState({ modalOpen: false });
       await alert('Product Added')
