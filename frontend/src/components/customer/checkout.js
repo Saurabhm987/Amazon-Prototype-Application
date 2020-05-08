@@ -7,6 +7,8 @@ import { getAddress, setDefaultCard, setDefaultAddress, getCard } from '../../ac
 import { createNewOrder } from '../../actions/order'
 import queryString from 'query-string';
 import jwtDecode from 'jwt-decode';
+import { getUserOrder, updateStatus } from '../../actions/order';
+import { setupOrderedProductForDetail } from '../../actions/product';
 
 class Checkout extends Component {
     constructor(props) {
@@ -175,7 +177,12 @@ class Checkout extends Component {
                                 <br />
                                 <Link to='/' className="nav-link" >
                                     <Button
-                                        onClick={() => this.props.createNewOrder(this.createOrder(address, card))}
+                                        onClick={ async () => {
+                                            await this.props.createNewOrder(this.createOrder(address, card))
+                                            this.props.getUserOrder()
+                                            await this.props.setupOrderedProductForDetail(await this.props.order.userOrders[0])
+                                            await this.props.history.push('/orderdetails')
+                                            }}
                                         color='yellow'
                                         size='medium'
                                         style={{ border: "solid 1px black" }}>
@@ -203,9 +210,10 @@ const mapStateToProps = state => {
         addressList: state.customer.addressList,
         cardList: state.customer.cardList,
         defaultAddress: state.customer.defaultAddress,
-        defaultCard: state.customer.defaultCard
+        defaultCard: state.customer.defaultCard,
+        order: state.order,
     };
 };
 
 
-export default connect(mapStateToProps, { getAddress, getCard, setDefaultCard, setDefaultAddress, createNewOrder })(Checkout);
+export default connect(mapStateToProps, { getAddress, getCard, setDefaultCard, setDefaultAddress, createNewOrder, getUserOrder,setupOrderedProductForDetail })(Checkout);
