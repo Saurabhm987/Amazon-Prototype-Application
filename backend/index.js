@@ -17,7 +17,7 @@ module.exports = client = redis.createClient(REDIS_PORT)
 const app = express();
 
 app.use(function(req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Methods', 'GET,HEAD,POST,PUT,DELETE');
     res.setHeader('Access-Control-Allow-Headers', 'Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers');
@@ -25,7 +25,7 @@ app.use(function(req, res, next) {
     next();
   });
 
-app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+app.use(cors({ origin: true, credentials: true }));
 
 app.use(express.static(path.join(__dirname, '/public'))); // specify the path of static directory
 app.use(morgan('dev'));
