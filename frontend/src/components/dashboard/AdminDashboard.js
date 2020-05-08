@@ -130,10 +130,7 @@ class AdminDashboard extends Component {
 
         console.log(activeNavItem);
 
-        if (activeNavItem == 'PROFILE') {
-            contentPage = (<SellerProduct />)
-        }
-        else if (activeNavItem == 'INVENTORY') {
+        if (activeNavItem == 'INVENTORY') {
             contentPage = (<AddProduct />)
         }
         else if (activeNavItem == 'SELLERS') {
@@ -238,11 +235,6 @@ class AdminDashboard extends Component {
                 <div style={{ margin: '65px 0px 0px 0px' }}>
                     <Menu pointing secondary>
                         <Menu.Item
-                            name='PROFILE'
-                            active={activeNavItem === 'PROFILE'}
-                            onClick={this.handleNavItem}
-                        />
-                        <Menu.Item
                             name='INVENTORY'
                             active={activeNavItem === 'INVENTORY'}
                             onClick={this.handleNavItem}
@@ -262,13 +254,6 @@ class AdminDashboard extends Component {
                             active={activeNavItem === 'ANALYTICS'}
                             onClick={this.handleNavItem}
                         />
-                        <Menu.Menu position='right'>
-                            <Menu.Item
-                                name='logout'
-                                active={activeNavItem === 'logout'}
-                                onClick={this.handleNavItem}
-                            />
-                        </Menu.Menu>
                     </Menu>
                 </div>
                 <br></br>
