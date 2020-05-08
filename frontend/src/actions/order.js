@@ -42,6 +42,31 @@ export const getUserOrder = () => async dispatch => {
     }
 };
 
+// page, limit > 0 
+// @param: page: state.order.pagination[Next/Prev].page
+// @param: limit: state.order.pagination[Next/Prev].limit
+export const getAdminAllOrders = (page, limit) => async dispatch => {
+
+    try {
+        const res = await axios.get(`/order/getAllOrders?page=${page}&limit=${limit}`);
+        console.log(`/order/getAllOrders`, res);
+
+        dispatch({
+            type: ADMIN_GET_ALL_ORDERS,
+            payload: res.data
+        });
+    } catch (err) {
+        console.log(`Error: /order/getAllOrders`, err);
+        dispatch({
+            type: ADMIN_GET_ALL_ORDERS_ERR,
+            payload: {
+                error: err.body
+            }
+        });
+        dispatch(setAlert(err.body, 'danger'));
+    }
+};
+
 
 export const updateStatus = (orderId, productId, updatedStatus) => async dispatch => {
     const data = {
@@ -72,20 +97,22 @@ export const updateStatus = (orderId, productId, updatedStatus) => async dispatc
 };
 
 
-export const createOrder = (data) => async dispatch => {
+export const createNewOrder = (data) => async dispatch => {
     try {
-        console.log('POST /order/updateStatus with data: ', data);
-        const res = await axios.post(`/order/createOrder`, data, config );
-        console.log(`/order/getUserOrder`, res);
+        console.log('POST /order/newOrder with data: ', data);
+        const res = await axios.post(`/order/newOrder`, data, config );
+        console.log(`/order/newOrder`, 'NEW ORDER CREATED');
 
         dispatch({
-            type: UPDATE_ORDER_STATUS,
+            type: CREATE_NEW_ORDER,
             payload: res.data
         });
+
+        dispatch(getUserOrder());
     } catch (err) {
-        console.log(`Error: /order/getUserOrder`, err);
+        console.log(`Error: /order/newOrder`, err);
         dispatch({
-            type: UPDATE_ORDER_STAT_ERR,
+            type: CREATE_NEW_ORDER_ERR,
             payload: {
                 error: err.body
             }
