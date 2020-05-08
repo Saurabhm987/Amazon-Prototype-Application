@@ -135,7 +135,7 @@ class AppHeader extends Component {
           </Menu.Item>
 
           <Menu.Item as='a' header>
-            <Image size='mini' src='/amazon-prime.jpg' style={{ padding: "none" }} />
+            <Link to={'/dashboard'}><Image size='mini' src='/amazon-prime.jpg' style={{ padding: "none" }} /></Link>
           </Menu.Item>
 
           <Grid.Row columns={1} style={{ width: "100%" }}>

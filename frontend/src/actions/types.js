@@ -17,6 +17,7 @@ export const LOAD_CATEGORY = 'LOAD_CATEGORY';
 export const ADD_PRODUCT = 'ADD_PRODUCT';
 export const FETCH_PRODUCT = 'FETCH_PRODUCT';
 export const PRODUCT_DETAIL = 'PRODUCT_DETAIL';
+export const FETCH_REVIEW = 'FETCH_REVIEW'
 
 // order actions
 export const GET_USER_ORDER = 'GET_USER_ORDER';
@@ -36,6 +37,8 @@ export const ADD_CARD = 'ADD_CARD'
 export const ADD_ADDRESS = 'ADD_ADDRESS'
 export const ADDRESS_DETAIL='ADDRESS_DETAIL'
 export const ADD_REVIEW='ADD_REVIEW'
+export const  UPDATE_CUSTOMER_PROFILE ='UPDATE_CUSTOMER_PROFILE'
+export const FETCH_CUSTOMER_PROFILE = 'FETCH_CUSTOMER_PROFILE'
 // ...add a new action type
 
 // seller 

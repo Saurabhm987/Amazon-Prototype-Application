@@ -3,11 +3,13 @@ import {
     ADD_PRODUCT,
     FETCH_PRODUCT,
     PRODUCT_DETAIL,
+    FETCH_REVIEW
 } from '../../actions/types';
 
 const initialState = {
     categoryList: [],
     productList: [],
+    reviews: [],
     productDetail:{},
     productCount:0,
     productListPerOrder:
@@ -106,6 +108,13 @@ export default function(state = initialState, action) {
                 ...state,
                 productDetail: payload
             }
+
+        case FETCH_REVIEW:
+            return{
+                ...state,
+                reviews : payload
+            }
+
 
         default:
             return state;

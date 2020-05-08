@@ -172,8 +172,6 @@ class SellerProduct extends Component {
             category: selectedCategory || e.currentTarget.dataset.category,
         }
 
-        console.log('udpate body - ', body)
-
         await this.props.updateProduct(id, body)
         await this.props.getSellerProductsPaginated('', selectedCategory, activePage, '', sellerId)
         await alert('Product Updated!')
@@ -258,12 +256,9 @@ class SellerProduct extends Component {
                         zIndex: 1000,
                     }}
                 >
-                    <Header style={{ fontWeight: 400 }}>Product has been deleted!</Header>
-                    {/* <Button
-                        content='Close'
-                        negative
-                        onClick={this.closePortal}
-                    /> */}
+
+                <Header style={{ fontWeight: 400 }}>Product has been deleted!</Header>
+  
                 </Segment>
             </Portal>
         )
@@ -401,7 +396,7 @@ class SellerProduct extends Component {
                                                         <Grid.Column width={2}>
                                                             <Image src={item.images[0]} style={{ width: '210px', height: '210px' }} />
                                                         </Grid.Column>
-                                                        <Grid.Column>
+                                                        <Grid.Column style={{marginTop:'10px'}}>
                                                             <Grid.Row>
                                                                 <Header style={{ fontWeight: '400' }}>{item.name}</Header>
                                                             </Grid.Row>

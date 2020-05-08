@@ -193,7 +193,7 @@ class Cart extends Component {
         if (this.state.rendercheckout)
             redirectVar = <Redirect to={`/checkout/${sessionStorage.getItem('id')}`} />
 
-        if (customercart.length) {
+        if (customercart&&customercart.length) {
             let subtotal = this.state.cartsubtotal
             let carttotalitems = this.state.carttotalitems
 
@@ -212,10 +212,9 @@ class Cart extends Component {
                             </Grid.Column>
                             <Grid.Column width={10}>
                                 <Grid.Row>
-                                    <Link class='productlink' to={"/product/" + cartitem.productId._id}>
+                                    <Link class='productlink' to={`/productdetails/?id=${cartitem.productId._id}`}>
                                         <div class='productTitle'>{cartitem.productId.name}</div>
                                     </Link>
-                                    
                                 </Grid.Row>
                                 <Grid.Row>
                                     Sold by 
