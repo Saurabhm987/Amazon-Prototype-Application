@@ -17,6 +17,7 @@ export const LOAD_CATEGORY = 'LOAD_CATEGORY';
 export const ADD_PRODUCT = 'ADD_PRODUCT';
 export const FETCH_PRODUCT = 'FETCH_PRODUCT';
 export const PRODUCT_DETAIL = 'PRODUCT_DETAIL';
+export const SETUP_ORDER_DETAIL_PRODUCT= 'SETUP_ORDER_DETAIL_PRODUCT';
 
 // order actions
 export const GET_USER_ORDER = 'GET_USER_ORDER';

@@ -15,11 +15,6 @@ export default class CentralHeader extends Component {
     return (
       <div style={{margin:'65px 0px 0px 0px'}}>
         <Menu pointing secondary>
-          <Menu.Item
-            name='PROFILE'
-            active={activeItem === 'PROFILE'}
-            onClick={this.handleItemClick}
-          />
           <Dropdown text='INVENTORY' pointing className='link item'>
             <Dropdown.Menu>
               <Dropdown.Item
@@ -42,13 +37,6 @@ export default class CentralHeader extends Component {
             active={activeItem === 'REPORTS'}
             onClick={this.handleItemClick}
           />
-          <Menu.Menu position='right'>
-            <Menu.Item
-              name='logout'
-              active={activeItem === 'logout'}
-              onClick={this.handleItemClick}
-            />
-          </Menu.Menu>
         </Menu>
       </div>
     )
