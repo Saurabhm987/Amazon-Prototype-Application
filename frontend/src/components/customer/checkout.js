@@ -3,7 +3,9 @@ import { Menu, Image, Grid, Header, Divider, Card, Icon, Button, Container} from
 import {Link} from 'react-router-dom'
 import { connect } from 'react-redux';
 import { getCustomerCart } from '../../actions/cart';
+import { getCard } from '../../actions/customer'
 import { getAddress} from '../../actions/customer'
+import queryString from 'query-string';
 import jwtDecode from 'jwt-decode';
 
 class Checkout extends Component {
@@ -18,7 +20,9 @@ class Checkout extends Component {
             gift: '',
             giftMessage: '',
             quantity: '', 
-            totalAmount: ''
+            totalAmount: '',
+            address: '',
+            card: ''
 
         };
     }
@@ -32,38 +36,41 @@ class Checkout extends Component {
         
     }
 
-    componentDidMount() {
+    componentDidMount= async () => {
         if (localStorage.getItem("token") !== null) {
             var user = jwtDecode(localStorage.getItem("token"));
             this.setState({ userId: user.userId });
+            await this.props.getAddress(user.userId)
+            await this.props.getCard(user.userId)
 
+        }else {
+            this.props.history.push('/login')
         }
-        console.log(user)
+        console.log("zzzzzzzzzzzz")
 
+
+        const address = await queryString.parse(this.props.location.search)
+        const card = await queryString.parse(this.props.location.search)
+      
+        
         this.setState ={
             ...this.state,
-            buyer_id: user.userId
+            buyer_id: user.userId,
+            address,
+            card
         }
 
+        
         console.log(this.state.userId)
         // this.props.getCustomerCart(user.userId)
     }
 
-    // createOrder = () => {
-    //     data = {
-    //         buyer_id:this.state.userId,
-    //         seller_id : thi,
-    //         product_id: ,
-    //         deliveryAddress: this.state.deliveryAddress,
-    //         paymentDetails: this.state.paymentDetails,
-    //         gift: this.props.
-    //         giftMessage: "",
-    //         quantity: quantity, 
-    //         totalAmount:
-    //     }
-    // }
   render() {
-      console.log(this.props.cart)
+    console.log(this.props.addressList) ;
+    console.log(this.props.cardList) ;
+    
+    const address = Object.keys(queryString.parse(this.props.location.search)).length > 0 ? queryString.parse(this.props.location.search): this.props.addressList[0] || {};
+    const card = Object.keys(queryString.parse(this.props.location.search)).length > 0 ? queryString.parse(this.props.location.search): this.props.cardList[0] || {};
       return(
         <div>
             <div>
@@ -75,23 +82,7 @@ class Checkout extends Component {
             <br/>
             </div>
             </div>
-{/*             
-            <div>
-                <Menu id="headerMenu" fixed='top' inverted>
-                <Menu.Item as='a' header>
-                    <Image size='mini' src='/amazonsignup.jpg' style={{ padding: "none" }} />
-                </Menu.Item>
-                <Grid.Row columns={1} style={{ width: "100%" }}>
-                <Grid.Column>
-                <Menu.Item as='a'>
-                    <div >
-                        Checkout
-                    </div>
-                </Menu.Item>
-                </Grid.Column>
-                </Grid.Row>
-                </Menu>
-            </div> */}
+
             <Grid columns={2} >
                 <Grid.Row>
                     <Grid.Column width={11}> 
@@ -101,18 +92,20 @@ class Checkout extends Component {
                             <Grid.Row>
                                 <Grid.Column width={12}> 
                                 <Header as='h3'>Shipping Address</Header>
-                                    <div onChange={this.changeAddress}>
-                                    User 1
-                                    3220 Appian ST 3620
-                                    PLEASANTON, CA 94588-4161
-                                    United States
-                                    Phone number: 9890808080
+                                    <div >
+                                    <div>{address.street1}</div>
+                                    <div>{address.street2}</div>
+                                    <div>{address.city}</div>
+                                    <div>{address.state}</div>
+                                    <div>{address.country}</div>
+                                    <div>{address.pincode}</div>
+                                    <div>{address.phone}</div>
                                     </div>
                                     </Grid.Column>
                                     <Divider hidden />
                                     <Grid.Column width={4}> 
                                     <div >
-                                        <Link to='/youraddresses' className="nav-link" >
+                                        <Link to='/customer/address' className="nav-link" >
                                             Change 
                                         </Link>
                                             <br/>
@@ -128,14 +121,15 @@ class Checkout extends Component {
                             <Grid.Row>
                                 <Grid.Column width={12}> 
                                     <Header as='h3'>Payment Details</Header>
-                                    <div onChange={this.changeCard}>
-                                    User 1
-                                    card number: 9890808080
+                                    <div >
+                                    <div>{card.name}</div>
+                                    <div>{card.number}</div>
+                                    <div>{card.expiryDate}</div>
                                     </div>
                                 </Grid.Column>
                                 <Grid.Column width={4}> 
                                     <div >
-                                        <Link to='/yourpayments' className="nav-link" >
+                                        <Link to='/customer/card' className="nav-link" >
                                             Change 
                                         </Link>
                                             <br/>
@@ -155,7 +149,7 @@ class Checkout extends Component {
                             <br/>
                             <Link to='/ordersummary' className="nav-link" >
                                 <Button 
-                                    onClick={this.createOrder}
+                                    // onClick={this.createOrder}
                                     color='yellow'  
                                     size='medium' 
                                     style={{border:"solid 1px black"}}>
@@ -179,10 +173,11 @@ const mapStateToProps = state => {
     return {
         cart: state.cart.cartlist,
         cartsubtotal: state.cart.cartsubtotal,
-        carttotalitems: state.cart.carttotalitems
-        // addressList: state.customer.addressList
+        carttotalitems: state.cart.carttotalitems,
+        addressList: state.customer.addressList,
+        cardList: state.customer.cardList,
     };
 };
 
 
-export default connect(mapStateToProps)(Checkout);
+export default connect(mapStateToProps,{ getAddress, getCard})(Checkout);

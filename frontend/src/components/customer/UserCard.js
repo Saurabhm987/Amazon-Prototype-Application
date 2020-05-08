@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { updateCard, deleteCard } from '../../actions/customer'
 import PropTypes from 'prop-types'
 import JwtDecode from 'jwt-decode';
+import queryString from 'query-string';
 
 
 import {
@@ -91,11 +92,12 @@ class UserCard extends Component {
     }
 
     render() {
-
-        var getCard = this.props.cardList.map(card => {
-            return (
-                <Card>
-                    {
+        if (this.props.cardList) {
+            var getCard = this.props.cardList.map(card => {
+                var str = queryString.stringify(card);
+                return (
+                    <Card onClick={() => this.props.history.push(`/checkout/?`+str)}>
+                        {
                         this.state.editmode && this.state.currentCardId === card._id
                             ?
                             (
@@ -161,6 +163,8 @@ class UserCard extends Component {
                 </Card>
             )
         })
+    }
+
         return (
 
             <div>

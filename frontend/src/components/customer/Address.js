@@ -4,6 +4,7 @@ import { Link, withRouter } from 'react-router-dom'
 import { getAddress, updateAddress, removeAddress } from '../../actions/customer'
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types'
+import queryString from 'query-string';
 import JwtDecode from 'jwt-decode';
 
 class Address extends Component {
@@ -50,8 +51,9 @@ class Address extends Component {
         console.log(this.state.customerAddress);
         if (this.props.addressList) {
             var getAddress = this.props.addressList.map(address => {
+                var str = queryString.stringify(address);
                 return (
-                    <Card>
+                    <Card onClick={() => this.props.history.push(`/checkout/?`+str)}>
                         <Card.Content>
                             <Card.Meta>{address.street1}</Card.Meta>
                             <Card.Meta>{address.street2}</Card.Meta>
