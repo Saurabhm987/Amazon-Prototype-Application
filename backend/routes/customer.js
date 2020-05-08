@@ -7,6 +7,7 @@ const keys = require('../config/keys'),
     uuidv4 = require('uuid/v4'),
     multer = require('multer'),
     multerS3 = require('multer-s3')
+    mongoose = require('mongoose')
 
 
 AWS.config.update({

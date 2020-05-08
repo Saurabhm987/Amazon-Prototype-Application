@@ -1,8 +1,8 @@
-import React, {Component} from 'react'
-import { Button, Form, Grid, Header, Segment} from 'semantic-ui-react'
-import {addCard, setDefaultCard} from '../../actions/customer'
-import PropTypes,{bool} from 'prop-types'
-import {connect} from 'react-redux'
+import React, { Component } from 'react'
+import { Button, Form, Grid, Header, Segment } from 'semantic-ui-react'
+import { addCard, setDefaultCard } from '../../actions/customer'
+import PropTypes, { bool } from 'prop-types'
+import { connect } from 'react-redux'
 
 class AddCard extends Component {
     constructor(props) {
@@ -43,16 +43,16 @@ class AddCard extends Component {
             let expiry = value.split('/')
 
             if ((expiry[0] > 12) || (Number(expiry[1]) > 31) || (Number(expiry[2]) < 2019)) {
-                    await this.setState({ error: true, daterr: true });
-                } else {
-                    await this.setState({ error: false, daterr: false });
-                }
-        }else if( name === 'cvv'){
+                await this.setState({ error: true, daterr: true });
+            } else {
+                await this.setState({ error: false, daterr: false });
+            }
+        } else if (name === 'cvv') {
 
-            if(value.length !== 3){
-                this.setState({ error: true, cvverr: true});
-            }else{
-                this.setState({ error: false, cvverr: false});
+            if (value.length !== 3) {
+                this.setState({ error: true, cvverr: true });
+            } else {
+                this.setState({ error: false, cvverr: false });
             }
         }
 
@@ -63,9 +63,11 @@ class AddCard extends Component {
     onSubmit = async e => {
         e.preventDefault()
 
-        const { error} = this.state
+        console.log('hitting ....!!!')
 
-        if (!error) {
+        const { error, name, number, expiryDate, cvv } = this.state
+
+        if (!error && name !== '' && number !== '' && expiryDate !== '' && cvv !== ''   ) {
 
             const newCard = {
                 name: this.state.name,
@@ -74,13 +76,14 @@ class AddCard extends Component {
                 cvv: this.state.cvv,
             }
 
-        await this.props.addCard(newCard)
-        await this.props.setDefaultCard(newCard)
-            console.log('card details', newCard)
+            await console.log('new card --', newCard)
 
             await this.props.addCard(newCard)
-
+            // await this.props.setDefaultCard(newCard)
+            console.log('card details', newCard)
             this.props.history.push('/customer/card')
+        }else{
+            alert('Please enter valid details')
         }
     }
 
@@ -130,7 +133,7 @@ class AddCard extends Component {
                                     primary
                                     style={{ border: "solid 1px black" }}>
                                     Add Your Card
-                </Button>
+                                </Button>
                             </Segment>
                         </Form>
                     </Grid.Column>
@@ -145,9 +148,9 @@ AddCard.propTypes = {
     cardList: PropTypes.array.isRequired,
 }
 
-  const mapStateToProps = state => ({
+const mapStateToProps = state => ({
     cardList: state.customer.cardlist,
     defaultCard: state.customer.defaultCard
-  })
+})
 
-  export default connect(mapStateToProps, {addCard, setDefaultCard})(AddCard);
+export default connect(mapStateToProps, { addCard, setDefaultCard })(AddCard);

@@ -53,8 +53,8 @@ class Address extends Component {
             var getAddress = this.props.addressList.map(address => {
                 // var str = queryString.stringify(address);
                 return (
-                    <Card onClick={() => {this.props.setDefaultAddress(address);this.props.history.push(`/checkout`)}}>
-                        <Card.Content>
+                    <Card>
+                        <Card.Content onClick={() => {this.props.setDefaultAddress(address);this.props.history.push(`/checkout`)}}>
                             <Card.Meta>{address.street1}</Card.Meta>
                             <Card.Meta>{address.street2}</Card.Meta>
                             <Card.Meta>{address.city}</Card.Meta>

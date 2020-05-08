@@ -1,6 +1,7 @@
 const queries = require('../queries/mongoQueries')
 userAuth = require('../dbModels/userAuth')
 const bcrypt = require('bcrypt');
+const mongoose = require('mongoose')
 
 
 
