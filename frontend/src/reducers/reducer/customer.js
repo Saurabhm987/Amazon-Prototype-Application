@@ -5,6 +5,8 @@ import {
     ADD_ADDRESS,
     ADDRESS_DETAIL,
     ADD_REVIEW,
+    FETCH_CUSTOMER_PROFILE,
+    UPDATE_CUSTOMER_PROFILE,
     DEFAULT_ADDRESS,
     DEFAULT_CARD
 } from '../../actions/types';
@@ -14,6 +16,8 @@ const initialState = {
     addressList: [],
     addressDetail: {},
     reviews: [],
+    customerComments:[],
+    profile: {},
     defaultCard: {},
     defaultAddress: {}
 };
@@ -60,6 +64,18 @@ export default function (state = initialState, action) {
                 reviews: payload
             }
 
+        case FETCH_CUSTOMER_PROFILE:
+            return {
+                ...state,
+                profile: payload,
+                customerComments: payload.comments
+            }
+        
+        case UPDATE_CUSTOMER_PROFILE:
+            return {
+                ...state,
+                profile: payload
+            }
         case DEFAULT_ADDRESS:
             return {
                 ...state,

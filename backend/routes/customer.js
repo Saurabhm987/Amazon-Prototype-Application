@@ -1,4 +1,4 @@
-const sellerServices = require('../services/seller')
+const customerService = require('../services/customer')
 
 const keys = require('../config/keys'),
     AWS = require('aws-sdk'),
@@ -41,30 +41,7 @@ var upload = multer({
 
 
 
-router.get('/', async (request, response) => {
-    try {
-
-        const res = await sellerServices.getAllSeller()
-        response.status(res.status).json(res.body)
-
-    } catch (error) {
-
-        if (error.message)
-            message = error.message
-        else
-            message = 'Error while getting seller'
-
-        if (error.status)
-            status = error.status
-        else
-            status = 500
-
-        response.status(status).json({ 'error': message })
-    }
-})
-
-
-router.get('/profile/:sellerId', async (request, response) => {
+router.get('/profile/:customer_id', async (request, response) => {
 
     try {
 
@@ -72,7 +49,7 @@ router.get('/profile/:sellerId', async (request, response) => {
             params : request.params
         }
 
-        const res = await sellerServices.getSellerProfile(body)
+        const res = await customerService.getCustomerProfile(body)
 
         console.log('seller profile response - ', res)
 
@@ -83,7 +60,7 @@ router.get('/profile/:sellerId', async (request, response) => {
         if (error.message)
             message = error.message
         else
-            message = 'Error while getting seller profile'
+            message = 'Error while getting customer profile'
 
         if (error.status)
             status = error.status
@@ -96,7 +73,7 @@ router.get('/profile/:sellerId', async (request, response) => {
 })
 
 
-router.post('/profileupdate/:sellerId', upload, async (request, response) => {
+router.post('/profileupdate/:customer_id', upload, async (request, response) => {
 
     try {
 
@@ -110,7 +87,7 @@ router.post('/profileupdate/:sellerId', upload, async (request, response) => {
 
         console.log('update body --', body)
 
-        const res = await sellerServices.updateSellerProfile(body)
+        const res = await customerService.updateCustomerProfile(body)
 
         response.status(res.status).json(res.body)
 
@@ -119,7 +96,7 @@ router.post('/profileupdate/:sellerId', upload, async (request, response) => {
         if (error.message)
             message = error.message
         else
-            message = 'Error while getting seller profile'
+            message = 'Error while updating customer profile'
 
         if (error.status)
             status = error.status
