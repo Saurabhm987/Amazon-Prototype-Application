@@ -68,6 +68,18 @@ class CustomerProfile extends Component {
 
 
     render() {
+
+        if(this.props.customerComments){
+
+            const{customerComments} = this.props
+            var votes = 0;
+            var comments = 0;
+            customerComments.forEach(item => {
+                votes+=item.review.rating
+                comments++
+            });
+        }
+
         return (
             <Container style={{ marginTop: '70px' }}>
                 <Container style={{ padding: '30px' }} fluid>
@@ -125,17 +137,18 @@ class CustomerProfile extends Component {
                                 <Segment circular inverted style={{ width: 175, height: 175 }}>
                                     <Header as='h2' inverted>
                                         Votes
-                                        <Header.Subheader>1000</Header.Subheader>
+                                        <Header.Subheader>{votes}</Header.Subheader>
                                     </Header>
                                 </Segment>
                                 <Segment circular inverted style={{ width: 175, height: 175 }}>
                                     <Header as='h2' inverted>
                                         Comments
-                                        <Header.Subheader>560</Header.Subheader>
+                                        <Header.Subheader>{comments}</Header.Subheader>
                                     </Header>
                                 </Segment>
                             </Segment>
                             <br />
+                            <Header>Comments</Header>
                             <Grid columns={1}>
                                 <Grid.Column textAlign='left'>
                                     <Comment.Group size='huge'>

@@ -135,10 +135,10 @@ class AppHeader extends Component {
           </Menu.Item>
 
           <Menu.Item as='a' header>
-            <Link to={'/dashboard'}><Image size='mini' src='/amazon-prime.jpg' style={{ padding: "none" }} /></Link>
+            <Link to={'/dashboard'}><Image size='tiny' src='/amazon-logo.png' style={{ padding: "none" }} /></Link>
           </Menu.Item>
 
-          <Grid.Row columns={1} style={{ width: "100%" }}>
+          <Grid.Row columns={1} style={{ width: "100%",marginTop:'7px' }}>
             <Grid.Column>
               <Menu.Item as='a'>
                 <div className="ui action input">
@@ -148,6 +148,24 @@ class AppHeader extends Component {
               </Menu.Item>
             </Grid.Column>
           </Grid.Row>
+
+          {/* <Grid.Row>
+            <Grid.Column style={{marginTop:'13px'}}>
+              <Menu.Item as='a'>
+                Sort
+              </Menu.Item>
+            </Grid.Column>
+          </Grid.Row> */}
+          <Dropdown item simple text='Sort by'>
+            <Dropdown.Menu>
+              <Dropdown.Item>
+                  Price: Low to High
+              </Dropdown.Item>
+              <Dropdown.Item>
+                  Price : High to low
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
 
           <Dropdown item simple text={this.state.user.name}>
             <Dropdown.Menu>
@@ -208,6 +226,7 @@ class AppHeader extends Component {
           }
 
         </Menu>
+       
         <Segment inverted vertical style={{ margin: '5em 0em 0em 0em', padding: '2em 0em ' }}>
           <Container textAlign='center'>
             <Grid divided inverted stackable>

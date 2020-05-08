@@ -224,7 +224,7 @@ router.post('/review/:product_id', checkAuth, async (request, response) => {
 */
 
 
-router.post('/addcategory', async (request, response) => {
+router.put('/addcategory', async (request, response) => {
 
     console.log('hitting addcategory')
 

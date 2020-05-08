@@ -30,7 +30,13 @@ class AddProduct extends Component {
       modalOpen: false,
       files: [],
       data: [{ key: '', text: '', value: '' }],
-      selectedCategory: ''
+      selectedCategory: '',
+      error: true,
+      nerr: false,
+      derr: false,
+      qerr: false,
+      perr: false,
+      drerr: false,
     }
 
     const style = {
@@ -65,8 +71,6 @@ class AddProduct extends Component {
   hanldeFileChange = async (e) => {
     e.preventDefault()
 
-    console.log('file length --', this.state.files)
-
     if (this.state.files.length < 5) {
       await this.setState({
         files: [...this.state.files, ...e.target.files],
@@ -85,11 +89,36 @@ class AddProduct extends Component {
     this.setState({ modalOpen: false })
   }
 
-  handleInputChange = (e) => {
-    this.setState({
-      [e.target.name]: e.target.value
-    })
+  handleInputChange = async (e) => {
+
+    const { name, value } = e.target
+
+    if (name === 'productname') {
+
+      if (value.length < 2) {
+        await this.setState({ error: true, nerr: true });
+      } else {
+        await this.setState({ error: false, nerr: false });
+      }
+    } else if (name === 'description') {
+
+      if (value.length < 2) {
+        await this.setState({ error: true, derr: true });
+      } else {
+        await this.setState({ error: false, derr: false });
+      }
+    } else if (name === 'quantity') {
+
+      if (value.length < 2) {
+        await this.setState({ error: true, qerr: true });
+      } else {
+        await this.setState({ error: false, qerr: false });
+      }
   }
+
+       await this.setState({ [name]: value })
+
+}
 
 
 
@@ -101,7 +130,7 @@ class AddProduct extends Component {
       formdata.append('images', this.state.files[x])
     }
 
-    const { productname, description, quantity, price, selectedCategory, giftPrice } = this.state
+    const { productname, description, quantity, price, selectedCategory, error } = this.state
 
     const { userId, name } = this.props.user
 
@@ -113,16 +142,13 @@ class AddProduct extends Component {
     formdata.append('sellerId', userId)
     formdata.append('sellerName', name)
 
-    // for (var pair of formdata.entries()) {
-    //   console.log(pair[0] + ', ' + pair[1]);
-    // }
-
-    await this.props.addProduct(formdata)
-
-    await this.setState({ modalOpen: false });
-
-    await alert('Product Added')
-
+    if (!error && selectedCategory !== undefined ) {
+      await this.props.addProduct(formdata)
+      await this.setState({ modalOpen: false });
+      await alert('Product Added')
+    }else{
+      alert('Please enter all detials!')
+    }
   }
 
   render() {
@@ -166,10 +192,10 @@ class AddProduct extends Component {
                   <Grid.Column>
                     <Form onSubmit={this.addproduct}>
                       <Segment stacked >
-                        <Form.TextArea name='productname' type="text" label="Product Name" value={this.state.productname || ""} onChange={this.handleInputChange} />
-                        <Form.TextArea name='description' type="text" label="Product Description" value={this.state.description || ""} onChange={this.handleInputChange} />
-                        <Form.Input name='quantity' type="number" label="Quantity" value={this.state.quantity || ''} onChange={this.handleInputChange} />
-                        <Form.Input name='price' type="number" label="Standard Price" value={this.state.price || ''} onChange={this.handleInputChange} />
+                        <Form.TextArea name='productname' error={this.state.nerr} type="text" label="Product Name" value={this.state.productname || ""} onChange={this.handleInputChange} />
+                        <Form.TextArea name='description' error={this.state.derr} type="text" label="Product Description" value={this.state.description || ""} onChange={this.handleInputChange} />
+                        <Form.Input name='quantity' error={this.state.qerr} type="number" label="Quantity" value={this.state.quantity || ''} onChange={this.handleInputChange} />
+                        <Form.Input name='price' error={this.state.perr} type="number" label="Standard Price" value={this.state.price || ''} onChange={this.handleInputChange} />
                         <Form.Field>
                           <label>Category Options</label>
                           {
@@ -177,6 +203,7 @@ class AddProduct extends Component {
                               ? <Dropdown
                                 selection
                                 search
+                                error={this.state.cerr}
                                 options={this.state.data}
                                 value={this.state.data.value}
                                 onChange={this.categoryHandler}
