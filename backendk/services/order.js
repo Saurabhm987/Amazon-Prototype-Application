@@ -52,12 +52,12 @@ exports.paginatedResults = (model,data)=>{
     }
   };
 
-exports.createNewOrder = async (req) => {
+exports.createNewOrder = async (data) => {
     try{
         const orderId = mongoose.Types.ObjectId();
-        const buyerId = req.user.userId;
+        const buyerId = data.user.userId;
         
-        const ordersdata = req.body.map((item, index) => {
+        const ordersdata = data.body.map((item, index) => {
             item.orderId = orderId;
             item.buyerId = buyerId;
             item.status = {
