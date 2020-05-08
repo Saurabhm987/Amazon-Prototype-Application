@@ -25,7 +25,8 @@ class CustomerReiviews extends Component {
     }
 
     componentDidMount = async () => {
-
+        
+        await window.scrollTo({ top: 0, left: 0, behavior: 'smooth' })
         const productId = await queryString.parse(this.props.location.search);
         console.log('id -----', productId.pid)
         this.setState({ productId: productId.pid});

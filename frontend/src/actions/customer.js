@@ -235,6 +235,56 @@ export const addReview = (productId , body) => async (dispatch) => {
         })
 }
 
+
+export const getCustomerProfile = (customerId) => async (dispatch) => {
+
+    console.log('id - ', customerId)
+
+    await axios.get(`${API_ENDPOINT}/customer/profile/${customerId}`)
+        .then(response => {
+
+            if (response.status >= 500) {
+                throw new Error('Bad response from server')
+            }
+
+            return response.data
+        })
+        .then(payload => {
+
+            console.log('fetch profile', payload)
+
+            dispatch({
+                type: 'FETCH_CUSTOMER_PROFILE',
+                payload: payload
+            })
+        })
+        .catch(error => {
+            console.log('error', error)
+        })
+}
+
+
+export const updateCustomerProfile = (body, userId) => async (dispatch) => {
+    await axios.post(`${API_ENDPOINT}/customer/profileupdate/${userId}`, body, { headers: { 'Content-Type': 'multipart/form-data' } })
+        .then(response => {
+            if (response.status >= 500) {
+                throw new Error('Bad response from server')
+            }
+
+            return response.data
+        })
+        .then(payload => {
+            dispatch({
+                type: 'UPDATE_CUSTOMER_PROFILE',
+                payload: payload
+            })
+        })
+        .catch(error => {
+            console.log('error', error)
+        })
+
+    }
+    
 export const defaultAddress = (address) => async (dispatch) => {
     dispatch({
         type: 'DEFAULT_ADDRESS',

@@ -45,10 +45,18 @@ router.post('/newOrder', checkAuth, async (req, res) => {
             "body": req.body,
             "params": req.params,
             "query": req.query,
-            "user": req.user
+            "user": req.user,
+            "type": "createNewOrder"
+
         };
-        const response = await orderServices.createNewOrder(data);
-        res.status(response.status).json(response.body);
+        ///
+        await kafka.make_request('order', data, async (err, data) => {
+            if (err) throw new Error(err)
+            await res.status(data.status).json(data.body);
+        });
+        ///
+        // const response = await orderServices.createNewOrder(data);
+        // res.status(response.status).json(response.body);
     } catch (error) {
         if (error.message) message = error.message;
         else message = 'Error while adding product to cart';

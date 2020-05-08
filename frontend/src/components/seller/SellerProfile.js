@@ -54,7 +54,7 @@ class SellerProfile extends Component {
                 });
             }
 
-            await this.props.getSellerProfile(user.userId)
+            await this.props.getSellerProfile(sellerId.id)
 
         } else {
             this.props.history.push('/login')
@@ -157,7 +157,7 @@ class SellerProfile extends Component {
 
         const { profileDetail } = this.props
 
-        if(profileDetail){
+        if (profileDetail) {
             var address = profileDetail.address
         }
 
@@ -234,7 +234,7 @@ class SellerProfile extends Component {
                             {!this.state.editMode
                                 ?
                                 (
-                                    <Grid columns={2} onClick={() => { this.setState({ editMode: true &&this.state.adminAccess }) }}>
+                                    <Grid columns={2} onClick={() => { this.setState({ editMode: true && this.state.adminAccess }) }}>
                                         <Grid.Column width={1}>
                                             {
                                                 profileDetail
@@ -287,7 +287,7 @@ class SellerProfile extends Component {
                                                     <Grid.Column width={5}>
                                                         Profil Image
                                                         <Segment>
-                                                            <Image src={profileDetail.image || this.state.file && URL.createObjectURL(this.state.file)} alt="" style={{ width: '290px', height: '250px' }} />
+                                                            <Image src={this.state.file && URL.createObjectURL(this.state.file) || profileDetail.image} alt="" style={{ width: '290px', height: '250px' }} />
                                                         </Segment>
                                                         <Input type='file' name='file' size='small' onChange={this.hanldeFileChange} />
                                                     </Grid.Column>
@@ -297,98 +297,98 @@ class SellerProfile extends Component {
                                                             {/* {
                                                                 profileDetail && profileDetail.address
                                                                     ? */}
-                                                                    <Form size='large'>
-                                                                        <Header size="large" style={{ fontWeight: '400', fontSize: '1.71428571em' }}>Edit Your Address</Header>
-                                                                        <Form.Input fluid
-                                                                            name='email'
-                                                                            onChange={this.handleInput}
-                                                                            label="Email"
-                                                                            size='small'
-                                                                            defaultValue={profileDetail.email || ''}
-                                                                        />
+                                                            <Form size='large'>
+                                                                <Header size="large" style={{ fontWeight: '400', fontSize: '1.71428571em' }}>Edit Your Address</Header>
+                                                                <Form.Input fluid
+                                                                    name='email'
+                                                                    onChange={this.handleInput}
+                                                                    label="Email"
+                                                                    size='small'
+                                                                    defaultValue={profileDetail.email || ''}
+                                                                />
 
-                                                                        <Form.Input fluid
-                                                                            name='password'
-                                                                            size='small'
-                                                                            onChange={this.handleInput}
-                                                                            label="Password"
-                                                                            placeholder='password'
-                                                                            type='password'
-                                                                        />
-                                                                        <Form.Input fluid
-                                                                            name='fullname'
-                                                                            onChange={this.handleInput}
-                                                                            label="Full Name"
-                                                                            size='small'
-                                                                            defaultValue={profileDetail.name || ''}
-                                                                        />
+                                                                <Form.Input fluid
+                                                                    name='password'
+                                                                    size='small'
+                                                                    onChange={this.handleInput}
+                                                                    label="Password"
+                                                                    placeholder='password'
+                                                                    type='password'
+                                                                />
+                                                                <Form.Input fluid
+                                                                    name='fullname'
+                                                                    onChange={this.handleInput}
+                                                                    label="Full Name"
+                                                                    size='small'
+                                                                    defaultValue={profileDetail.name || ''}
+                                                                />
 
-                                                                        <Form.Input fluid
-                                                                            name='pincode'
-                                                                            size='small'
-                                                                            onChange={this.handleInput}
-                                                                            label="Pincode"
-                                                                            placeholder='6 digits [0-9] pincode'
-                                                                            type='text'
-                                                                            defaultValue={address && address.pincode || ''}
+                                                                <Form.Input fluid
+                                                                    name='pincode'
+                                                                    size='small'
+                                                                    onChange={this.handleInput}
+                                                                    label="Pincode"
+                                                                    placeholder='6 digits [0-9] pincode'
+                                                                    type='text'
+                                                                    defaultValue={address && address.pincode || ''}
 
-                                                                        />
-                                                                        <Form.Input
-                                                                            onChange={this.handleInput}
-                                                                            fluid
-                                                                            size='small'
-                                                                            label="Stree Address"
-                                                                            placeholder='Flat /House No. /Floor /Building'
-                                                                            type='text'
-                                                                            name='street1'
-                                                                            defaultValue={address && address.street1 || ''}
+                                                                />
+                                                                <Form.Input
+                                                                    onChange={this.handleInput}
+                                                                    fluid
+                                                                    size='small'
+                                                                    label="Stree Address"
+                                                                    placeholder='Flat /House No. /Floor /Building'
+                                                                    type='text'
+                                                                    name='street1'
+                                                                    defaultValue={address && address.street1 || ''}
 
-                                                                        />
-                                                                        <Form.Input
-                                                                            onChange={this.handleInput}
-                                                                            fluid
-                                                                            name='city'
-                                                                            size='small'
-                                                                            label="City"
-                                                                            type='text'
-                                                                            defaultValue={address && address.city || ''}
-                                                                        />
-                                                                        <Form.Input
-                                                                            onChange={this.handleInput}
-                                                                            fluid
-                                                                            size='small'
-                                                                            label="State"
-                                                                            type='text'
-                                                                            name='state'
-                                                                            defaultValue={address && address.state || ''}
-                                                                        />
-                                                                        <Form.Input fluid
-                                                                            name='country'
-                                                                            onChange={this.handleInput}
-                                                                            defaultValue={address && address.country || ''}
-                                                                            label="Country"
-                                                                            size='small'
-                                                                        />
-                                                                        <Button
-                                                                            onClick={this.handleSave}
-                                                                            style={{ background: '#febd69', backgroundColor: '#a88734 #9c7e31 #846a29', color: 'rgb(17, 17, 17)' }}
-                                                                            data-city={address && address.city}
-                                                                            data-street1={address &&address.street1}
-                                                                            data-pincode={address &&address.pincode}
-                                                                            data-state={address &&address.state}
-                                                                            data-country={address &&address.country}
-                                                                            data-sellername={profileDetail.name}
-                                                                            data-currfile={profileDetail.image}
-                                                                            data-email={profileDetail.email}
-                                                                        >
-                                                                            Save Changes
+                                                                />
+                                                                <Form.Input
+                                                                    onChange={this.handleInput}
+                                                                    fluid
+                                                                    name='city'
+                                                                    size='small'
+                                                                    label="City"
+                                                                    type='text'
+                                                                    defaultValue={address && address.city || ''}
+                                                                />
+                                                                <Form.Input
+                                                                    onChange={this.handleInput}
+                                                                    fluid
+                                                                    size='small'
+                                                                    label="State"
+                                                                    type='text'
+                                                                    name='state'
+                                                                    defaultValue={address && address.state || ''}
+                                                                />
+                                                                <Form.Input fluid
+                                                                    name='country'
+                                                                    onChange={this.handleInput}
+                                                                    defaultValue={address && address.country || ''}
+                                                                    label="Country"
+                                                                    size='small'
+                                                                />
+                                                                <Button
+                                                                    onClick={this.handleSave}
+                                                                    style={{ background: '#febd69', backgroundColor: '#a88734 #9c7e31 #846a29', color: 'rgb(17, 17, 17)' }}
+                                                                    data-city={address && address.city}
+                                                                    data-street1={address && address.street1}
+                                                                    data-pincode={address && address.pincode}
+                                                                    data-state={address && address.state}
+                                                                    data-country={address && address.country}
+                                                                    data-sellername={profileDetail.name}
+                                                                    data-currfile={profileDetail.image}
+                                                                    data-email={profileDetail.email}
+                                                                >
+                                                                    Save Changes
                                                                         </Button>
-                                                                        <Button
-                                                                            onClick={() => this.setState({ editMode: !this.state.editMode })}
-                                                                            style={{ background: '#febd69', backgroundColor: '#a88734 #9c7e31 #846a29', color: 'rgb(17, 17, 17)' }}
-                                                                        >Cancel</Button>
-                                                                    </Form>
-                                                                    {/* : null
+                                                                <Button
+                                                                    onClick={() => this.setState({ editMode: !this.state.editMode })}
+                                                                    style={{ background: '#febd69', backgroundColor: '#a88734 #9c7e31 #846a29', color: 'rgb(17, 17, 17)' }}
+                                                                >Cancel</Button>
+                                                            </Form>
+                                                            {/* : null
                                                             } */}
                                                         </Grid.Column>
                                                     </Grid.Column>
@@ -406,22 +406,6 @@ class SellerProfile extends Component {
                                 </Grid.Row>
                             <Grid.Row>
                                 <Grid.Column columns={1}>
-                                    {/* {this.state.editMode && this.state.adminAccess
-                                        ?
-                                        ( */}
-                                    {/* <Grid columns={1} style={{ margin: '5px' }}>
-                                                <Grid.Row>
-                                                    <TextArea rows={5} style={{ width: '50%' }} />
-                                                </Grid.Row>
-                                                <Grid.Row>
-                                                    <Button green>Save</Button>
-                                                    <Button red onClick={() => this.setState({ editMode: false })}>Cancel</Button>
-                                                </Grid.Row>
-                                            </Grid> */}
-                                    {/* )
-                                        :
-                                        ( */}
-                                    {/* <Grid.Column onClick={this.descriptionHandler}> */}
                                     <Grid.Column>
                                         Lorem Ipsum is simply dummy text of the printing and
                                         typesetting industry. Lorem Ipsum has been the industry's
@@ -433,26 +417,20 @@ class SellerProfile extends Component {
                                         the release of Letraset sheets containing Lorem Ipsum passages,
                                         and more recently with desktop publishing software like Aldus
                                         PageMaker including versions of Lorem Ipsum.
-                                            </Grid.Column>
-                                    {/* )
-                                    } */}
+                                        </Grid.Column>
                                 </Grid.Column>
                             </Grid.Row>
                         </Segment>
                     </Grid.Column>
-                    {/* </Grid.Row> */}
                 </Grid>
-
                 <br />
-
                 <Tab
                     panes={panes}
                     renderActiveOnly={false}
                     onTabChange={this.tabChangeHandler}
                     menuPosition={"left"}
                 />
-
-            </div >
+            </div>
         );
     }
 }

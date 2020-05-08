@@ -1,23 +1,25 @@
-import React, { Component } from 'react';
-
+import React, { Component } from 'react'
+import { getReview } from "../../actions/product"
+import PropTypes from 'prop-types'
 import {
     Rating,
     Comment,
-    Header,
-    Form,
-    Button,
     Grid,
     Progress,
+    Header,
 } from 'semantic-ui-react';
+import { connect } from 'react-redux';
 
 class ProductComment extends Component {
     componentDidMount = async () => {
 
+        let id = this.props.productId
+        await this.props.getReview(id)
     }
 
     render() {
         return (
-            <div style={{margin:'20px'}}>
+            <div style={{ margin: '20px' }}>
                 <Grid columns='equal'>
                     <Grid.Column width={4}>
                         <br />
@@ -91,78 +93,47 @@ class ProductComment extends Component {
                         </Grid.Row>
                     </Grid.Column>
                     <Grid.Column width={2}></Grid.Column>
-                    <Grid.Column width={8} textAlign='left'>
-                        <Comment.Group style={{ width: '100%' }} size='large'>
-                            <Comment textAlign='left'>
-                                <Comment.Avatar src='/images/avatar/small/matt.jpg'/>
-                                <Comment.Content>
-                                    <Comment.Author as='a'>Matt</Comment.Author>
-                                    <Comment.Metadata>
-                                        <div>Today at 5:42PM</div>
-                                    </Comment.Metadata>
-                                    <Comment.Text><Rating maxRating={5} defaultRating={3} icon='star' size='small' disabled /></Comment.Text>
-                                    <Comment.Text>How artistic!</Comment.Text>
-                                    <Comment.Actions>
-                                        <Comment.Action>Reply</Comment.Action>
-                                    </Comment.Actions>
-                                </Comment.Content>
-                            </Comment>
+                    {
+                        this.props.reviews&&this.props.reviews.length>0
+                        ?
+                        <Grid.Column width={8} textAlign='left'>
+                            <Comment.Group style={{ width: '100%' }} size='large'>
+                                {
+                                    this.props.reviews && this.props.reviews.map(item => (
+                                        <Comment textAlign='left'>
+                                            <Comment.Avatar src='/userpreview.png' square />
+                                            <Comment.Content>
+                                                <Comment.Author as='a'>{item.header}</Comment.Author>
+                                                <Comment.Text><Rating maxRating={5} defaultRating={item.rating} icon='star' size='small' disabled /></Comment.Text>
+                                                <Comment.Text>{item.comment}</Comment.Text>
+                                            </Comment.Content>
+                                        </Comment>
+                                    ))
+                                }
+                            </Comment.Group>
+                        </Grid.Column>
+                        :
+                        <Grid columns={1}>
+                            <Grid.Column>
+                                <Header>No Comment Posted!</Header>
+                            </Grid.Column>
+                        </Grid>
 
-                            <Comment>
-                                <Comment.Avatar src='/images/avatar/small/elliot.jpg' />
-                                <Comment.Content>
-                                    <Comment.Author as='a'>Elliot Fu</Comment.Author>
-                                    <Comment.Metadata>
-                                        <div>Yesterday at 12:30AM</div>
-                                    </Comment.Metadata>
-                                    <Comment.Text>
-                                        <p>This has been very useful for my research. Thanks as well!</p>
-                                    </Comment.Text>
-                                    <Comment.Actions>
-                                        <Comment.Action>Reply</Comment.Action>
-                                    </Comment.Actions>
-                                </Comment.Content>
-                                <Comment.Group>
-                                    <Comment>
-                                        <Comment.Avatar src='/images/avatar/small/jenny.jpg' />
-                                        <Comment.Content>
-                                            <Comment.Author as='a'>Jenny Hess</Comment.Author>
-                                            <Comment.Metadata>
-                                                <div>Just now</div>
-                                            </Comment.Metadata>
-                                            <Comment.Text>Elliot you are always so right :)</Comment.Text>
-                                            <Comment.Actions>
-                                                <Comment.Action>Reply</Comment.Action>
-                                            </Comment.Actions>
-                                        </Comment.Content>
-                                    </Comment>
-                                </Comment.Group>
-                            </Comment>
+                    }
 
-                            <Comment>
-                                <Comment.Avatar src='/images/avatar/small/joe.jpg' />
-                                <Comment.Content>
-                                    <Comment.Author as='a'>Joe Henderson</Comment.Author>
-                                    <Comment.Metadata>
-                                        <div>5 days ago</div>
-                                    </Comment.Metadata>
-                                    <Comment.Text>Dude, this is awesome. Thanks so much</Comment.Text>
-                                    <Comment.Actions>
-                                        <Comment.Action>Reply</Comment.Action>
-                                    </Comment.Actions>
-                                </Comment.Content>
-                            </Comment>
-
-                            {/* <Form reply>
-                                <Form.TextArea />
-                                <Button content='Add Reply' labelPosition='left' icon='edit' primary />
-                            </Form> */}
-                        </Comment.Group>
-                    </Grid.Column>
                 </Grid>
             </div>
         );
     }
 }
 
-export default ProductComment;
+ProductComment.propTypes = {
+    reviews: PropTypes.array.isRequired,
+    getReview: PropTypes.func.isRequired,
+}
+
+const mapStateToProps = state => ({
+    reviews: state.product.reviews,
+})
+
+export default connect(mapStateToProps, { getReview })(ProductComment);

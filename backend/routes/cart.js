@@ -23,6 +23,8 @@ const client = require('../index')
 
         let res =await cartServices.getProductsFromCart(data);
 
+        console.log('res - ', res)
+
         const {id} = request.params
         // client.set(`"cart-${id}"`,JSON.stringify(item))
 
