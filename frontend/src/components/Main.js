@@ -38,7 +38,9 @@ class Main extends Component {
         const user = localStorage.getItem('token')
 
         return (
+            <React.Fragment style={{minHeight:'600px'}}>
             <Router>
+                
                 <Route path="/dashboard" exact component={CustomerDashboard} />
                 <Route path="/admindashboard" exact component={AdminDashboard} />
                 <Route path="/sellerCentral" exact component={sellerCentral} />
@@ -75,6 +77,7 @@ class Main extends Component {
                     : null
                 }
             </Router>
+            </React.Fragment>
         );
     }
 }

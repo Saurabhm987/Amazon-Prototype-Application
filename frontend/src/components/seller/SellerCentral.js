@@ -210,10 +210,6 @@ class SellerCentral extends Component {
                                     </Grid>
                                 </Grid.Column>
                             </Grid.Row>
-                            <br></br>
-                            <Container textAlign='center'>
-                                <Header as='h4' color='blue' >View your Orders</Header>
-                            </Container>
                         </Segment>
                     </Grid.Column>
                     <Grid.Column width={11}>
