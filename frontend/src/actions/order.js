@@ -3,9 +3,13 @@ import { API_ENDPOINT } from '../components/controller/Endpoint';
 import { setAlert } from './alert';
 import { 
     GET_USER_ORDER,
+    GET_USER_ORDER_ERR,
     UPDATE_ORDER_STATUS,
     UPDATE_ORDER_STAT_ERR,
-    GET_USER_ORDER_ERR 
+    CREATE_NEW_ORDER,
+    CREATE_NEW_ORDER_ERR,
+    ADMIN_GET_ALL_ORDERS,
+    ADMIN_GET_ALL_ORDERS_ERR 
 } from './types';
 
 const config = {
@@ -48,7 +52,30 @@ export const updateStatus = (orderId, productId, updatedStatus) => async dispatc
 
     try {
         console.log('POST /order/updateStatus with data: ', data);
-        const res = await axios.post(`/order/updateStatus`, data, config );
+        const res = await axios.put(`/order/updateStatus`, data, config );
+        console.log(`/order/updateStatus`, res);
+
+        dispatch({
+            type: UPDATE_ORDER_STATUS,
+            payload: res.data
+        });
+    } catch (err) {
+        console.log(`Error: /order/updateStatus`, err);
+        dispatch({
+            type: UPDATE_ORDER_STAT_ERR,
+            payload: {
+                error: err.body
+            }
+        });
+        dispatch(setAlert(err, 'danger'));
+    }
+};
+
+
+export const createOrder = (data) => async dispatch => {
+    try {
+        console.log('POST /order/updateStatus with data: ', data);
+        const res = await axios.post(`/order/createOrder`, data, config );
         console.log(`/order/getUserOrder`, res);
 
         dispatch({
@@ -63,6 +90,6 @@ export const updateStatus = (orderId, productId, updatedStatus) => async dispatc
                 error: err.body
             }
         });
-        dispatch(setAlert(err.body.error, 'danger'));
+        dispatch(setAlert(err, 'danger'));
     }
 };

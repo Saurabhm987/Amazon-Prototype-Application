@@ -24,7 +24,14 @@ export default function(state = initialState, action) {
                 {
                     userOrders: state.userOrders.map(item => {
                         if(payload.orderId === item.orderId) {
-                            return payload;
+                            let updatedOrder = Object.assign({},
+                                item, 
+                                {
+                                    status: payload.status,
+                                    statusHistory: payload.statusHistory
+
+                                });
+                            return updatedOrder;
                         } else {
                             return item;
                         }
