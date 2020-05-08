@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { getCard } from '../../actions/customer'
 import { connect } from 'react-redux';
-import { updateCard, deleteCard } from '../../actions/customer'
+import { updateCard, deleteCard, setDefaultCard } from '../../actions/customer'
 import PropTypes from 'prop-types'
 import JwtDecode from 'jwt-decode';
 import queryString from 'query-string';
@@ -94,9 +94,9 @@ class UserCard extends Component {
     render() {
         if (this.props.cardList) {
             var getCard = this.props.cardList.map(card => {
-                var str = queryString.stringify(card);
+                // var str = queryString.stringify(card);
                 return (
-                    <Card onClick={() => this.props.history.push(`/checkout/?`+str)}>
+                    <Card onClick={() => {this.props.setDefaultCard(card);this.props.history.push(`/checkout`)}}>
                         {
                         this.state.editmode && this.state.currentCardId === card._id
                             ?
@@ -210,10 +210,11 @@ Card.propTypes = {
     cardList: PropTypes.array.isRequired,
     getCard: PropTypes.func.isRequired,
     updateCard: PropTypes.func.isRequired,
+    setDefaultCard: PropTypes.func.isRequired
 }
 
 const mapStateToProps = state => ({
     cardList: state.customer.cardList
 })
 
-export default connect(mapStateToProps, { getCard, updateCard, deleteCard })(withRouter(UserCard));
+export default connect(mapStateToProps, { getCard, updateCard, deleteCard , setDefaultCard})(withRouter(UserCard));

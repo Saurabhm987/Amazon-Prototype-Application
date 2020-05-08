@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import { Button, Form, Grid, Header, Segment} from 'semantic-ui-react'
-import {addCard} from '../../actions/customer'
+import {addCard, setDefaultCard} from '../../actions/customer'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 
@@ -33,6 +33,7 @@ class AddCard extends Component {
         console.log('card details',newCard)
 
         await this.props.addCard(newCard)
+        await this.props.setDefaultCard(newCard)
 
         this.props.history.push('/customer/card')
 
@@ -96,7 +97,8 @@ render(){
   }
 
   const mapStateToProps = state => ({
-    cardList: state.customer.cardlist
+    cardList: state.customer.cardlist,
+    defaultCard: state.customer.defaultCard
   })
 
-  export default connect(mapStateToProps, {addCard})(AddCard);
+  export default connect(mapStateToProps, {addCard, setDefaultCard})(AddCard);

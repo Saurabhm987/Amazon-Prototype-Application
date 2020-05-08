@@ -6,7 +6,7 @@ import LoginForm from './login/Login'
 import Cart from './customer/cart'
 import Checkout from './customer/checkout'
 import CustomerOrders from './customer/CustomerOrders'
-import OrderSummary from './customer/orderSummary'
+
 
 
 import CustomerProfile from './customer/customerProfile'
@@ -60,7 +60,7 @@ class Main extends Component {
                 <Route path='/customer/card' exact component={UserCard} />
                 <Route path='/customer/addressupdate' exact component={EditAddress} />
                 <Route path='/checkout'  component={Checkout} />
-                <Route path='/ordersummary'  component={OrderSummary} />
+        
                 
                 <Route path='/customer/reviews' component={CustomerReiviews} />
 

@@ -2,10 +2,12 @@ import React, { Component } from 'react'
 import { Button, Form, Grid, Header, Segment } from 'semantic-ui-react'
 import axios from 'axios'
 import JwtDecode from 'jwt-decode'
-import { addAddress } from '../../actions/customer'
+import { addAddress, setDefaultAddress } from '../../actions/customer'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import queryString from 'query-string';
 const qs = require('querystring')
+
 
 class AddAddress extends Component {
     constructor(props) {
@@ -18,13 +20,17 @@ class AddAddress extends Component {
             state: '',
             country: '',
             pincode: '',
-            phone: ''
+            phone: '',
         }
+
+ 
+        
     }
 
     onchange = e => {
         this.setState({ [e.target.name]: e.target.value })
     }
+
 
     onSubmit = async e => {
         e.preventDefault()
@@ -38,10 +44,13 @@ class AddAddress extends Component {
             pincode: this.state.pincode,
             phone: this.state.phone
         }
+        await this.props.setDefaultAddress(newAddress)
 
-        await this.props.addAddress(newAddress)
+        if (queryString.parse(this.props.location.search).id !== '1'){await this.props.addAddress(newAddress); this.props.history.push('/customer/address')}
+        else{await this.props.history.push(`/checkout`)}    
+        
 
-        this.props.history.push('/customer/address')
+         
     }   
 
     render() {
@@ -121,8 +130,9 @@ AddAddress.propTypes = {
 
 
 const mapStateToProps = state => ({
-    addressList: state.customer.addressList
+    addressList: state.customer.addressList,
+    defaultAddress: state.customer.defaultAddress
 })
 
 
-export default connect(mapStateToProps, { addAddress })(AddAddress);
+export default connect(mapStateToProps, { addAddress, setDefaultAddress})(AddAddress);
