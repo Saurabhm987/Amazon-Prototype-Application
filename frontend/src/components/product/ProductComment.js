@@ -30,8 +30,6 @@ class ProductComment extends Component {
 
     render() {
 
-        console.log('this props overall rating- ', this.props.productDetail.overallRating)
-
         return (
             <div style={{ margin: '20px' }}>
                 <Grid columns='equal'>

@@ -119,9 +119,9 @@ export const updateCard = (customerId, cardId, body) => async (dispatch) => {
 
 
 export const updateAddress = (customerId, addressId, body) => async (dispatch) => {
-    console.log('addressid -', addressId)
+    console.log('customerId ------- -', addressId)
     // manually adding id
-    await axios.put(`${API_ENDPOINT}/address/updateAddress/5ea91dccebe1b9a0fc721a67/address/${addressId}`, body)
+    await axios.put(`${API_ENDPOINT}/address/updateAddress/${customerId}/address/${addressId}`, body)
         .then(response => {
             if (response.status >= 500) {
                 throw new Error('Bad response from server')

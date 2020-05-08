@@ -1,8 +1,8 @@
-const queries = require('../queries/mongoQueries')
-products = require('../dbModels/product')
-productCategory = require('../dbModels/productCategory')
-buyer = require('../dbModels/buyer')
-mongoose = require('mongoose')
+const queries = require('../queries/mongoQueries'),
+      product = require('../dbModels/product'),
+      productCategory = require('../dbModels/productCategory'),
+      buyer = require('../dbModels/buyer'),
+      mongoose = require('mongoose')
 
 const getProductsforCustomer = async (request) => {
     try {
@@ -48,9 +48,9 @@ const getProductsforCustomer = async (request) => {
         // console.log(sortBy)
         // console.log(offset)
         // const cate = await queries.findDocumentsByQuery(productCategory, {}, { _id: 0 }, {})
-        const resp = await queries.findDocumentsByQueryFilter(products, query, { _id: 1, name: 1, price: 1, overallRating: 1, images: 1, "sellerName": 1 }, { skip: (Number(offset) - 1) * 12, limit: 12, sort: sortBy })
+        const resp = await queries.findDocumentsByQueryFilter(product, query, { _id: 1, name: 1, price: 1, overallRating: 1, images: 1, "sellerName": 1 }, { skip: (Number(offset) - 1) * 12, limit: 12, sort: sortBy })
         // let countQuery = {removed:false}
-        const count = await queries.countDocumentsByQuery(products, query)
+        const count = await queries.countDocumentsByQuery(product, query)
         // console.log(resp)
         // console.log(count)
 
@@ -163,7 +163,7 @@ const updateProduct = async (request) => {
 
         let findQuery = { _id: mongoose.Types.ObjectId(_id) }
 
-        const result = await queries.updateField(products, findQuery, upadateQuery)
+        const result = await queries.updateField(product, findQuery, upadateQuery)
 
         return { status: 200, body: result }
 
@@ -234,7 +234,7 @@ const addReview = async (request) => {
             }
         }
 
-        const updateReview = await queries.updateField(products, findQuery, upadateQuery)
+        const updateReview = await queries.updateField(product, findQuery, upadateQuery)
 
         let countQuery = [
             {
@@ -328,7 +328,7 @@ const getsellerProduct = async (request) => {
 
         let findQuery = { 'sellerId': _id, 'removed': false }
 
-        const result = await queries.findDocumets(products, findQuery)
+        const result = await queries.findDocumets(product, findQuery)
 
         return { status: 200, Products: result }
 
@@ -353,7 +353,7 @@ const getProduct = async (product_id) => {
     try {
 
         let findId = product_id
-        const result = await queries.findDocumentsById(products, findId)
+        const result = await queries.findDocumentsById(product, findId)
 
         return { status: 200, body: result }
 
@@ -411,7 +411,7 @@ const deleteProduct = async (request) => {
 
         let updateQuery = { $set: { removed: true } }
 
-        const result = await queries.updateField(products, findQuery, updateQuery)
+        const result = await queries.updateField(product, findQuery, updateQuery)
 
         return { status: 200, body: result }
 
@@ -539,9 +539,9 @@ const getProductsforSeller = async (request) => {
             sortBy = {}
         }
 
-        const resp = await queries.findDocumentsByQueryFilter(products, query, { _id: 1, name: 1, description: 1, quantity: 1, category: 1, giftPrice: 1, sellerId: 1, sellerName: 1, price: 1, overallRating: 1, images: 1 }, { skip: ((Number(offset) - 1) * 3), limit: 3, sort: sortBy })
+        const resp = await queries.findDocumentsByQueryFilter(product, query, { _id: 1, name: 1, description: 1, quantity: 1, category: 1, giftPrice: 1, sellerId: 1, sellerName: 1, price: 1, overallRating: 1, images: 1 }, { skip: ((Number(offset) - 1) * 3), limit: 3, sort: sortBy })
 
-        const count = await queries.countDocumentsByQuery(products, query)
+        const count = await queries.countDocumentsByQuery(product, query)
 
         let res = { Products: resp, Count: count }
 
