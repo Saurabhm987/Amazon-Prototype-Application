@@ -6,6 +6,9 @@ import LoginForm from './login/Login'
 import Cart from './customer/cart'
 import Checkout from './customer/checkout'
 import CustomerOrders from './customer/CustomerOrders'
+
+
+
 import CustomerProfile from './customer/customerProfile'
 import ProductDetail from './product/ProductDetail'
 import CustomerDashboard from './dashboard/CustomerDashboard'
@@ -57,6 +60,8 @@ class Main extends Component {
                 <Route path='/customer/card' exact component={UserCard} />
                 <Route path='/customer/addressupdate' exact component={EditAddress} />
                 <Route path='/checkout'  component={Checkout} />
+        
+                
                 <Route path='/customer/reviews' component={CustomerReiviews} />
 
                 { 

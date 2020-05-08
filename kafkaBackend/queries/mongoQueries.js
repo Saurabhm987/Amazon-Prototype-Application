@@ -53,7 +53,7 @@ const createDocument = async (modelObject, data) => {
         const newData = await new modelObject(data)
         return response = await newData.save()
     } catch (error) {
-        console.log('error while crating document')
+        console.log('error while creating document')
         throw new Error(error)
     }
 }
@@ -77,7 +77,7 @@ const deleteDocuments = async (modelObject, findQuery, projection) => {
 
     try {
         return response = await modelObject.deleteOne(findQuery, projection);
-        
+
     } catch (error) {
         throw new Error(error)
     }
@@ -94,6 +94,21 @@ const findDocumentsById = async (modelObject, documentId) => {
 }
 
 
+const aggregationQuery = async (modelObject, query) => {
+
+    try {
+         
+        response = await modelObject.aggregate(query)
+        console.log('aggreation respone  - ', response)
+        return response
+
+    } catch (error) {
+        console.log('error while aggregating by id')
+        throw new Error(error)
+    }
+}
+
+
 module.exports = {
     findDocumentsByQuery: findDocumentsByQuery,
     findDocumentsByQueryFilter: findDocumentsByQueryFilter,
@@ -102,5 +117,6 @@ module.exports = {
     createDocument: createDocument,
     findDocumets: findDocumets,
     findDocumentsById: findDocumentsById,
-    deleteDocuments:deleteDocuments
+    deleteDocuments: deleteDocuments,
+    aggregationQuery:aggregationQuery,
 }
