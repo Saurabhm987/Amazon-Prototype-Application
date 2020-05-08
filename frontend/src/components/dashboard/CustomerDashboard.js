@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { logout } from '../../actions/auth';
 import { fetchProduct, productCategories } from '../../actions/product';
 import CustomerDashLoader from '../loader/customerDashLoader'
+import { Divider, Input, Button } from 'semantic-ui-react'
 
 import {
 
@@ -27,6 +28,8 @@ class CustomerDashboard extends Component {
             loading: true,
             hovered: false,
             activePage: 1,
+            price: -1,
+            rating:0,
         }
 
     }
@@ -60,11 +63,22 @@ class CustomerDashboard extends Component {
         }, 500);
     }
 
-    onClickHandler = async (e) => {
 
+    handleRateFilter = async (e) => {
+        let rat =  e.currentTarget.dataset.rating
+        this.setState({rating:rat});
+        console.log('rat - ', rat)
+        await this.props.fetchProduct('', '', this.state.activePage, '', rat, -1)
+    }
+
+    handlePriceFilter = async () => {
+
+        await this.props.fetchProduct('', '', this.state.activePage, '', this.state.rating, this.state.price)
+    }
+
+    onClickHandler = async (e) => {
         let id = e.currentTarget.dataset._id
         this.props.history.push(`/productdetails/?id=${id}`)
-
     }
 
     render() {
@@ -75,72 +89,93 @@ class CustomerDashboard extends Component {
                     <Header as='h1'>Amazon Essesntials</Header>
                 </div>
 
-                {this.state.loading
-                    ? <CustomerDashLoader />
-                    : <Card.Group itemsPerRow={4} style={{ marginTop: '15px' }}>
-                        <Card >
-                            <Card.Content >
-                                <Image square size='medium' src={"prod3.jpg"} alt="" />
-                            </Card.Content>
-                        </Card>
-                        <Card >
-                            <Card.Content >
-                                <Image square size='medium' src={"prod4.jpg"} alt="" />
-                            </Card.Content>
-                        </Card>
-                        <Card >
-                            <Card.Content >
-                                <Image square size='medium' src={"prod5.jpg"} alt="" />
-                            </Card.Content>
-                        </Card>
-                        <Card >
-                            <Card.Content >
-                                <Image square size='medium' src={"prod6.jpg"} alt="" />
-                            </Card.Content>
-                        </Card>
-                    </Card.Group>
+                {
+                    this.state.loading
+                        ? <CustomerDashLoader />
+                        : <Card.Group itemsPerRow={4} style={{ marginTop: '15px' }}>
+                            <Card >
+                                <Card.Content >
+                                    <Image square size='medium' src={"prod3.jpg"} alt="" />
+                                </Card.Content>
+                            </Card>
+                            <Card >
+                                <Card.Content >
+                                    <Image square size='medium' src={"prod4.jpg"} alt="" />
+                                </Card.Content>
+                            </Card>
+                            <Card >
+                                <Card.Content >
+                                    <Image square size='medium' src={"prod5.jpg"} alt="" />
+                                </Card.Content>
+                            </Card>
+                            <Card >
+                                <Card.Content >
+                                    <Image square size='medium' src={"prod6.jpg"} alt="" />
+                                </Card.Content>
+                            </Card>
+                        </Card.Group>
                 }
 
                 <Header as='h1'>Products for you </Header>
+                <Grid columns={2} centered textAlign='center'>
+                    <Grid.Column width={1}>
+                        <Grid.Row>
+                            <Header style={{ fontSize: '1em' }}>Avg. customer review</Header>
+                            <Rating maxRating={5} data-rating='4' defaultRating={4} onClick={this.handleRateFilter} icon='star' size='large' disabled />
+                            <Rating maxRating={5} data-rating='3' defaultRating={3} onClick={this.handleRateFilter} icon='star' size='large' disabled />
+                            <Rating maxRating={5} data-rating='2' defaultRating={2} onClick={this.handleRateFilter} icon='star' size='large' disabled />
+                            <Rating maxRating={5} data-rating='1' defaultRating={1} onClick={this.handleRateFilter} icon='star' size='large' disabled />
+                        </Grid.Row>
+                        <br />
+                        <Grid.Row>
+                            <Input name='price' onChange={ (e) => this.setState({ price: e.target.value})} type='text' size='small' fluid />
+                            <Button onClick={this.handlePriceFilter}>Filter</Button>
+                        </Grid.Row>
+                    </Grid.Column>
+                    <Grid.Column width={1} style={{ width: '50%' }}>
+                        <Divider vertical fitted><span color='grey'></span></Divider>
+                    </Grid.Column>
+                    <Grid.Column width={14}>
+                        <Card.Group itemsPerRow={6} stackable>
+                            {this.props.productList.map((item, index) => (
+                                <Card key={item._id} data-_id={item._id} onClick={this.onClickHandler}>
+                                    {this.state.loading ? (
+                                        <Placeholder>
+                                            <Placeholder.Image square size='small' />
+                                        </Placeholder>
+                                    ) : (
+                                            <Image
+                                                src={item.images[0]} alt=""
+                                                style={{ width: '300px', height: '250px' }}
+                                            />
+                                        )}
 
-                <Card.Group itemsPerRow={6} stackable>
-                    {this.props.productList.map((item, index) => (
-                        <Card key={item._id} data-_id={item._id} onClick={this.onClickHandler}>
-                            {this.state.loading ? (
-                                <Placeholder>
-                                    <Placeholder.Image square size='small' />
-                                </Placeholder>
-                            ) : (
-                                    <Image
-                                        src={item.images[0]} alt=""
-                                        style={{ width: '300px', height: '250px' }}
-                                    />
-                                )}
-
-                            <Card.Content extra textAlign='left'>
-                                {this.state.loading ? (
-                                    <Placeholder>
-                                        <Placeholder.Header>
-                                            <Placeholder.Line length='very short' />
-                                            <Placeholder.Line length='medium' />
-                                        </Placeholder.Header>
-                                        <Placeholder.Paragraph>
-                                            <Placeholder.Line length='short' />
-                                        </Placeholder.Paragraph>
-                                    </Placeholder>
-                                ) : (
-                                        <Fragment>
-                                            <Card.Header style={{ fontWeight: 400 }}>{item.name}</Card.Header>
-                                            <Card.Meta>
-                                                <Rating maxRating={5} defaultRating={item.overallRating || 1} icon='star' size='small' disabled />
-                                            </Card.Meta>
-                                            <Card.Description>$ {item.price} Save ${item.price - 10}</Card.Description>
-                                        </Fragment>
-                                    )}
-                            </Card.Content>
-                        </Card>
-                    ))}
-                </Card.Group>
+                                    <Card.Content extra textAlign='left'>
+                                        {this.state.loading ? (
+                                            <Placeholder>
+                                                <Placeholder.Header>
+                                                    <Placeholder.Line length='very short' />
+                                                    <Placeholder.Line length='medium' />
+                                                </Placeholder.Header>
+                                                <Placeholder.Paragraph>
+                                                    <Placeholder.Line length='short' />
+                                                </Placeholder.Paragraph>
+                                            </Placeholder>
+                                        ) : (
+                                                <Fragment>
+                                                    <Card.Header style={{ fontWeight: 400 }}>{item.name}</Card.Header>
+                                                    <Card.Meta>
+                                                        <Rating maxRating={5} defaultRating={item.overallRating || 1} icon='star' size='small' disabled />
+                                                    </Card.Meta>
+                                                    <Card.Description>$ {item.price} Save ${item.price - 10}</Card.Description>
+                                                </Fragment>
+                                            )}
+                                    </Card.Content>
+                                </Card>
+                            ))}
+                        </Card.Group>
+                    </Grid.Column>
+                </Grid>
                 <br />
                 <br />
                 <Grid columns={1}>
@@ -190,7 +225,7 @@ Header.propTypes = {
     fetchProduct: PropTypes.func.isRequired,
     categoryList: PropTypes.array.isRequired,
     productList: PropTypes.array.isRequired,
-    productCount:PropTypes.number.isRequired,
+    productCount: PropTypes.number.isRequired,
 }
 
 const mapStateToProps = (state) => ({
@@ -198,7 +233,7 @@ const mapStateToProps = (state) => ({
     user: state.auth.user,
     productList: state.product.productList,
     categoryList: state.product.categoryList,
-    productCount:state.product.productCount,
+    productCount: state.product.productCount,
 })
 
 export default connect(mapStateToProps, {
