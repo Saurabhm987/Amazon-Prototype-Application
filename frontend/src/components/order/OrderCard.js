@@ -58,10 +58,10 @@ class orderCard extends Component {
                                                     <Header as='h5' color='grey'>Current Status: {product.status.status}</Header>
                                                 </Grid.Row>
                                                 <Grid.Row>
-                                                    {(JwtDecode(localStorage.getItem('token'))).userType === USER_SELLER ? 
+                                                    {(localStorage.getItem('token')) ? ((JwtDecode(localStorage.getItem('token'))).userType === USER_SELLER ? 
                                                     <Menu compact>
                                                         <Dropdown placeholder='Change Status' options={options} simple item compact onChange={(e,v) => this.props.updateStatus(orderId,product.productId._id,v.value)} />
-                                                    </Menu> : <div></div>
+                                                    </Menu> : <div></div>) : (<div></div>)
                                                     }
                                                 </Grid.Row>
                                             </Grid.Column>
