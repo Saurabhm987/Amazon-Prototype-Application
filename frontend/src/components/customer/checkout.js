@@ -98,7 +98,7 @@ class Checkout extends Component {
         const card = Object.keys(this.props.defaultCard).length > 0 ? this.props.defaultCard : this.props.cardList[0] || {};
 
         return (
-            <div style={{minHeight: '400px'}}>
+            <div>
                 <div>
                     <div style={{ marginLeft: '10px', marginRight: '10px' }}>
                         <div style={{ marginTop: "72px" }}>

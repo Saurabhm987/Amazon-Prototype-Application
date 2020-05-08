@@ -31,8 +31,8 @@ class AddAddress extends Component {
 
         }
 
- 
-        
+
+
     }
 
     onchange = async e => {
@@ -101,16 +101,15 @@ class AddAddress extends Component {
         }
         await this.props.setDefaultAddress(newAddress)
 
-        if (queryString.parse(this.props.location.search).id !== '1'){await this.props.addAddress(newAddress); this.props.history.push('/customer/address')}
-        else{await this.props.history.push(`/checkout`)}    
-        
+
         if (!this.state.error) {
 
-            await this.props.addAddress(newAddress)
+            if (queryString.parse(this.props.location.search).id !== '1') { await this.props.addAddress(newAddress); this.props.history.push('/customer/address') }
+            else { await this.props.history.push(`/checkout`) }
             this.props.history.push('/customer/address')
         }
-         
-    }   
+
+    }
 
     render() {
         return (
@@ -124,7 +123,7 @@ class AddAddress extends Component {
                     </div>
                     <br></br>
                     <br></br>
-                    
+
                 </div>
 
                 <Grid textAlign='center' style={{ height: '100vh' }} horizontalAlign='middle'>
@@ -142,16 +141,16 @@ class AddAddress extends Component {
                                     name='street2'
                                     value={this.state.street2}
                                     onChange={this.onchange}
-                                    label="Street2" placeholder='Street2' 
-                                    
-                                    />
+                                    label="Street2" placeholder='Street2'
+
+                                />
                                 <Form.Input fluid
                                     name='city'
                                     value={this.state.city}
                                     onChange={this.onchange}
-                                    label="City" placeholder='City' 
+                                    label="City" placeholder='City'
                                     error={this.state.cerr}
-                                    />
+                                />
                                 <Form.Input
                                     name='state'
                                     value={this.state.state}
@@ -207,4 +206,4 @@ const mapStateToProps = state => ({
 })
 
 
-export default connect(mapStateToProps, { addAddress, setDefaultAddress})(AddAddress);
+export default connect(mapStateToProps, { addAddress, setDefaultAddress })(AddAddress);

@@ -127,7 +127,10 @@ class EditAddress extends Component {
             phone: phone || e.currentTarget.dataset.phone,
             name: fullname || e.currentTarget.dataset.name,
         }
-
+        console.log('11111111111111111111')
+        
+        console.log(data);
+        
         if (!error) {
 
             await this.props.updateAddress(userId, selectedAddress, data);

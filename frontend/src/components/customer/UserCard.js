@@ -141,13 +141,13 @@ class UserCard extends Component {
             var getCard = this.props.cardList.map(card => {
                 // var str = queryString.stringify(card);
                 return (
-                    <Card onClick={() => {this.props.setDefaultCard(card);this.props.history.push(`/checkout`)}}>
+                    <Card >
                         {
                         this.state.editmode && this.state.currentCardId === card._id
                             ?
                             (
                                 <div style={{ marginTop: '5px' }}>
-                                    <Card.Content>
+                                    <Card.Content onClick={() => {this.props.setDefaultCard(card);this.props.history.push(`/checkout`)}}>
                                         <Grid columns={1}>
                                             <Grid.Column style={{ marginLeft: '5px', margin: '5px' }}>
                                                 <Grid.Row><Input size='small' defaultValue={card.name || ''} onChange={this.handleChange} error={this.state.namerr} fluid placeholder='Enter card name' type='text' name='name' /></Grid.Row>
