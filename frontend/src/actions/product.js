@@ -51,7 +51,7 @@ export const addProduct = (payload) => async (dispatch) => {
 }
 
 
-export const fetchProduct = (searchText = '', filterText='', offset=1, sortType) => async (dispatch) => {
+export const fetchProduct = (searchText = '', filterText = '', offset = 1, sortType) => async (dispatch) => {
 
     await axios.get(
         `${API_ENDPOINT}/product/search`,
@@ -130,14 +130,14 @@ export const getSellerProducts = (sellerId) => async (dispatch) => {
 
 
 
-export const getSellerProductsPaginated = (searchText = '', filterText='', offset=1, sortType='', userId) => async (dispatch) => {
+export const getSellerProductsPaginated = (searchText = '', filterText = '', offset = 1, sortType = '', userId) => async (dispatch) => {
 
     console.log('hitting seller product paginated')
 
     await axios.get(
         `${API_ENDPOINT}/product/getSellerPaginatedResult`,
         {
-            params: { searchText: searchText, offset: offset, filterText: filterText, sortType: sortType, sellerId:userId }
+            params: { searchText: searchText, offset: offset, filterText: filterText, sortType: sortType, sellerId: userId }
         },
         {
             headers: { 'Content-Type': 'application/json' }
@@ -167,7 +167,7 @@ export const getSellerProductsPaginated = (searchText = '', filterText='', offse
 
 
 
-export const updateProduct = (productId, body ) => async (dispatch) => {
+export const updateProduct = (productId, body) => async (dispatch) => {
 
     await axios.put(`${API_ENDPOINT}/product/updateproduct/${productId}`, body)
         .then(response => {
@@ -206,6 +206,54 @@ export const deleteProduct = (productId) => async (dispatch) => {
             return error
         })
 }
+
+
+
+export const getReview = (productId) => async (dispatch) => {
+
+    await axios.get(`${API_ENDPOINT}/product/review/${productId}`)
+        .then(response => {
+
+            if (response.status >= 500) {
+                throw new Error('Bad response from server')
+            }
+
+            return response.data
+        })
+        .then(payload => {
+            dispatch({
+                type: 'FETCH_REVIEW',
+                payload: payload
+            })
+        })
+        .catch(error => {
+            console.log('error', error)
+        })
+}
+
+
+export const incrementView = (productId) => async (dispatch) => {
+
+    await axios.post(`${API_ENDPOINT}/product/incrementview/${productId}`)
+        .then(response => {
+            if (response.status >= 500) {
+                throw new Error('Bad response from server')
+            }
+
+            return response.data
+        })
+        .then(payload => {
+            // dispatch({
+            //     type: 'UPDATE_PRODUCT',
+            //     payload: payload
+            // })
+            console.log('update action - ', payload)
+        })
+        .catch(error => {
+            console.log('error', error)
+        })
+}
+
 
 //todo this should ideally be in order action
 export const setupOrderedProductForDetail = (orderedProduct) => async (dispatch) => {

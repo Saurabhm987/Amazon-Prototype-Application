@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Container, Grid, Image, Menu, Header, Placeholder, Dropdown, Button, Card, Modal } from 'semantic-ui-react'
+import { Container, Grid, Image, Menu, Input, Header, Placeholder, Dropdown, Button, Card, Modal, Segment } from 'semantic-ui-react'
 import CentralHeader from '../header/CentralHeader'
 import AddProduct from '../product/AddProduct'
 import OrderCard from '../order/OrderCard'
@@ -29,7 +29,10 @@ class AdminDashboard extends Component {
             productAnalytics: {},
             statsMonthly: {},
             seller: [],
-            paginationLimit: 5
+            paginationLimit: 5,
+            orderStatus: '',
+            sellerName: '',
+            sellerNameList: ''
         }
     }
 
@@ -134,9 +137,14 @@ class AdminDashboard extends Component {
             contentPage = (<AddProduct />)
         }
         else if (activeNavItem == 'SELLERS') {
+            const sellers = this.state.seller.filter(seller => {
+                return (seller.name.toLowerCase().indexOf(this.state.sellerNameList.toLowerCase()) !== -1)
+            })
+
             contentPage = (<Card fluid>
+                <Input placeholder='Search Seller' onChange={(e,v) => this.setState({...this.state,sellerNameList:v.value})} fluid/>
                 {
-                    this.state.seller.map(slr => {
+                    sellers.map(slr => {
                         return (
                             <Card.Content>
                                 <Grid columns={3}>
@@ -173,58 +181,78 @@ class AdminDashboard extends Component {
         }
 
         else if (activeNavItem == 'ORDERS') {
-            const options = [
-                { key: 1, text: 'Ordered', value: 1 },
-                { key: 2, text: 'Packing', value: 2 },
-                { key: 3, text: 'Out For Delivery', value: 3 },
-            ]
 
-            contentPage = <OrderCard orders={this.props.order.userOrders}></OrderCard>;
-            // contentPage = this.state.orders.map(order => {
+            // contentPage = <OrderCard orders={this.props.order.userOrders}></OrderCard>;
 
-            //     return (
-            //         <Card fluid>
-            //             <Card.Content>
-            //                 <Header as='h3'>ORDER ID: {order.id}</Header>
-            //             </Card.Content>
-            //             {order.products.map(product => {
-            //                 return (
-            //                     <Card.Content>
-            //                         <Grid columns={3}>
-            //                             <Grid.Column width={3}>
-            //                                 <Placeholder>
-            //                                     <Placeholder.Image style={{ width: '100px', height: '100px' }}></Placeholder.Image>
-            //                                 </Placeholder>
-            //                             </Grid.Column>
-            //                             <Grid.Column width={8}>
-            //                                 <Grid.Row>
-            //                                     {product.name}
-            //                                 </Grid.Row>
-            //                                 <Grid.Row>
-            //                                     <Menu compact>
-            //                                         <Dropdown text='Order Status' options={options} simple item />
-            //                                     </Menu>
-            //                                 </Grid.Row>
-            //                             </Grid.Column>
-            //                             <Grid.Column width={5}>
-            //                                 <Grid.Row>
-            //                                     <Button color='blue' floated='right' style={{ height: '35px', width: '150px', margin: '5px' }}>Billing Details</Button>
-            //                                 </Grid.Row>
-            //                                 <Grid.Row>
-            //                                     <Button color='blue' floated='right' style={{ height: '35px', width: '150px', margin: '5px' }}>Payment Details</Button>
-            //                                 </Grid.Row>
-            //                                 <Grid.Row>
-            //                                     <Button color='blue' floated='right' style={{ height: '35px', width: '150px', margin: '5px' }}>Delivery Address</Button>
-            //                                 </Grid.Row>
-            //                             </Grid.Column>
-            //                         </Grid>
-            //                     </Card.Content>
-            //                 )
-            //             }
-            //             )}
-            //         </Card>
-            //     )
-            // })
+            const orders = this.props.order.userOrders.filter(order => {
+                return ((order.status.status.indexOf(this.state.orderStatus) !== -1) && order.sellerId ?
+                (order.sellerId.name.toLowerCase().indexOf(this.state.sellerName.toLowerCase()) !== -1): false)
+            })
+            
+            contentPage = (
+                <Grid columns={2}>
+                    <Grid.Column width={5}>
+                        <Segment textAlign='left'>
+                            <Header as='h3'>Your Orders</Header>
+                            <Segment inverted color='blue' tertiary key='mini' size='mini'>
+                                <Grid columns={2}>
+                                    <Grid.Column width={12} onClick={() => this.setState({...this.state,orderStatus:''})}>
+                                        <Header as='h3' color='blue'>All</Header>
+                                    </Grid.Column>
+                                    <Grid.Column width={4}>
+                                        <Header as='h3' color='blue'>{this.props.order.userOrders.length}</Header>
+                                    </Grid.Column>
+                                </Grid>
+                            </Segment>
+                            <Segment inverted color='blue' tertiary key='mini' size='mini'>
+                                <Grid columns={2}>
+                                    <Grid.Column width={14} onClick={() => this.setState({...this.state,orderStatus:'Ordered'})}>
+                                        <Header as='h3' color='blue'>Ordered</Header>
+                                    </Grid.Column>
+                                </Grid>
+                            </Segment>
+                            <Segment inverted color='blue' tertiary key='mini' size='mini'>
+                                <Grid columns={2}>
+                                    <Grid.Column width={14} onClick={() => this.setState({...this.state,orderStatus:'Packing'})}>
+                                        <Header as='h3' color='blue'>Packing</Header>
+                                    </Grid.Column>
+                                </Grid>
+                            </Segment>
+                            <Segment inverted color='blue' tertiary key='mini' size='mini'>
+                                <Grid columns={2}>
+                                    <Grid.Column width={14} onClick={() => this.setState({...this.state,orderStatus:'Out For Delivery'})}>
+                                        <Header as='h3' color='blue'>Out For Delivery</Header>
+                                    </Grid.Column>
+                                </Grid>
+                            </Segment>
+                            <Segment inverted color='blue' tertiary key='mini' size='mini'>
+                                <Grid columns={2}>
+                                    <Grid.Column width={14} onClick={() => this.setState({...this.state,orderStatus:'Delivered'})}>
+                                        <Header as='h3' color='blue'>Delivered</Header>
+                                    </Grid.Column>
+                                </Grid>
+                            </Segment>
+                            <Segment inverted color='blue' tertiary key='mini' size='mini'>
+                                <Grid columns={2}>
+                                    <Grid.Column width={14} onClick={() => this.setState({...this.state,orderStatus:'Cancelled'})}>
+                                        <Header as='h3' color='blue'>Cancelled</Header>
+                                    </Grid.Column>
+                                </Grid>
+                            </Segment>
+
+                            <Header as='h3'>Search by Seller</Header>
+                            <Grid.Row>
+                                <Input placeholder='Search...' onChange={(e,v) => this.setState({...this.state,sellerName:v.value})} fluid/>
+                            </Grid.Row>
+                        </Segment>
+                    </Grid.Column>
+                    <Grid.Column width={11}>
+                        <Segment textAlign='left'>
+                            <OrderCard orders={orders}></OrderCard>
+                        </Segment>
+                    </Grid.Column>
+                </Grid>
+            )
         }
 
 
