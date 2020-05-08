@@ -29,6 +29,11 @@ class UserCard extends Component {
             expiryDate: '',
             cvv: '',
             userId: '',
+            error: false,
+            cvverr: false,
+            numerr: false,
+            namerr: false,
+            daterr: false,
         }
     }
 
@@ -46,9 +51,43 @@ class UserCard extends Component {
 
     }
 
-    handleChange = async (e, { name, value }) => {
+    handleChange = async (e) => {
 
-        this.setState({ [name]: value});
+        const { name, value } = e.target
+
+        if (name === 'name') {
+            console.log('inside')
+            if (value.length < 2) {
+                await this.setState({ error: true, namerr: true });
+            } else {
+                await this.setState({ error: false, namerr: false });
+            }
+        } else if (name === 'number') {
+
+            if (value.length !== 16) {
+                await this.setState({ error: true, numerr: true });
+            } else {
+                await this.setState({ error: false, numerr: false });
+            }
+        } else if (name === 'expiryDate') {
+
+            let expiry = value.split('/')
+
+            if ((expiry[0] > 12) || (Number(expiry[1]) > 31) || (Number(expiry[2]) < 2020)) {
+                await this.setState({ error: true, daterr: true });
+            } else {
+                await this.setState({ error: false, daterr: false });
+            }
+        } else if (name === 'cvv') {
+
+            if (value.length !== 3) {
+                this.setState({ error: true, cvverr: true });
+            } else {
+                this.setState({ error: false, cvverr: false });
+            }
+        }
+
+        await this.setState({ [name]: value })
     }
 
     handleEdit = async (e) => {
@@ -77,6 +116,7 @@ class UserCard extends Component {
             cvv,
             number,
             userId,
+            error,
         } = this.state
 
         const data = {
@@ -85,10 +125,15 @@ class UserCard extends Component {
             expiryDate: expiryDate || e.currentTarget.dataset.expiry,
             number: number || e.currentTarget.dataset.number,
         }
-        await this.props.updateCard(userId, currentCardId, data);
-        await this.props.getCard(userId)
-        this.setState({ editmode: false });
-        window.location.reload();
+
+        if (!error) {
+
+            await this.props.updateCard(userId, currentCardId, data);
+            await this.props.getCard(userId)
+            this.setState({ editmode: false });
+            window.location.reload();
+        }
+
     }
 
     render() {
@@ -105,10 +150,10 @@ class UserCard extends Component {
                                     <Card.Content>
                                         <Grid columns={1}>
                                             <Grid.Column style={{ marginLeft: '5px', margin: '5px' }}>
-                                                <Grid.Row><Input size='small' defaultValue={card.name || ''} onChange={this.handleChange} fluid placeholder='Enter card name' type='text' name='name' /></Grid.Row>
-                                                <Grid.Row><Input size='small' defaultValue={card.number || ''} onChange={this.handleChange} fluid placeholder='Enter card number' type='number' name='number' /></Grid.Row>
-                                                <Grid.Row><Input size='small' defaultValue={card.expiryDate || ''} onChange={this.handleChange} fluid placeholder='Enter expiry date' type='data' name='expiryDate' /></Grid.Row>
-                                                <Grid.Row><Input size='small' defaultValue={card.cvv || ''} onChange={this.handleChange} fluid placeholder='Enter CVV' type='text' name='cvv' /></Grid.Row>
+                                                <Grid.Row><Input size='small' defaultValue={card.name || ''} onChange={this.handleChange} error={this.state.namerr} fluid placeholder='Enter card name' type='text' name='name' /></Grid.Row>
+                                                <Grid.Row><Input size='small' defaultValue={card.number || ''} onChange={this.handleChange} error={this.state.numerr} fluid placeholder='Enter card number' type='number' name='number' /></Grid.Row>
+                                                <Grid.Row><Input size='small' defaultValue={card.expiryDate.substring(0, 10) || ''} onChange={this.handleChange} error={this.state.daterr} fluid placeholder='Enter expiry date' type='data' name='expiryDate' /></Grid.Row>
+                                                <Grid.Row><Input size='small' defaultValue={card.cvv || ''} onChange={this.handleChange} error={this.state.cvverr} fluid placeholder='Enter CVV' type='text' name='cvv' /></Grid.Row>
                                             </Grid.Column>
                                         </Grid>
                                     </Card.Content>
@@ -128,11 +173,11 @@ class UserCard extends Component {
                             )
                             :
                             (
-                                
+
                                 <Card.Content>
                                     <Card.Meta>{card.name}</Card.Meta>
                                     <Card.Meta>{card.number}</Card.Meta>
-                                    <Card.Meta>{card.expiryDate}</Card.Meta>
+                                    <Card.Meta>{card.expiryDate.substring(0, 10)}</Card.Meta>
                                     <Card.Meta>{card.cvv}</Card.Meta>
                                     <br />
                                     <br />

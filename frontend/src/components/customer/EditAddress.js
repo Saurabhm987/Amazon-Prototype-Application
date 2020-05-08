@@ -18,6 +18,14 @@ class EditAddress extends Component {
             pincode: '',
             phone: '',
             fullname: '',
+            st1err: false,
+            pherr: false,
+            cerr: false,
+            cnerr: false,
+            perr: false,
+            sterr: false,
+            error: false,
+
         }
     }
 
@@ -41,8 +49,55 @@ class EditAddress extends Component {
         this.props.history.push('address')
     }
 
-    handleInput = async (e, { value, name }) => {
-        this.setState({ [name]: value });
+    handleInput = async (e) => {
+
+        const { name, value } = e.target
+
+        if (name === 'street1') {
+            console.log('inside')
+            if (value.length < 2) {
+                await this.setState({ error: true, st1err: true });
+            } else {
+                await this.setState({ error: false, st1err: false });
+            }
+        } else if (name === 'city') {
+
+            if (value.length < 2) {
+                await this.setState({ error: true, cerr: true });
+            } else {
+                await this.setState({ error: false, cerr: false });
+            }
+        } else if (name === 'pincode') {
+
+            if (value.length !== 5) {
+                await this.setState({ error: true, perr: true });
+            } else {
+                await this.setState({ error: false, perr: false });
+            }
+        } else if (name === 'state') {
+
+            if (value.length < 2) {
+                this.setState({ error: true, sterr: true });
+            } else {
+                this.setState({ error: false, sterr: false });
+            }
+        } else if (name === 'country') {
+
+            if (value.length < 2) {
+                this.setState({ error: true, cnerr: true });
+            } else {
+                this.setState({ error: false, cnerr: false });
+            }
+        } else if (name === 'phone') {
+
+            if (value.length !== 10) {
+                this.setState({ error: true, pherr: true });
+            } else {
+                this.setState({ error: false, pherr: false });
+            }
+        }
+
+        await this.setState({ [name]: value })
     }
 
     handleSave = async (e) => {
@@ -59,6 +114,7 @@ class EditAddress extends Component {
             phone,
             fullname,
             userId,
+            error,
         } = this.state
 
         const data = {
@@ -72,13 +128,12 @@ class EditAddress extends Component {
             name: fullname || e.currentTarget.dataset.name,
         }
 
-        console.log('update data --', data)
+        if (!error) {
 
+            await this.props.updateAddress(userId, selectedAddress, data);
+            this.props.history.push('/customer/address')
+        }
 
-        await this.props.updateAddress(userId, selectedAddress, data);
-
-        this.props.history.push('/customer/address')
-    
     }
 
     render() {
@@ -110,6 +165,7 @@ class EditAddress extends Component {
                                             defaultValue={addressDetail.country || ''}
                                             label="Country"
                                             size='small'
+                                            error={this.state.cnerr}
 
                                         />
                                         {/* <Form.Input fluid
@@ -122,12 +178,12 @@ class EditAddress extends Component {
                                         <Form.Input fluid
                                             name='phone'
                                             onChange={this.handleInput}
+                                            type='number'
                                             label="Mobile Number"
                                             placeholder='10 digit mobile number'
-                                            type='text'
                                             size='small'
                                             defaultValue={addressDetail.phone || ''}
-
+                                            error={this.state.pherr}
 
                                         />
                                         <Form.Input fluid
@@ -136,9 +192,9 @@ class EditAddress extends Component {
                                             onChange={this.handleInput}
                                             label="Pincode"
                                             placeholder='6 digits [0-9] pincode'
-                                            type='text'
+                                            type='number'
                                             defaultValue={addressDetail.pincode || ''}
-
+                                            error={this.state.perr}
                                         />
                                         <Form.Input
                                             onChange={this.handleInput}
@@ -149,7 +205,7 @@ class EditAddress extends Component {
                                             type='text'
                                             name='street1'
                                             defaultValue={addressDetail.street1 || ''}
-
+                                            error={this.state.st1err}
                                         />
                                         <Form.Input
                                             onChange={this.handleInput}
@@ -168,6 +224,7 @@ class EditAddress extends Component {
                                             label="City"
                                             type='text'
                                             defaultValue={addressDetail.city || ''}
+                                            error={this.state.cerr}
                                         />
                                         <Form.Input
                                             onChange={this.handleInput}
@@ -177,6 +234,7 @@ class EditAddress extends Component {
                                             type='text'
                                             name='state'
                                             defaultValue={addressDetail.state || ''}
+                                            error={this.state.sterr}
                                         />
                                         <Button
                                             onClick={this.handleSave}

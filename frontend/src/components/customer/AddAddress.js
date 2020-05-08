@@ -21,14 +21,69 @@ class AddAddress extends Component {
             country: '',
             pincode: '',
             phone: '',
+            st1err: false,
+            pherr: false,
+            cerr: false,
+            cnerr: false,
+            perr: false,
+            sterr: false,
+            error: true,
+
         }
 
  
         
     }
 
-    onchange = e => {
-        this.setState({ [e.target.name]: e.target.value })
+    onchange = async e => {
+
+        const { name, value } = e.target
+
+        if (name === 'street1') {
+            console.log('inside')
+            if (value.length < 2) {
+                await this.setState({ error: true, st1err: true });
+            } else {
+                await this.setState({ error: false, st1err: false });
+            }
+        } else if (name === 'city') {
+
+            if (value.length < 2) {
+                await this.setState({ error: true, cerr: true });
+            } else {
+                await this.setState({ error: false, cerr: false });
+            }
+        } else if (name === 'pincode') {
+
+            if (value.length !== 5) {
+                await this.setState({ error: true, perr: true });
+            } else {
+                await this.setState({ error: false, perr: false });
+            }
+        } else if (name === 'state') {
+
+            if (value.length < 2) {
+                this.setState({ error: true, sterr: true });
+            } else {
+                this.setState({ error: false, sterr: false });
+            }
+        } else if (name === 'country') {
+
+            if (value.length < 2) {
+                this.setState({ error: true, cnerr: true });
+            } else {
+                this.setState({ error: false, cnerr: false });
+            }
+        } else if (name === 'phone') {
+
+            if (value.length !== 10) {
+                this.setState({ error: true, pherr: true });
+            } else {
+                this.setState({ error: false, pherr: false });
+            }
+        }
+
+        await this.setState({ [name]: value })
     }
 
 
@@ -49,7 +104,11 @@ class AddAddress extends Component {
         if (queryString.parse(this.props.location.search).id !== '1'){await this.props.addAddress(newAddress); this.props.history.push('/customer/address')}
         else{await this.props.history.push(`/checkout`)}    
         
+        if (!this.state.error) {
 
+            await this.props.addAddress(newAddress)
+            this.props.history.push('/customer/address')
+        }
          
     }   
 
@@ -76,36 +135,49 @@ class AddAddress extends Component {
                                     name='street1'
                                     value={this.state.street1}
                                     onChange={this.onchange}
-                                    label="Street1" placeholder='Street1' />
+                                    label="Street1" placeholder='Street1'
+                                    error={this.state.st1err}
+                                />
                                 <Form.Input fluid
                                     name='street2'
                                     value={this.state.street2}
                                     onChange={this.onchange}
-                                    label="Street2" placeholder='Street2' />
+                                    label="Street2" placeholder='Street2' 
+                                    
+                                    />
                                 <Form.Input fluid
                                     name='city'
                                     value={this.state.city}
                                     onChange={this.onchange}
-                                    label="City" placeholder='City' />
+                                    label="City" placeholder='City' 
+                                    error={this.state.cerr}
+                                    />
                                 <Form.Input
                                     name='state'
                                     value={this.state.state}
                                     onChange={this.onchange}
+                                    error={this.state.sterr}
+
                                     label="State" placeholder='State' />
                                 <Form.Input
                                     name='country'
                                     value={this.state.country}
                                     onChange={this.onchange}
+                                    error={this.state.cnerr}
                                     label="Country" placeholder='Country' />
                                 <Form.Input
                                     name='pincode'
                                     value={this.state.pincode}
                                     onChange={this.onchange}
+                                    error={this.state.perr}
+                                    type='number'
                                     label="Pincode" placeholder='Pincode' />
                                 <Form.Input
                                     name='phone'
                                     value={this.state.phone}
                                     onChange={this.onchange}
+                                    error={this.state.pherr}
+                                    type='number'
                                     label="Phone" placeholder='Phone' />
                                 <Button fluid
                                     onClick={this.onSubmit}
