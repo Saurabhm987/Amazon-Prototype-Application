@@ -1,4 +1,5 @@
 const sellerServices = require('../services/seller')
+var kafka = require('../kafka/client');
 
 const keys = require('../config/keys'),
     AWS = require('aws-sdk'),

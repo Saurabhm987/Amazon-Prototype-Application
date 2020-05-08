@@ -123,47 +123,6 @@ router.post('/addproduct', uploadMultiple, async (request, response) => {
 })
 
 
-// router.get('/searchWithKafka', cachedsearch, async (request, response) => {
-
-//     console.log('Kafka search api call')
-
-//     try {
-
-//         const data = {
-//             "body": request.body,
-//             "params": request.params,
-//             "query": request.query,
-//             "type":"ProductSearchResults"
-//         }
-
-//         // params = { topic_name, request_body, callback}
-//         await kafka.make_request('product', data, async (err, data) => {
-//             if (err) throw new Error(err)
-
-//             await client.set('products', JSON.stringify(data.body))
-
-//             response.status(data.status).json(data.body);
-//         });
-
-//         // let res = await productServices.getProductsforCustomer(data);
-//         // response.status(res.status).json(res.body);
-
-//     }
-//     catch (error) {
-//         if (error.message)
-//             message = error.message
-//         else
-//             message = 'Error while fetching products'
-
-//         if (error.statusCode)
-//             code = error.statusCode
-//         else
-//             code = 500
-
-//         return response.status(code).json({ message });
-//     }
-
-// });
 
 
 
