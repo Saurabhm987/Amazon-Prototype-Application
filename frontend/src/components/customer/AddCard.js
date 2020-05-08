@@ -153,8 +153,4 @@ const mapStateToProps = state => ({
     defaultCard: state.customer.defaultCard
 })
 
-<<<<<<< HEAD
   export default connect(mapStateToProps, {addCard, setDefaultCard})(AddCard);
-=======
-export default connect(mapStateToProps, { addCard, setDefaultCard })(AddCard);
->>>>>>> 255ef7511f15af63749ba3bf0c3d46432167d5aa
