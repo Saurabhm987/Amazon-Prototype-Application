@@ -3,6 +3,7 @@ import {
     ADD_PRODUCT,
     FETCH_PRODUCT,
     PRODUCT_DETAIL,
+    SETUP_ORDER_DETAIL_PRODUCT,
 } from '../../actions/types';
 
 const initialState = {
@@ -105,6 +106,12 @@ export default function(state = initialState, action) {
             return {
                 ...state,
                 productDetail: payload
+            }
+
+        case SETUP_ORDER_DETAIL_PRODUCT:
+            return {
+                ...state,
+                productListPerOrder:payload
             }
 
         default:
