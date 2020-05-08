@@ -47,7 +47,7 @@ class ProductDetail extends Component {
                 { key: 10, text: '10', value: 10 },
 
             ]
-        }   
+        }
 
         this.onClickImage = this.onClickImage.bind(this)
     }
@@ -215,9 +215,7 @@ class ProductDetail extends Component {
                                                     <Rating maxRating={5} defaultRating={this.props.productDetail.overallRating} icon='star' size='small' disabled />
                                                 </Grid.Row>
                                                 :
-                                                <Placeholder>
-                                                    <Placeholder.Line></Placeholder.Line>
-                                                </Placeholder>
+                                                <Rating maxRating={5} defaultRating={1} icon='star' size='small' disabled />
                                         }
                                         <br />
                                         <Divider />
