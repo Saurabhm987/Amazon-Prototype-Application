@@ -45,10 +45,17 @@ router.post('/newOrder', checkAuth, async (req, res) => {
             "body": req.body,
             "params": req.params,
             "query": req.query,
-            "user": req.user
+            "user": req.user,
+            "type":"createNewOrder"
         };
-        const response = await orderServices.createNewOrder(data);
-        res.status(response.status).json(response.body);
+        ///
+        await kafka.make_request('order', data, async (err, data) => {
+            if (err) throw new Error(err)
+            await res.status(data.status).json(data.body);
+        });
+        ///
+        // const response = await orderServices.createNewOrder(data);
+        // res.status(response.status).json(response.body);
     } catch (error) {
         if (error.message) message = error.message;
         else message = 'Error while adding product to cart';
@@ -67,10 +74,18 @@ router.put('/updateStatus',async (req,res)=>{
         const data = {
             orderId:req.body.orderId,
             productId:req.body.productId,
-            updatedStatus:req.body.updatedStatus
+            updatedStatus:req.body.updatedStatus,
+            "type":"updateOrderStatus"
+
         }
-        let result = await updateOrderStatus(data);
-        res.status(200).json(result);
+///
+        await kafka.make_request('order', data, async (err, data) => {
+            if (err) throw new Error(err)
+            await res.status(200).json(data);
+        });
+///
+        // let result = await updateOrderStatus(data);
+        // res.status(200).json(result);
     }
     catch (error) {
         let message="";
@@ -108,12 +123,21 @@ router.get('/getUserOrder', checkAuth, async(req,res)=>{ // todo add checkAuth,
             // userId: req.params.userId, //{ userID: '1123' }// without checkauth
 
             "query": req.query, // { page: '1', limit: '12' }
-            userType:req.user.userType} //"customer"
+            userType:req.user.userType, //"customer"
             // userType:"seller"} //""
+            "type":"getUserOrder"
 
-            console.log('data---', data)
-        let resOrder =await getUserOrders(data);
-        res.status(200).json(resOrder);
+        }
+        ///
+        await kafka.make_request('order', data, async (err, data) => {
+            if (err) throw new Error(err)
+            await res.status(200).json(data);
+        });
+///
+
+        //     console.log('data---', data)
+        // let resOrder =await getUserOrders(data);
+        // res.status(200).json(resOrder);
     }
     catch (error) {
         if (error.message)

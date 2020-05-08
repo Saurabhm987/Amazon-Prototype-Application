@@ -234,3 +234,17 @@ export const addReview = (productId , body) => async (dispatch) => {
             console.log('error', error)
         })
 }
+
+export const defaultAddress = (address) => async (dispatch) => {
+    dispatch({
+        type: 'DEFAULT_ADDRESS',
+        payload: card
+    })
+}
+
+export const defaultCard = (card) => async (dispatch) => {
+    dispatch({
+        type: 'DEFAULT_CARD',
+        payload: card
+    })
+}
