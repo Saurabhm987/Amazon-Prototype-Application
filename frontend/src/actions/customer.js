@@ -238,7 +238,7 @@ export const addReview = (productId , body) => async (dispatch) => {
 export const defaultAddress = (address) => async (dispatch) => {
     dispatch({
         type: 'DEFAULT_ADDRESS',
-        payload: card
+        payload: address
     })
 }
 
