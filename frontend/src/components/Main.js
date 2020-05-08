@@ -60,12 +60,9 @@ class Main extends Component {
                 <Route path='/customer/card' exact component={UserCard} />
                 <Route path='/customer/addressupdate' exact component={EditAddress} />
                 <Route path='/checkout'  component={Checkout} />
-<<<<<<< HEAD
                 <Route path='/ordersummary'  component={OrderSummary} />
                 
-=======
                 <Route path='/customer/reviews' component={CustomerReiviews} />
->>>>>>> 88cf199a5d403bb6a57d13caaf2a697a91a82b1c
 
                 { 
                     user !== null

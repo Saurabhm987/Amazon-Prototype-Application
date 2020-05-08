@@ -41,17 +41,20 @@ class AddCard extends Component {
 render(){
     return (  
         <div>
+            <br></br>
+            <br></br>
+            <br></br>
             <div style={{ marginLeft: '10px', marginRight: '10px' }}>
-            <div style={{ marginTop: "72px" }}>
+            <div style={{ marginTop: "80px" }}>
             <Header as='h1'>Add New Payment Method</Header>
             </div>
         </div>
-
+        <br></br>
+        <br></br>
         <Grid textAlign='center' style={{ height: '100vh' }} horizontalAlign='middle'>
         <Grid.Column textAlign='left' style={{ maxWidth: 450 }}>
             <Form size='large'>
             <Segment stacked>
-            <Header size="large">Add new Payment Method</Header>
                 <Form.Input fluid
                 name='name'
                 value = {this.state.name}

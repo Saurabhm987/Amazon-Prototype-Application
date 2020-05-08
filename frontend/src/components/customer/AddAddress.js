@@ -47,11 +47,16 @@ class AddAddress extends Component {
     render() {
         return (
             <div>
+                <br></br>
+                <br></br>
+                <br></br>
                 <div style={{ marginLeft: '10px', marginRight: '10px' }}>
                     <div style={{ marginTop: "72px" }}>
                         <Header as='h1'>Add a New Address</Header>
                     </div>
                     <br></br>
+                    <br></br>
+                    
                 </div>
 
                 <Grid textAlign='center' style={{ height: '100vh' }} horizontalAlign='middle'>

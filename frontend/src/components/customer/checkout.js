@@ -3,6 +3,7 @@ import { Menu, Image, Grid, Header, Divider, Card, Icon, Button, Container} from
 import {Link} from 'react-router-dom'
 import { connect } from 'react-redux';
 import { getCustomerCart } from '../../actions/cart';
+import { getAddress} from '../../actions/customer'
 import jwtDecode from 'jwt-decode';
 
 class Checkout extends Component {
@@ -111,11 +112,11 @@ class Checkout extends Component {
                                     <Divider hidden />
                                     <Grid.Column width={4}> 
                                     <div >
-                                        <Link to='/yourAddresses' className="nav-link" >
+                                        <Link to='/youraddresses' className="nav-link" >
                                             Change 
                                         </Link>
                                             <br/>
-                                        <Link to='/addAddress' className="nav-link">
+                                        <Link to='/addaddress' className="nav-link">
                                             Add New Address
                                         </Link>
                                     </div>
@@ -134,11 +135,11 @@ class Checkout extends Component {
                                 </Grid.Column>
                                 <Grid.Column width={4}> 
                                     <div >
-                                        <Link to='/yourAddresses' className="nav-link" >
+                                        <Link to='/yourpayments' className="nav-link" >
                                             Change 
                                         </Link>
                                             <br/>
-                                        <Link to='/addAddress' className="nav-link">
+                                        <Link to='/addcard' className="nav-link">
                                             Add New Card
                                         </Link>
                                     </div>
@@ -179,7 +180,7 @@ const mapStateToProps = state => {
         cart: state.cart.cartlist,
         cartsubtotal: state.cart.cartsubtotal,
         carttotalitems: state.cart.carttotalitems
-      
+        // addressList: state.customer.addressList
     };
 };
 
