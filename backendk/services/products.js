@@ -6,21 +6,26 @@ mongoose = require('mongoose')
 
 const getProductsforCustomer = async (request) => {
     try {
-        const { searchText, filterText, offset, sortType } = request.query;
+       
+        const { searchText, filterText, offset, sortType, rating, priceFilter } = request.query;
+        rating = Number(rating)
+        priceFilter = Number(priceFilter)
+        // if(priceFilter<0)
+        // priceFilter=10000000
         if (searchText === "" && filterText === "") {
-            query = { 'removed': false }
+            query = { 'removed': false, overallRating:{$gte:rating}, price:{$lte:priceFilter} }
         } else if (searchText === "") {
-            query = { 'category': filterText, 'removed': false };
+            query = { 'category': filterText, 'removed': false , overallRating:{$gte:rating}, price:{$lte:priceFilter}};
         } else if (filterText === "") {
             query = {
-                $or: [{ 'name': { $regex: searchText, $options: 'i' }, 'removed': false },
-                { 'category': { $regex: searchText, $options: 'i' }, 'removed': false },
-                { 'sellerName': { $regex: searchText, $options: 'i' }, 'removed': false }]
+                $or: [{ 'name': { $regex: searchText, $options: 'i' }, 'removed': false, overallRating:{$gte:rating}, price:{$lte:priceFilter} },
+                { 'category': { $regex: searchText, $options: 'i' }, 'removed': false, overallRating:{$gte:rating}, price:{$lte:priceFilter} },
+                { 'sellerName': { $regex: searchText, $options: 'i' }, 'removed': false , overallRating:{$gte:rating}, price:{$lte:priceFilter}}]
             };
         } else {
             query = {
-                $or: [{ 'name': { $regex: searchText, $options: 'i' }, 'category': filterText, 'removed': false },
-                { 'sellerName': { $regex: searchText, $options: 'i' }, 'category': filterText, 'removed': false }]
+                $or: [{ 'name': { $regex: searchText, $options: 'i' }, 'category': filterText, 'removed': false, overallRating:{$gte:rating}, price:{$lte:priceFilter} },
+                { 'sellerName': { $regex: searchText, $options: 'i' }, 'category': filterText, 'removed': false, overallRating:{$gte:rating}, price:{$lte:priceFilter} }]
             };
         }
         if (sortType === 'PriceLowtoHigh') {
@@ -36,7 +41,7 @@ const getProductsforCustomer = async (request) => {
         // console.log(sortBy)
         // console.log(offset)
         // const cate = await queries.findDocumentsByQuery(productCategory, {}, { _id: 0 }, {})
-        const resp = await queries.findDocumentsByQueryFilter(products, query, { _id: 1, name: 1, price: 1, overallRating: 1, images: 1, "seller": 1 }, { skip: (Number(offset) - 1) * 12, limit: 12, sort: sortBy })
+        const resp = await queries.findDocumentsByQueryFilter(products, query, { _id: 1, name: 1, price: 1, overallRating: 1, images: 1, "sellerName": 1 }, { skip: (Number(offset) - 1) * 12, limit: 12, sort: sortBy })
         // let countQuery = {removed:false}
         const count = await queries.countDocumentsByQuery(products, query)
         // console.log(resp)
@@ -67,8 +72,8 @@ const addProduct = async (request) => {
     try {
         const { body, files } = request
 
-        var product = new Object()
-        product = JSON.parse(JSON.stringify(body))
+        var products = new Object()
+        products = JSON.parse(JSON.stringify(body))
 
         let productImages = []
 
@@ -78,9 +83,11 @@ const addProduct = async (request) => {
             })
         }
 
-        product.images = productImages
+        products.images = productImages
 
-        const result = await queries.createDocument(products, product)
+        const result = await queries.createDocument(product, products)
+
+        await console.log('result after product added', result)
 
         return { status: 200, body: result.toObject() }
 
@@ -99,6 +106,7 @@ const addProduct = async (request) => {
     }
 }
 
+////////////////////
 const updateProduct = async (request) => {
     try {
 
@@ -122,15 +130,22 @@ const updateProduct = async (request) => {
         let currquantity = getProdData.body.quantity
 
         if (currquantity !== quantity) {
+            // let data={
+            //     "category":category,
+            //     "currquantity":currquantity
+            // }
 
-            dcrres = await dcrproductCount(category, currquantity)
+            dcrres = await dcrproductCountwithoutKafka(category,currquantity)
 
             if (dcrres.numOfProducts < 0 && null) {
 
                 throw new Error('Can not update product!')
             }
-
-            await incproductCount(category, quantity)
+            // let data={
+            //     "category":category,
+            //     "quantity":quantity
+            // }
+            await incproductCountwithoutKafka(category,quantity)
         }
 
         let upadateQuery = {
@@ -165,7 +180,142 @@ const updateProduct = async (request) => {
         return { "status": code, body: { message } }
     }
 }
+const dcrproductCountwithoutKafka = async (request) => {
+    try {
 
+        let findQuery = { name: category, numOfProducts: { $gte: 0 } }
+        let updateQuery = { $inc: { numOfProducts: -quantity } }
+
+        const result = await queries.updateField(productCategory, findQuery, updateQuery)
+
+        console.log('respone after decreament ..., ', result)
+
+        if (result !== null)
+            status = 200
+        else
+            status = 500
+
+        return { status: status }
+
+
+
+    } catch (error) {
+
+        if (error.message)
+            message = error.message
+        else
+            message = 'Error while decreamenting product quantity'
+
+        if (error.statusCode)
+            code = error.statusCode
+        else
+            code = 500
+
+        return { "status": code, body: { message } }
+    }
+}
+const incproductCountwithoutKafka = async (request) => {
+    try {
+
+        let findQuery = { name: category }
+        let updateQuery = { $inc: { numOfProducts: quantity } }
+
+        let result = await queries.updateField(productCategory, findQuery, updateQuery)
+
+        console.log('incr product result - ', result)
+
+        return { status: 200, body: result }
+
+
+    } catch (error) {
+
+        if (error.message)
+            message = error.message
+        else
+            message = 'Error while increamenting product quantity'
+
+        if (error.statusCode)
+            code = error.statusCode
+        else
+            code = 500
+
+        return { "status": code, body: { message } }
+    }
+}
+
+
+
+
+////////////////////////
+
+// const updateProduct = async (request) => {
+//     try {
+
+//         console.log('in update product function')
+
+//         const { body, params } = request
+
+//         const {
+//             name,
+//             category,
+//             quantity,
+//             price,
+//             description,
+//             giftPrice,
+//         } = body
+
+//         const _id = params.product_id
+
+//         const getProdData = await getProduct(_id)
+
+//         let currquantity = getProdData.body.quantity
+
+//         if (currquantity !== quantity) {
+
+//             dcrres = await dcrproductCount(category, currquantity)
+
+//             if (dcrres.numOfProducts < 0 && null) {
+
+//                 throw new Error('Can not update product!')
+//             }
+
+//             await incproductCount(category, quantity)
+//         }
+
+//         let upadateQuery = {
+//             $set:
+//             {
+//                 name: name,
+//                 category: category,
+//                 quantity: quantity,
+//                 price: price,
+//                 description: description,
+//                 giftPrice: giftPrice
+//             }
+//         }
+
+//         let findQuery = { _id: mongoose.Types.ObjectId(_id) }
+
+//         const result = await queries.updateField(products, findQuery, upadateQuery)
+
+//         return { status: 200, body: result }
+
+//     } catch (error) {
+//         if (error.message)
+//             message = error.message
+//         else
+//             message = 'Error while updating product'
+
+//         if (error.statusCode)
+//             code = error.statusCode
+//         else
+//             code = 500
+
+//         return { "status": code, body: { message } }
+//     }
+// }
+
+/////////////////////removing from kafka
 const addReview = async (request) => {
 
     try {
@@ -195,12 +345,11 @@ const addReview = async (request) => {
                 }
             }
         }
-        const dbResp = await queries.updateField(buyer, findUserQuery, insertQuery);
-        console.log('review added in buyer model', dbResp);
 
+        await queries.updateField(buyer, findUserQuery, insertQuery);
         // add review to product schema
         let _id = mongoose.Types.ObjectId(params.product_id)
-        
+
         let findQuery = {
             _id: _id
         }
@@ -219,17 +368,42 @@ const addReview = async (request) => {
             }
         }
 
-        await console.log('udpate comment - ', upadateQuery)
-
         const updateReview = await queries.updateField(products, findQuery, upadateQuery)
 
-        let ratingQuery = { _id: _id, 'review.rating': { gt: 0 } }
+        let countQuery = [
+            {
+                '$match': {
+                    '_id': _id
+                }
+            },
+            {
+                '$unwind': '$review'
+            },
+            {
+                '$group': {
+                    _id: null,
+                    total: {
+                        '$sum': '$review.rating'
+                    },
+                    count: {
+                        '$sum': 1
+                    }
+                }
+            },
+            {
+                '$project': {
+                    _id: 0,
+                    total: 1,
+                    count: 1,
+                }
+            }
+        ]
 
-        const ratingCount = await queries.countDocumentsByQuery(products, ratingQuery)
+        let ratings = await queries.aggregationQuery(product, countQuery)
 
-        let averageRating = (averageRating + rating) / ratingCount
+        let overallRating = ratings[0].total / ratings[0].count
 
-        const result = await queries.updateField(products, { _id: mongoose.Types.ObjectId(_id) }, { $set: { averageRating: averageRating } })
+        const result = await queries.updateField(product, { _id: mongoose.Types.ObjectId(_id) }, { $set: { overallRating: overallRating } })
 
         return { status: 200, body: result }
 
@@ -399,7 +573,7 @@ const incproductCount = async (request) => {
 
         await queries.updateField(productCategory, findQuery, updateQuery)
 
-        return { status: 200 }
+        return { status: 200, body: result }
 
 
     } catch (error) {
@@ -565,6 +739,78 @@ const deleteCategory = async (request) => {
     }
 }
 
+const getReview = async (request) => {
+
+    try {
+
+        const product_id = request.product_id
+
+        console.log('review findqury - ', product_id)
+        const result = await queries.findDocumentsById(product, product_id)
+        return { status: 200, body: result.review }
+
+    } catch (error) {
+        console.log(error)
+
+        if (error.message)
+            message = error.message
+        else
+            message = 'Error while getting review'
+
+        if (error.statusCode)
+            code = error.statusCode
+        else
+            code = 500
+
+        return { "status": code, body: { message } }
+    }
+
+}
+
+
+const incrementView = async (request) => {
+
+    try {
+
+        const { product_id } = request.params
+        console.log('review findqury - ', request)
+
+        let findQuery = {
+            $and: [
+                { _id: product_id },
+                {
+                    'viewdata':
+                        { "$gte": new Date("2015-05-27T00:00:00Z")}
+                }
+            ]
+
+        }
+
+        let result = await queries.findDocumets(product, findQuery)
+
+        console.log('result date comparison - ', result)
+        // let updateQuery = {$set : { viewData : new Date()}, $inc: { views: 1 } }
+        // const result = await queries.updateField(product, findQuery, updateQuery)
+        return { status: 200, body: result.review }
+
+    } catch (error) {
+        console.log(error)
+
+        if (error.message)
+            message = error.message
+        else
+            message = 'Error while getting review'
+
+        if (error.statusCode)
+            code = error.statusCode
+        else
+            code = 500
+
+        return { "status": code, body: { message } }
+    }
+
+}
+
 
 module.exports = {
     addProduct: addProduct,
@@ -580,4 +826,6 @@ module.exports = {
     dcrproductCount: dcrproductCount,
     getProductsforSeller: getProductsforSeller,
     deleteCategory: deleteCategory,
+    getReview: getReview,
+    incrementView: incrementView
 }

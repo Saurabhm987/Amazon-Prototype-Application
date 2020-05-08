@@ -49,7 +49,7 @@ router.get('/profile/:customer_id', async (request, response) => {
             params : request.params
         }
 
-        const res = await customerService.getCustomerProfile(body)
+        const res = await customerService(body)
 
         console.log('seller profile response - ', res)
 

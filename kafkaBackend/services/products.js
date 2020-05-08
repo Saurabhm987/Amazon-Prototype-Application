@@ -11,8 +11,8 @@ handle_request = async (request, callback) => {
         try {
             const { body, files } = request
     
-            var product = new Object()
-            product = JSON.parse(JSON.stringify(body))
+            var products = new Object()
+            products = JSON.parse(JSON.stringify(body))
     
             let productImages = []
     
@@ -22,9 +22,13 @@ handle_request = async (request, callback) => {
                 })
             }
     
-            product.images = productImages
+            products.images = productImages
     
-            const result = await queries.createDocument(products, product)
+            console.log(' product result ------', products)
+    
+            const result = await queries.createDocument(product, products)
+    
+            await console.log('result after product added', result)
     
             return { status: 200, body: result.toObject() }
     
@@ -42,6 +46,7 @@ handle_request = async (request, callback) => {
             return { "status": code, body: { message } }
         }
     }
+    //////////////////////////will not work
     else if (request.type === "updateProduct") {
         try {
 
@@ -110,21 +115,26 @@ handle_request = async (request, callback) => {
     }
     else if (request.type === "getProductsforCustomer") {
         try {
-            const { searchText, filterText, offset, sortType } = request.query;
+       
+            const { searchText, filterText, offset, sortType, rating, priceFilter } = request.query;
+            rating = Number(rating)
+            priceFilter = Number(priceFilter)
+            if(priceFilter<0)
+            priceFilter=10000000
             if (searchText === "" && filterText === "") {
-                query = { 'removed': false }
+                query = { 'removed': false, overallRating:{$gte:rating}, price:{$lte:priceFilter} }
             } else if (searchText === "") {
-                query = { 'category': filterText, 'removed': false };
+                query = { 'category': filterText, 'removed': false , overallRating:{$gte:rating}, price:{$lte:priceFilter}};
             } else if (filterText === "") {
                 query = {
-                    $or: [{ 'name': { $regex: searchText, $options: 'i' }, 'removed': false },
-                    { 'category': { $regex: searchText, $options: 'i' }, 'removed': false },
-                    { 'sellerName': { $regex: searchText, $options: 'i' }, 'removed': false }]
+                    $or: [{ 'name': { $regex: searchText, $options: 'i' }, 'removed': false, overallRating:{$gte:rating}, price:{$lte:priceFilter} },
+                    { 'category': { $regex: searchText, $options: 'i' }, 'removed': false, overallRating:{$gte:rating}, price:{$lte:priceFilter} },
+                    { 'sellerName': { $regex: searchText, $options: 'i' }, 'removed': false , overallRating:{$gte:rating}, price:{$lte:priceFilter}}]
                 };
             } else {
                 query = {
-                    $or: [{ 'name': { $regex: searchText, $options: 'i' }, 'category': filterText, 'removed': false },
-                    { 'sellerName': { $regex: searchText, $options: 'i' }, 'category': filterText, 'removed': false }]
+                    $or: [{ 'name': { $regex: searchText, $options: 'i' }, 'category': filterText, 'removed': false, overallRating:{$gte:rating}, price:{$lte:priceFilter} },
+                    { 'sellerName': { $regex: searchText, $options: 'i' }, 'category': filterText, 'removed': false, overallRating:{$gte:rating}, price:{$lte:priceFilter} }]
                 };
             }
             if (sortType === 'PriceLowtoHigh') {
@@ -140,7 +150,7 @@ handle_request = async (request, callback) => {
             // console.log(sortBy)
             // console.log(offset)
             // const cate = await queries.findDocumentsByQuery(productCategory, {}, { _id: 0 }, {})
-            const resp = await queries.findDocumentsByQueryFilter(products, query, { _id: 1, name: 1, price: 1, overallRating: 1, images: 1, "seller": 1 }, { skip: (Number(offset) - 1) * 12, limit: 12, sort: sortBy })
+            const resp = await queries.findDocumentsByQueryFilter(products, query, { _id: 1, name: 1, price: 1, overallRating: 1, images: 1, "sellerName": 1 }, { skip: (Number(offset) - 1) * 12, limit: 12, sort: sortBy })
             // let countQuery = {removed:false}
             const count = await queries.countDocumentsByQuery(products, query)
             // console.log(resp)
@@ -193,12 +203,11 @@ handle_request = async (request, callback) => {
                     }
                 }
             }
-            const dbResp = await queries.updateField(buyer, findUserQuery, insertQuery);
-            console.log('review added in buyer model', dbResp);
     
+            await queries.updateField(buyer, findUserQuery, insertQuery);
             // add review to product schema
             let _id = mongoose.Types.ObjectId(params.product_id)
-            
+    
             let findQuery = {
                 _id: _id
             }
@@ -217,17 +226,42 @@ handle_request = async (request, callback) => {
                 }
             }
     
-            await console.log('udpate comment - ', upadateQuery)
-    
             const updateReview = await queries.updateField(products, findQuery, upadateQuery)
     
-            let ratingQuery = { _id: _id, 'review.rating': { gt: 0 } }
+            let countQuery = [
+                {
+                    '$match': {
+                        '_id': _id
+                    }
+                },
+                {
+                    '$unwind': '$review'
+                },
+                {
+                    '$group': {
+                        _id: null,
+                        total: {
+                            '$sum': '$review.rating'
+                        },
+                        count: {
+                            '$sum': 1
+                        }
+                    }
+                },
+                {
+                    '$project': {
+                        _id: 0,
+                        total: 1,
+                        count: 1,
+                    }
+                }
+            ]
     
-            const ratingCount = await queries.countDocumentsByQuery(products, ratingQuery)
+            let ratings = await queries.aggregationQuery(product, countQuery)
     
-            let averageRating = (averageRating + rating) / ratingCount
+            let overallRating = ratings[0].total / ratings[0].count
     
-            const result = await queries.updateField(products, { _id: mongoose.Types.ObjectId(_id) }, { $set: { averageRating: averageRating } })
+            const result = await queries.updateField(product, { _id: mongoose.Types.ObjectId(_id) }, { $set: { overallRating: overallRating } })
     
             return { status: 200, body: result }
     
@@ -391,7 +425,7 @@ handle_request = async (request, callback) => {
     
             await queries.updateField(productCategory, findQuery, updateQuery)
     
-            return { status: 200 }
+            return { status: 200, body: result }
     
     
         } catch (error) {
@@ -550,6 +584,76 @@ handle_request = async (request, callback) => {
             return { "status": code, body: { message } }
         }
        
+    }
+    else if(request.type="getReview"){
+
+        try {
+
+            const product_id = request.product_id
+    
+            console.log('review findqury - ', product_id)
+            const result = await queries.findDocumentsById(product, product_id)
+            return { status: 200, body: result.review }
+    
+        } catch (error) {
+            console.log(error)
+    
+            if (error.message)
+                message = error.message
+            else
+                message = 'Error while getting review'
+    
+            if (error.statusCode)
+                code = error.statusCode
+            else
+                code = 500
+    
+            return { "status": code, body: { message } }
+        }
+    
+
+
+    }
+    else if(request.type="incrementView"){
+        try {
+
+            const { product_id } = request.params
+            console.log('review findqury - ', request)
+    
+            let findQuery = {
+                $and: [
+                    { _id: product_id },
+                    {
+                        'viewdata':
+                            { "$gte": new Date("2015-05-27T00:00:00Z")}
+                    }
+                ]
+    
+            }
+    
+            let result = await queries.findDocumets(product, findQuery)
+    
+            console.log('result date comparison - ', result)
+            // let updateQuery = {$set : { viewData : new Date()}, $inc: { views: 1 } }
+            // const result = await queries.updateField(product, findQuery, updateQuery)
+            return { status: 200, body: result.review }
+    
+        } catch (error) {
+            console.log(error)
+    
+            if (error.message)
+                message = error.message
+            else
+                message = 'Error while getting review'
+    
+            if (error.statusCode)
+                code = error.statusCode
+            else
+                code = 500
+    
+            return { "status": code, body: { message } }
+        }
+        
     }
 
 }

@@ -87,20 +87,19 @@ router.post('/addproduct', uploadMultiple, async (request, response) => {
 
 if (data.body) {
 
-    await client.exists('products', async (error, reply) => {
-        if(error) throw error
+      // await client.exists('products', async (error, reply) => {
+            //     if(error) throw error
 
-        if(reply){
-            await client.del('products',(error, reply) => {
-                if(error) throw error
+            //     if(reply){
+            //         await client.del('products',(error, reply) => {
+            //             if(error) throw error
 
-                if(reply){
-                    console.log('cache has been cleared!')
-                }
-            })
-        }
-    })
-
+            //             if(reply){
+            //                 console.log('cache has been cleared!')
+            //             }
+            //         })
+            //     }
+            // })
     const { category, quantity } = data.body
     let data2={
         "category":category,
@@ -117,6 +116,8 @@ if (data.body) {
         response.status(500).json('cannot increment quantity')
 
     });
+    response.status(500).json('cannot increment quantity')
+
     // var result = await productServices.incproductCount(data)
 
     // var result = await productServices.incproductCount(category, quantity)
@@ -124,6 +125,7 @@ if (data.body) {
 
 
 
+response.status(500).json('cannot increment quantity')
 
 
 
@@ -307,22 +309,50 @@ await kafka.make_request('products', requestBody, async (err, data) => {
         updated product information
     }
 */
+/////////////////////removed from kafka
+// router.put('/updateproduct/:product_id', async (request, response) => {
+
+//     try {
+
+//         const requestBody = { body: request.body, params: request.params , type:"updateProduct" }
+
+// ///
+// await kafka.make_request('products', requestBody, async (err, data) => {
+//     if (err) throw new Error(err)
+//     await  response.json(data.body)
+// });
+// ///
+
+//         // const result = await productServices.updateProduct(requestBody)
+
+//         // response.json(result.body) 
+
+//     } catch (error) {
+
+//         if (error.message)
+//             message = error.message
+//         else
+//             message = 'Error while updating product'
+
+//         if (error.status)
+//             status = error.status
+//         else
+//             status = 500
+
+//         response.status(status).json({ 'error': message })
+//     }
+// })
+
+/////////////////////removed from kafka
 router.put('/updateproduct/:product_id', async (request, response) => {
 
     try {
 
-        const requestBody = { body: request.body, params: request.params , type:"updateProduct" }
+        const requestBody = { body: request.body, params: request.params }
 
-///
-await kafka.make_request('products', requestBody, async (err, data) => {
-    if (err) throw new Error(err)
-    await  response.json(data.body)
-});
-///
+        const result = await productServices.updateProduct(requestBody)
 
-        // const result = await productServices.updateProduct(requestBody)
-
-        // response.json(result.body) 
+        response.json(result.body) 
 
     } catch (error) {
 
@@ -339,7 +369,6 @@ await kafka.make_request('products', requestBody, async (err, data) => {
         response.status(status).json({ 'error': message })
     }
 })
-
 
 
 /* 
@@ -668,6 +697,82 @@ await kafka.make_request('products', data, async (err, data) => {
     }
 
 })
+
+
+
+
+router.post('/incrementview/:product_id', async (request, response) => {
+
+    console.log('hitting increment view')
+
+    try {
+        const requestBody = { params: request.params,type:"incrementView" }
+///
+        await kafka.make_request('products', requestBody, async (err, data) => {
+            if (err) throw new Error(err)
+            await  response.json(data)
+        });
+        ///
+
+
+        // const result = await productServices.incrementView(requestBody)
+
+        // response.json(result)
+
+    } catch (error) {
+
+        if (error.message)
+            message = error.message
+        else
+            message = 'Error while adding review'
+
+        if (error.status)
+            status = error.status
+        else
+            status = 500
+
+        response.status(status).json({ 'error': message })
+    }
+})
+
+
+
+
+router.get('/review/:product_id', async (request, response) => {
+
+    console.log('paginated seller api call....')
+
+    try {
+
+        const{ params} = request
+params.type="getReview"
+///
+await kafka.make_request('products', params, async (err, data) => {
+    if (err) throw new Error(err)
+    await  response.status(data.status).json(data.body)
+});
+///
+        // let res = await productServices.getReview(params);
+        // response.status(res.status).json(res.body);
+
+    }
+    catch (error) {
+        if (error.message)
+            message = error.message
+        else
+            message = 'Error while fetching products'
+
+        if (error.statusCode)
+            code = error.statusCode
+        else
+            code = 500
+
+        return response.status(code).json({ message });
+    }
+
+});
+
+
 
 
 
