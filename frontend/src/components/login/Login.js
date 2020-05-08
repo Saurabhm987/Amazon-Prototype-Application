@@ -48,7 +48,7 @@ class LoginForm extends Component {
                     return <Redirect to='/sellerCentral' />;
                     break;
                 case USER_ADMIN:
-                    return <Redirect to='' />;
+                    return <Redirect to='/admindashboard' />;
                     break;
                 default:
                     console.log(`Error: redirect for userType: ${userType} not defined`);

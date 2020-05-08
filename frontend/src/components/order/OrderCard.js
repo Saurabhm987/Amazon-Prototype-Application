@@ -76,9 +76,10 @@ class orderCard extends Component {
                                                 <Grid.Row>
                                                     <Button color='blue' floated='right' style={{ height: '35px', width: '150px', margin: '5px' }} onClick={() => {this.props.setupOrderedProductForDetail({...product,'orderId':orderId});this.props.history.push('/orderdetails')}}>Details</Button>
                                                 </Grid.Row>
+                                                {product.status.status !== 'Delivered'?
                                                 <Grid.Row>
                                                     <Button color='red' floated='right' style={{ height: '35px', width: '150px', margin: '5px' }} onClick={() => this.props.updateStatus(orderId,product.productId._id,'Cancelled')}>Cancel</Button>
-                                                </Grid.Row>
+                                                </Grid.Row> : <div></div>}
                                             </Grid.Column>
                                         </Grid>
                                     </Card.Content>

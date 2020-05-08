@@ -68,108 +68,114 @@ class CustomerDashboard extends Component {
     }
 
     render() {
-        return (
+        try {
+            return (
 
-            <div style={{ marginLeft: '10px', marginRight: '10px' }}>
-                <div style={{ marginTop: "72px" }}>
-                    <Header as='h1'>Amazon Essesntials</Header>
-                </div>
+                <div style={{ marginLeft: '10px', marginRight: '10px' }}>
+                    <div style={{ marginTop: "72px" }}>
+                        <Header as='h1'>Amazon Essesntials</Header>
+                    </div>
 
-                {this.state.loading
-                    ? <CustomerDashLoader />
-                    : <Card.Group itemsPerRow={4} style={{ marginTop: '15px' }}>
-                        <Card >
-                            <Card.Content >
-                                <Image square size='medium' src={"prod3.jpg"} alt="" />
-                            </Card.Content>
-                        </Card>
-                        <Card >
-                            <Card.Content >
-                                <Image square size='medium' src={"prod4.jpg"} alt="" />
-                            </Card.Content>
-                        </Card>
-                        <Card >
-                            <Card.Content >
-                                <Image square size='medium' src={"prod5.jpg"} alt="" />
-                            </Card.Content>
-                        </Card>
-                        <Card >
-                            <Card.Content >
-                                <Image square size='medium' src={"prod6.jpg"} alt="" />
-                            </Card.Content>
-                        </Card>
-                    </Card.Group>
-                }
+                    {this.state.loading
+                        ? <CustomerDashLoader />
+                        : <Card.Group itemsPerRow={4} style={{ marginTop: '15px' }}>
+                            <Card >
+                                <Card.Content >
+                                    <Image square size='medium' src={"prod3.jpg"} alt="" />
+                                </Card.Content>
+                            </Card>
+                            <Card >
+                                <Card.Content >
+                                    <Image square size='medium' src={"prod4.jpg"} alt="" />
+                                </Card.Content>
+                            </Card>
+                            <Card >
+                                <Card.Content >
+                                    <Image square size='medium' src={"prod5.jpg"} alt="" />
+                                </Card.Content>
+                            </Card>
+                            <Card >
+                                <Card.Content >
+                                    <Image square size='medium' src={"prod6.jpg"} alt="" />
+                                </Card.Content>
+                            </Card>
+                        </Card.Group>
+                    }
 
-                <Header as='h1'>Products for you </Header>
+                    <Header as='h1'>Products for you </Header>
 
-                <Card.Group itemsPerRow={6} stackable>
-                    {this.props.productList.map((item, index) => (
-                        <Card key={item._id} data-_id={item._id} onClick={this.onClickHandler}>
-                            {this.state.loading ? (
-                                <Placeholder>
-                                    <Placeholder.Image square size='small' />
-                                </Placeholder>
-                            ) : (
-                                    <Image
-                                        src={item.images[0]} alt=""
-                                        style={{ width: '300px', height: '250px' }}
-                                    />
-                                )}
-
-                            <Card.Content extra textAlign='left'>
+                    <Card.Group itemsPerRow={6} stackable>
+                        {this.props.productList.map((item, index) => (
+                            <Card key={item._id} data-_id={item._id} onClick={this.onClickHandler}>
                                 {this.state.loading ? (
                                     <Placeholder>
-                                        <Placeholder.Header>
-                                            <Placeholder.Line length='very short' />
-                                            <Placeholder.Line length='medium' />
-                                        </Placeholder.Header>
-                                        <Placeholder.Paragraph>
-                                            <Placeholder.Line length='short' />
-                                        </Placeholder.Paragraph>
+                                        <Placeholder.Image square size='small' />
                                     </Placeholder>
                                 ) : (
-                                        <Fragment>
-                                            <Card.Header style={{ fontWeight: 400 }}>{item.name}</Card.Header>
-                                            <Card.Meta>
-                                                <Rating maxRating={5} defaultRating={item.overallRating || 1} icon='star' size='small' disabled />
-                                            </Card.Meta>
-                                            <Card.Description>$ {item.price} Save ${item.price - 10}</Card.Description>
-                                        </Fragment>
+                                        <Image
+                                            src={item.images[0]} alt=""
+                                            style={{ width: '300px', height: '250px' }}
+                                        />
                                     )}
-                            </Card.Content>
-                        </Card>
-                    ))}
-                </Card.Group>
-                <br />
-                <br />
-                <Grid columns={1}>
-                    <Grid.Column>
-                        <Grid.Row>
-                            {
-                                this.props.productCount && this.props.productCount > 1
-                                    ?
-                                    (
-                                        <Pagination
-                                            activePage={this.state.activePage}
-                                            onPageChange={this.handlePaginationChange}
-                                            totalPages={(Math.trunc(this.props.productCount / 12)) + 1}
-                                        />
-                                    ) :
-                                    (
-                                        <Pagination
-                                            activePage={this.state.activePage}
-                                            onPageChange={this.handlePaginationChange}
-                                            totalPages={1}
-                                        />
-                                    )
-                            }
 
-                        </Grid.Row>
-                    </Grid.Column>
-                </Grid>
-            </div>
-        );
+                                <Card.Content extra textAlign='left'>
+                                    {this.state.loading ? (
+                                        <Placeholder>
+                                            <Placeholder.Header>
+                                                <Placeholder.Line length='very short' />
+                                                <Placeholder.Line length='medium' />
+                                            </Placeholder.Header>
+                                            <Placeholder.Paragraph>
+                                                <Placeholder.Line length='short' />
+                                            </Placeholder.Paragraph>
+                                        </Placeholder>
+                                    ) : (
+                                            <Fragment>
+                                                <Card.Header style={{ fontWeight: 400 }}>{item.name}</Card.Header>
+                                                <Card.Meta>
+                                                    <Rating maxRating={5} defaultRating={item.overallRating || 1} icon='star' size='small' disabled />
+                                                </Card.Meta>
+                                                <Card.Description>$ {item.price} Save ${item.price - 10}</Card.Description>
+                                            </Fragment>
+                                        )}
+                                </Card.Content>
+                            </Card>
+                        ))}
+                    </Card.Group>
+                    <br />
+                    <br />
+                    <Grid columns={1}>
+                        <Grid.Column>
+                            <Grid.Row>
+                                {
+                                    this.props.productCount && this.props.productCount > 1
+                                        ?
+                                        (
+                                            <Pagination
+                                                activePage={this.state.activePage}
+                                                onPageChange={this.handlePaginationChange}
+                                                totalPages={(Math.trunc(this.props.productCount / 12)) + 1}
+                                            />
+                                        ) :
+                                        (
+                                            <Pagination
+                                                activePage={this.state.activePage}
+                                                onPageChange={this.handlePaginationChange}
+                                                totalPages={1}
+                                            />
+                                        )
+                                }
+
+                            </Grid.Row>
+                        </Grid.Column>
+                    </Grid>
+                </div>
+
+            );
+        }
+        catch (e) {
+            return (<div>Loading...</div>)
+        }
     }
 }
 
@@ -190,7 +196,7 @@ Header.propTypes = {
     fetchProduct: PropTypes.func.isRequired,
     categoryList: PropTypes.array.isRequired,
     productList: PropTypes.array.isRequired,
-    productCount:PropTypes.number.isRequired,
+    productCount: PropTypes.number.isRequired,
 }
 
 const mapStateToProps = (state) => ({
@@ -198,7 +204,7 @@ const mapStateToProps = (state) => ({
     user: state.auth.user,
     productList: state.product.productList,
     categoryList: state.product.categoryList,
-    productCount:state.product.productCount,
+    productCount: state.product.productCount,
 })
 
 export default connect(mapStateToProps, {

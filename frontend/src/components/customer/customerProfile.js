@@ -63,19 +63,19 @@ class CustomerProfile extends Component {
 
         await this.props.updateCustomerProfile(formdata, userId)
 
-        this.setState({ editmode: false});
+        this.setState({ editmode: false });
     }
 
 
     render() {
 
-        if(this.props.customerComments){
+        if (this.props.customerComments) {
 
-            const{customerComments} = this.props
+            const { customerComments } = this.props
             var votes = 0;
             var comments = 0;
             customerComments.forEach(item => {
-                votes+=item.review.rating
+                votes += item.review.rating
                 comments++
             });
         }
@@ -133,20 +133,31 @@ class CustomerProfile extends Component {
                             }
                         </Grid.Column>
                         <Grid.Column width={12}>
-                            <Segment fluid>
-                                <Segment circular inverted style={{ width: 175, height: 175 }}>
-                                    <Header as='h2' inverted>
-                                        Votes
+                            <Container style={{ marginLeft: '300px' }}>
+                                <Grid columns={2} textAlign='left'>
+                                    <Grid.Column width={3} textAlign='center'>
+                                        <div></div>
+                                    </Grid.Column>
+                                    <Grid.Column width={6} textAlign='center'>
+                                        <Segment circular inverted style={{ width: 175, height: 175 }}>
+                                            <Header as='h2' inverted>
+                                                Votes
                                         <Header.Subheader>{votes}</Header.Subheader>
-                                    </Header>
-                                </Segment>
-                                <Segment circular inverted style={{ width: 175, height: 175 }}>
-                                    <Header as='h2' inverted>
-                                        Comments
+                                            </Header>
+                                        </Segment>
+                                    </Grid.Column>
+                                    <Grid.Column width={6} textAlign='center'>
+                                        <Segment circular inverted style={{ width: 175, height: 175 }}>
+                                            <Header as='h2' inverted>
+                                                Comments
                                         <Header.Subheader>{comments}</Header.Subheader>
-                                    </Header>
-                                </Segment>
-                            </Segment>
+                                            </Header>
+                                        </Segment>
+                                    </Grid.Column>
+                                </Grid>
+
+
+                            </Container>
                             <br />
                             <Header>Comments</Header>
                             <Grid columns={1}>

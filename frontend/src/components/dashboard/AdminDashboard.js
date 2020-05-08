@@ -164,7 +164,7 @@ class AdminDashboard extends Component {
                                         </Placeholder>
                                     </Grid.Column>
                                     <Grid.Column width={8} textAlign='left'>
-                                        <Header as='h5'>NAME: {slr.name}</Header>
+                                        <Header as='h5' onClick={() => this.props.history.push('/sellerprofile?id='+slr._id)}>NAME: {slr.name}</Header>
                                         <Header as='h5'>EMAIL: {slr.email}</Header>
                                     </Grid.Column>
                                     <Grid.Column width={3}>
@@ -185,10 +185,6 @@ class AdminDashboard extends Component {
         }
 
         else if (activeNavItem == 'ORDERS') {
-
-            console.log('====================================')
-            console.log(this.props.categories)
-            console.log('====================================')
 
             const orders = this.props.order.userOrders.filter(order => {
                 return ((order.status.status.indexOf(this.state.orderStatus) !== -1) && order.sellerId ?
