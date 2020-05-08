@@ -1,5 +1,12 @@
 import axios from "axios";
 import { API_ENDPOINT } from '../components/controller/Endpoint'
+import {GET_CATEGORIES,ADD_CATEGORY, REMOVE_CATEGORY} from './types'
+
+const config = {
+    headers: {
+        'Content-Type': 'application/json'
+    }
+};
 
 export const productCategories = () => async (dispatch) => {
     console.log("hitting get categoreis");
@@ -30,6 +37,53 @@ export const productCategories = () => async (dispatch) => {
             console.log(err)
         });
 };
+
+export const getCategories = () => async dispatch => {
+
+    try {
+        const res = await axios.get(`/product/getcategories`);
+        console.log(`/product/getcategories`, res);
+
+        dispatch({
+            type: GET_CATEGORIES,
+            payload: res.data
+        });
+    } catch (err) {
+        console.log(`Error: /product/getcategories`, err);
+        dispatch({
+            type: GET_CATEGORIES,
+            payload: {
+                error: err.body
+            }
+        });
+        // dispatch(setAlert(err.body.error, 'danger'));
+    }
+};
+
+
+export const addCategory = (data) => async dispatch => {
+
+    try {
+        const res = await axios.put(`/product/addcategory`, data, config );
+        console.log(`/product/addcategory`, res);
+
+        dispatch({
+            type: ADD_CATEGORY,
+            payload: res.data
+        });
+    } catch (err) {
+        console.log(`Error: /product/addcategory`, err);
+        dispatch({
+            type: ADD_CATEGORY,
+            payload: {
+                error: err.body
+            }
+        });
+        // dispatch(setAlert(err.body.error, 'danger'));
+    }
+};
+
+
 
 
 export const addProduct = (payload) => async (dispatch) => {
@@ -168,7 +222,27 @@ export const getSellerProductsPaginated = (searchText = '', filterText = '', off
         })
 }
 
+export const deleteCategory = (data) => async dispatch => {
 
+    try {
+        const res = await axios.delete(`/product/deletecategory/${data}`);
+        console.log(`/product/deletecategory`, res);
+
+        // dispatch({
+        //     type: REMOVE_CATEGORY,
+        //     payload: res.data
+        // });
+    } catch (err) {
+        console.log(`Error: /product/deletecategory`, err);
+        // dispatch({
+        //     type: ADD_CATEGORY,
+        //     payload: {
+        //         error: err.body
+        //     }
+        // });
+        // dispatch(setAlert(err.body.error, 'danger'));
+    }
+};
 
 
 
