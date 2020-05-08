@@ -166,3 +166,4 @@ handle_request = async (request, callback) => {
     }
     
 }
+exports.handle_request = handle_request;

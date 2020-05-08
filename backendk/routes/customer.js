@@ -1,4 +1,5 @@
 const customerService = require('../services/customer')
+var kafka = require('../kafka/client');
 
 const keys = require('../config/keys'),
     AWS = require('aws-sdk'),
@@ -46,14 +47,20 @@ router.get('/profile/:customer_id', async (request, response) => {
     try {
 
         const body = {
-            params : request.params
+            params : request.params,
+            type:"getCustomerProfile"
         }
+///
+await kafka.make_request('buyer', body, async (err, data) => {
+    if (err) throw new Error(err)
+    await response.status(data.status).json(data.body[0])
+});
+///
+        // const res = await customerService.getCustomerProfile(body)
 
-        const res = await customerService.getCustomerProfile(body)
+        // console.log('seller profile response - ', res)
 
-        console.log('seller profile response - ', res)
-
-        response.status(res.status).json(res.body[0])
+        // response.status(res.status).json(res.body[0])
 
     } catch (error) {
 
@@ -82,14 +89,21 @@ router.post('/profileupdate/:customer_id', upload, async (request, response) => 
         const body = {
             body: data,
             params : request.params,
-            file: request.files
+            file: request.files,
+            type:"updateCustomerProfile"
         }
 
         console.log('update body --', body)
 
-        const res = await customerService.updateCustomerProfile(body)
+        ///
+await kafka.make_request('buyer', body, async (err, data) => {
+    if (err) throw new Error(err)
+    await response.status(data.status).json(data.body)
+});
+///
+        // const res = await customerService.updateCustomerProfile(body)
 
-        response.status(res.status).json(res.body)
+        // response.status(res.status).json(res.body)
 
     } catch (error) {
 
