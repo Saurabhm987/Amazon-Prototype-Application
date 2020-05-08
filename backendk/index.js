@@ -57,6 +57,7 @@ app.use('/card', require('./routes/card'));
 app.use('/seller', require('./routes/seller'));
 
 app.use('/analytics', require('./routes/analytics'));
+app.use('/customer', require('./routes/customer'))
 
 //redis connection
 client.on("connect", () => {

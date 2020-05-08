@@ -6,21 +6,26 @@ mongoose = require('mongoose')
 
 const getProductsforCustomer = async (request) => {
     try {
-        const { searchText, filterText, offset, sortType } = request.query;
+       
+        const { searchText, filterText, offset, sortType, rating, priceFilter } = request.query;
+        rating = Number(rating)
+        priceFilter = Number(priceFilter)
+        if(priceFilter<0)
+        priceFilter=10000000
         if (searchText === "" && filterText === "") {
-            query = { 'removed': false }
+            query = { 'removed': false, overallRating:{$gte:rating}, price:{$lte:priceFilter} }
         } else if (searchText === "") {
-            query = { 'category': filterText, 'removed': false };
+            query = { 'category': filterText, 'removed': false , overallRating:{$gte:rating}, price:{$lte:priceFilter}};
         } else if (filterText === "") {
             query = {
-                $or: [{ 'name': { $regex: searchText, $options: 'i' }, 'removed': false },
-                { 'category': { $regex: searchText, $options: 'i' }, 'removed': false },
-                { 'sellerName': { $regex: searchText, $options: 'i' }, 'removed': false }]
+                $or: [{ 'name': { $regex: searchText, $options: 'i' }, 'removed': false, overallRating:{$gte:rating}, price:{$lte:priceFilter} },
+                { 'category': { $regex: searchText, $options: 'i' }, 'removed': false, overallRating:{$gte:rating}, price:{$lte:priceFilter} },
+                { 'sellerName': { $regex: searchText, $options: 'i' }, 'removed': false , overallRating:{$gte:rating}, price:{$lte:priceFilter}}]
             };
         } else {
             query = {
-                $or: [{ 'name': { $regex: searchText, $options: 'i' }, 'category': filterText, 'removed': false },
-                { 'sellerName': { $regex: searchText, $options: 'i' }, 'category': filterText, 'removed': false }]
+                $or: [{ 'name': { $regex: searchText, $options: 'i' }, 'category': filterText, 'removed': false, overallRating:{$gte:rating}, price:{$lte:priceFilter} },
+                { 'sellerName': { $regex: searchText, $options: 'i' }, 'category': filterText, 'removed': false, overallRating:{$gte:rating}, price:{$lte:priceFilter} }]
             };
         }
         if (sortType === 'PriceLowtoHigh') {
