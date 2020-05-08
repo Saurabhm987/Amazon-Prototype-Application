@@ -7,11 +7,15 @@ mongoose = require('mongoose')
 const getProductsforCustomer = async (request) => {
     try {
        
-        const { searchText, filterText, offset, sortType, rating, priceFilter } = request.query;
-        rating = Number(rating)
-        priceFilter = Number(priceFilter)
-        // if(priceFilter<0)
-        // priceFilter=10000000
+        const { searchText, filterText, offset, sortType, ratingFilter, price } = request.query;
+        // rating = Number(ratingFilt)
+        // priceFilter = Number(priceFilter)
+
+        var rating = Number(ratingFilter)
+        var priceFilter = Number(price)
+
+        if(priceFilter<0)
+        priceFilter=10000000
         if (searchText === "" && filterText === "") {
             query = { 'removed': false, overallRating:{$gte:rating}, price:{$lte:priceFilter} }
         } else if (searchText === "") {
