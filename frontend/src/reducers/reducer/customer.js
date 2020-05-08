@@ -5,13 +5,17 @@ import {
     ADD_ADDRESS,
     ADDRESS_DETAIL,
     ADD_REVIEW,
+    DEFAULT_ADDRESS,
+    DEFAULT_CARD
 } from '../../actions/types';
 
 const initialState = {
     cardList: [],
     addressList: [],
-    addressDetail:{},
+    addressDetail: {},
     reviews: [],
+    defaultCard: {},
+    defaultAddress: {}
 };
 
 export default function (state = initialState, action) {
@@ -49,11 +53,23 @@ export default function (state = initialState, action) {
                 ...state,
                 addressDetail: payload
             }
-        
+
         case ADD_REVIEW:
             return {
                 ...state,
                 reviews: payload
+            }
+
+        case DEFAULT_ADDRESS:
+            return {
+                ...state,
+                defaultAddress: payload
+            }
+
+        case DEFAULT_CARD:
+            return {
+                ...state,
+                defaultCard: payload
             }
 
         default:
