@@ -206,3 +206,11 @@ export const deleteProduct = (productId) => async (dispatch) => {
             return error
         })
 }
+
+//todo this should ideally be in order action
+export const setupOrderedProductForDetail = (orderedProduct) => async (dispatch) => {
+    dispatch({
+        type: 'SETUP_ORDER_DETAIL_PRODUCT',
+        payload: orderedProduct
+    })
+}
