@@ -25,6 +25,7 @@ class EditAddress extends Component {
             perr: false,
             sterr: false,
             error: false,
+            userId:'',
 
         }
     }
@@ -37,6 +38,8 @@ class EditAddress extends Component {
             const { id, userId } = await this.props.location.state
 
             let user = JwtDecode(token)
+
+            this.setState({userId: user.userId});
 
             await this.props.getAddressDetail(user.userId, id)
 
@@ -133,6 +136,7 @@ class EditAddress extends Component {
         
         if (!error) {
 
+            console.log('data ----', data)
             await this.props.updateAddress(userId, selectedAddress, data);
             this.props.history.push('/customer/address')
         }

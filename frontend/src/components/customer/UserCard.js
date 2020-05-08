@@ -126,7 +126,7 @@ class UserCard extends Component {
             number: number || e.currentTarget.dataset.number,
         }
 
-        if (!error) {
+        if (!error && data.name !=='' && data.cvv !== ''&& data.expiryDate !== ''&&data.number) {
 
             await this.props.updateCard(userId, currentCardId, data);
             await this.props.getCard(userId)
@@ -152,7 +152,7 @@ class UserCard extends Component {
                                             <Grid.Column style={{ marginLeft: '5px', margin: '5px' }}>
                                                 <Grid.Row><Input size='small' defaultValue={card.name || ''} onChange={this.handleChange} error={this.state.namerr} fluid placeholder='Enter card name' type='text' name='name' /></Grid.Row>
                                                 <Grid.Row><Input size='small' defaultValue={card.number || ''} onChange={this.handleChange} error={this.state.numerr} fluid placeholder='Enter card number' type='number' name='number' /></Grid.Row>
-                                                <Grid.Row><Input size='small' defaultValue={card.expiryDate.substring(0, 10) || ''} onChange={this.handleChange} error={this.state.daterr} fluid placeholder='Enter expiry date' type='data' name='expiryDate' /></Grid.Row>
+                                                <Grid.Row><Input size='small' defaultValue={card.expiryDate&&card.expiryDate.substring(0, 10) || ''} onChange={this.handleChange} error={this.state.daterr} fluid placeholder='Enter expiry date' type='data' name='expiryDate' /></Grid.Row>
                                                 <Grid.Row><Input size='small' defaultValue={card.cvv || ''} onChange={this.handleChange} error={this.state.cvverr} fluid placeholder='Enter CVV' type='text' name='cvv' /></Grid.Row>
                                             </Grid.Column>
                                         </Grid>
@@ -167,6 +167,8 @@ class UserCard extends Component {
                                             <Link onClick={() => { this.setState({ editmode: false }) }} style={{ margin: '5px', color: '#0066c0', fontSize: '13px', lineHeight: '19px' }} className="nav-link">
                                                 cancel
                                             </Link>
+                                            |
+                                            <Link onClick={() => {this.props.setDefaultCard(card);this.props.history.push(`/checkout`)}} style={{ margin: '5px', color: '#0066c0', fontSize: '13px', lineHeight: '19px' }} >Select</Link>
                                         </div>
                                     </Card.Content>
                                 </div>
@@ -177,7 +179,7 @@ class UserCard extends Component {
                                 <Card.Content>
                                     <Card.Meta>{card.name}</Card.Meta>
                                     <Card.Meta>{card.number}</Card.Meta>
-                                    <Card.Meta>{card.expiryDate.substring(0, 10)}</Card.Meta>
+                                    <Card.Meta>{card.expiryDate&&card.expiryDate.substring(0, 10)}</Card.Meta>
                                     <Card.Meta>{card.cvv}</Card.Meta>
                                     <br />
                                     <br />

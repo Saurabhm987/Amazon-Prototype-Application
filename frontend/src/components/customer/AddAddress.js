@@ -101,12 +101,15 @@ class AddAddress extends Component {
         }
         await this.props.setDefaultAddress(newAddress)
 
-
-        if (!this.state.error) {
+        if (!this.state.error && newAddress.street1 !== '' && newAddress.street2 !== '' && newAddress.city !== '' && newAddress.state !== '' && newAddress.country !== '' && newAddress.pincode !== '' && newAddress.phone !== '') {
 
             if (queryString.parse(this.props.location.search).id !== '1') { await this.props.addAddress(newAddress); this.props.history.push('/customer/address') }
             else { await this.props.history.push(`/checkout`) }
             this.props.history.push('/customer/address')
+
+        } else {
+
+            alert('Please enter valid details ')
         }
 
     }
