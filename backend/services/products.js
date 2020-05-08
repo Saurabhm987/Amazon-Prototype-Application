@@ -6,26 +6,33 @@ mongoose = require('mongoose')
 
 const getProductsforCustomer = async (request) => {
     try {
-       
-        const { searchText, filterText, offset, sortType, rating, priceFilter } = request.query;
-        rating = Number(rating)
-        priceFilter = Number(priceFilter)
-        if(priceFilter<0)
-        priceFilter=10000000
+
+        const { searchText, filterText, offset, sortType, ratingFilter, price } = request.query;
+        // rating = Number(ratingFilt)
+        // priceFilter = Number(priceFilter)
+
+        var rating = Number(ratingFilter)
+        var priceFilter = Number(price)
+
+        console.log('rating -----', rating)
+        console.log('price ----', priceFilter)
+
+        if (priceFilter < 0)
+            priceFilter = 10000000
         if (searchText === "" && filterText === "") {
-            query = { 'removed': false, overallRating:{$gte:rating}, price:{$lte:priceFilter} }
+            query = { 'removed': false, overallRating: { $gte: rating },price: { $lte: priceFilter }}
         } else if (searchText === "") {
-            query = { 'category': filterText, 'removed': false , overallRating:{$gte:rating}, price:{$lte:priceFilter}};
+            query = { 'category': filterText, 'removed': false, overallRating: { $gte: rating }, price: { $lte: priceFilter } };
         } else if (filterText === "") {
             query = {
-                $or: [{ 'name': { $regex: searchText, $options: 'i' }, 'removed': false, overallRating:{$gte:rating}, price:{$lte:priceFilter} },
-                { 'category': { $regex: searchText, $options: 'i' }, 'removed': false, overallRating:{$gte:rating}, price:{$lte:priceFilter} },
-                { 'sellerName': { $regex: searchText, $options: 'i' }, 'removed': false , overallRating:{$gte:rating}, price:{$lte:priceFilter}}]
+                $or: [{ 'name': { $regex: searchText, $options: 'i' }, 'removed': false, overallRating: { $gte: rating }, price: { $lte: priceFilter } },
+                { 'category': { $regex: searchText, $options: 'i' }, 'removed': false, overallRating: { $gte: rating }, price: { $lte: priceFilter } },
+                { 'sellerName': { $regex: searchText, $options: 'i' }, 'removed': false, overallRating: { $gte: rating }, price: { $lte: priceFilter } }]
             };
         } else {
             query = {
-                $or: [{ 'name': { $regex: searchText, $options: 'i' }, 'category': filterText, 'removed': false, overallRating:{$gte:rating}, price:{$lte:priceFilter} },
-                { 'sellerName': { $regex: searchText, $options: 'i' }, 'category': filterText, 'removed': false, overallRating:{$gte:rating}, price:{$lte:priceFilter} }]
+                $or: [{ 'name': { $regex: searchText, $options: 'i' }, 'category': filterText, 'removed': false, overallRating: { $gte: rating }, price: { $lte: priceFilter } },
+                { 'sellerName': { $regex: searchText, $options: 'i' }, 'category': filterText, 'removed': false, overallRating: { $gte: rating }, price: { $lte: priceFilter } }]
             };
         }
         if (sortType === 'PriceLowtoHigh') {
@@ -37,7 +44,7 @@ const getProductsforCustomer = async (request) => {
         } else {
             sortBy = {}
         }
-        // console.log(query)
+        console.log(query)
         // console.log(sortBy)
         // console.log(offset)
         // const cate = await queries.findDocumentsByQuery(productCategory, {}, { _id: 0 }, {})
@@ -72,8 +79,8 @@ const addProduct = async (request) => {
     try {
         const { body, files } = request
 
-        var products = new Object()
-        products = JSON.parse(JSON.stringify(body))
+        var products = body
+        // products = JSON.parse(JSON.stringify(body))
 
         let productImages = []
 
@@ -655,7 +662,7 @@ const incrementView = async (request) => {
             }
         }
         else {
-            let result = await queries.updateField( product, findQuery, { $inc: { views: 1 } })
+            let result = await queries.updateField(product, findQuery, { $inc: { views: 1 } })
             return { status: 200, body: result }
         }
 

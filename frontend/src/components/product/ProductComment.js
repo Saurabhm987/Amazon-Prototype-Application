@@ -11,13 +11,27 @@ import {
 import { connect } from 'react-redux';
 
 class ProductComment extends Component {
+    constructor(props) {
+        super(props);
+        
+        this.state= { rating: 1}
+    }
+    
+
     componentDidMount = async () => {
 
         let id = this.props.productId
+        let rating = this.props.rating
+
+        await this.setState({rating: rating});
+
         await this.props.getReview(id)
     }
 
     render() {
+
+        console.log('this props overall rating- ', this.props.productDetail.overallRating)
+
         return (
             <div style={{ margin: '20px' }}>
                 <Grid columns='equal'>
@@ -27,9 +41,14 @@ class ProductComment extends Component {
                             Average Customer Review
                         </Grid.Row>
                         <br />
-                        <Grid.Row>
-                            <Comment.Text><Rating maxRating={5} defaultRating={3} icon='star' size='small' disabled /></Comment.Text>
-                        </Grid.Row>
+                        {
+                            this.props.productDetail.overallRating
+                            ?
+                            <Grid.Row>
+                                <Comment.Text><Rating maxRating={5} defaultRating={this.props.productDetail.overallRating} icon='star' size='small' disabled /></Comment.Text>
+                            </Grid.Row>
+                            :null
+                        }
                         <br />
                         <Grid.Row>
                             <Grid columns={2}>
@@ -94,30 +113,30 @@ class ProductComment extends Component {
                     </Grid.Column>
                     <Grid.Column width={2}></Grid.Column>
                     {
-                        this.props.reviews&&this.props.reviews.length>0
-                        ?
-                        <Grid.Column width={8} textAlign='left'>
-                            <Comment.Group style={{ width: '100%' }} size='large'>
-                                {
-                                    this.props.reviews && this.props.reviews.map(item => (
-                                        <Comment textAlign='left'>
-                                            <Comment.Avatar src='/userpreview.png' square />
-                                            <Comment.Content>
-                                                <Comment.Author as='a'>{item.header}</Comment.Author>
-                                                <Comment.Text><Rating maxRating={5} defaultRating={item.rating} icon='star' size='small' disabled /></Comment.Text>
-                                                <Comment.Text>{item.comment}</Comment.Text>
-                                            </Comment.Content>
-                                        </Comment>
-                                    ))
-                                }
-                            </Comment.Group>
-                        </Grid.Column>
-                        :
-                        <Grid columns={1}>
-                            <Grid.Column>
-                                <Header>No Comment Posted!</Header>
+                        this.props.reviews && this.props.reviews.length > 0
+                            ?
+                            <Grid.Column width={8} textAlign='left'>
+                                <Comment.Group style={{ width: '100%' }} size='large'>
+                                    {
+                                        this.props.reviews && this.props.reviews.map(item => (
+                                            <Comment textAlign='left'>
+                                                <Comment.Avatar src='/userpreview.png' square />
+                                                <Comment.Content>
+                                                    <Comment.Author as='a'>{item.header}</Comment.Author>
+                                                    <Comment.Text><Rating maxRating={5} defaultRating={item.rating} icon='star' size='small' disabled /></Comment.Text>
+                                                    <Comment.Text>{item.comment}</Comment.Text>
+                                                </Comment.Content>
+                                            </Comment>
+                                        ))
+                                    }
+                                </Comment.Group>
                             </Grid.Column>
-                        </Grid>
+                            :
+                            <Grid columns={1}>
+                                <Grid.Column>
+                                    <Header>No Comment Posted!</Header>
+                                </Grid.Column>
+                            </Grid>
 
                     }
 
@@ -130,10 +149,12 @@ class ProductComment extends Component {
 ProductComment.propTypes = {
     reviews: PropTypes.array.isRequired,
     getReview: PropTypes.func.isRequired,
+    productDetail: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = state => ({
     reviews: state.product.reviews,
+    productDetail: state.product.productDetail
 })
 
 export default connect(mapStateToProps, { getReview })(ProductComment);

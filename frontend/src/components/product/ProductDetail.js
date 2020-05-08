@@ -47,7 +47,7 @@ class ProductDetail extends Component {
                 { key: 10, text: '10', value: 10 },
 
             ]
-        }   
+        }
 
         this.onClickImage = this.onClickImage.bind(this)
     }
@@ -215,9 +215,7 @@ class ProductDetail extends Component {
                                                     <Rating maxRating={5} defaultRating={this.props.productDetail.overallRating} icon='star' size='small' disabled />
                                                 </Grid.Row>
                                                 :
-                                                <Placeholder>
-                                                    <Placeholder.Line></Placeholder.Line>
-                                                </Placeholder>
+                                                <Rating maxRating={5} defaultRating={1} icon='star' size='small' disabled />
                                         }
                                         <br />
                                         <Divider />
@@ -372,10 +370,10 @@ class ProductDetail extends Component {
                     <Grid.Row>
                         <Segment style={{ width: '100%' }}>
                             {
-                                this.state.productId
+                                this.state.productId&&this.props.productDetail
                                     ?
                                     <Grid.Column stretched columns={1} textAlign='left'>
-                                        <ProductComment productId={this.state.productId} />
+                                        <ProductComment rating={this.props.productDetail.overallRating} productId={this.state.productId} />
                                     </Grid.Column>
                                     : null
                             }

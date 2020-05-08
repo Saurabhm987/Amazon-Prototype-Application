@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const cardSchema = require('./card');
 const reviewSchema = require('./review');
+const product = require('./product')
+
 const uniqueValidator = require('mongoose-unique-validator');
 
 

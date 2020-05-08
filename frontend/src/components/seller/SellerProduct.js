@@ -3,6 +3,7 @@ import queryString from 'query-string';
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux';
 import jwtDecode from 'jwt-decode';
+import {Link} from 'react-router-dom';
 import { productCategories, updateProduct, deleteProduct, getSellerProductsPaginated, getSellerProducts } from '../../actions/product'
 
 import {
@@ -121,6 +122,12 @@ class SellerProduct extends Component {
     handlePaginationChange = async (e, { activePage }) => {
         await this.setState({ activePage });
         await this.handleSearch()
+    }
+
+    handleRoute = async (e) => {
+
+        this.props.history.push(`/productdetails/?id=${e.currentTarget.dataset.id}`)
+
     }
 
     handleSearch = async () => {
@@ -398,10 +405,10 @@ class SellerProduct extends Component {
                                                         </Grid.Column>
                                                         <Grid.Column style={{marginTop:'10px'}}>
                                                             <Grid.Row>
-                                                                <Header style={{ fontWeight: '400' }}>{item.name}</Header>
+                                                                <Header style={{ fontWeight: '400' }} data-id={item._id} onClick={this.handleRoute}>{item.name}</Header>
                                                             </Grid.Row>
                                                             <Grid.Row>
-                                                                <Rating maxRating={5} defaultRating={3} icon='star' size='small' disabled />
+                                                                <Rating maxRating={5} defaultRating={item.overallRating ||1} icon='star' size='small' disabled />
                                                             </Grid.Row>
                                                             <Grid.Row>
                                                                 <b>Best Price: $ {item.price} </b>

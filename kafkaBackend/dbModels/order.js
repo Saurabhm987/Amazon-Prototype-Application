@@ -1,5 +1,9 @@
 const mongoose = require('mongoose');
 const cardSchema = require('./card');
+const product = require('./product')
+const buyer = require('./buyer')
+const seller = require('./seller')
+
 
 const deliveryAddress = new mongoose.Schema({
     street1: {
