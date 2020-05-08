@@ -30,7 +30,8 @@ class AppHeader extends Component {
       searchText: '',
       data: [{ key: '', text: '', value: '' }],
       searchCategory: '',
-      user: ''
+      user: '',
+      filterText: '',
     }
   }
 
@@ -77,7 +78,21 @@ class AppHeader extends Component {
     this.setState({ [e.target.name]: e.target.value });
   }
 
-  onSearch = async () => {
+  handlelow = async (e) => {
+    console.log('hitting')
+    await this.props.history.push('/dashboard')
+    await this.props.fetchProduct('', '', '', 'PriceLowtoHigh')
+
+  }
+
+  handlehigh = async (e) => {
+
+    await this.props.history.push('/dashboard')
+    await this.props.fetchProduct('', '', '', 'PriceHightoLow')
+
+  }
+
+  onSearch = async (e) => {
 
     const { searchText, searchCategory } = this.state
 
@@ -158,11 +173,11 @@ class AppHeader extends Component {
           </Grid.Row> */}
           <Dropdown item simple text='Sort by'>
             <Dropdown.Menu>
-              <Dropdown.Item>
-                  Price: Low to High
+              <Dropdown.Item onClick={this.handlelow} data-cat='PriceLowtoHigh'>
+                Price: Low to High
               </Dropdown.Item>
-              <Dropdown.Item>
-                  Price : High to low
+              <Dropdown.Item onClick={this.handlehigh} data-cat1='PriceHightoLow'>
+                Price : High to low
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
@@ -226,7 +241,7 @@ class AppHeader extends Component {
           }
 
         </Menu>
-       
+
         <Segment inverted vertical style={{ margin: '5em 0em 0em 0em', padding: '2em 0em ' }}>
           <Container textAlign='center'>
             <Grid divided inverted stackable>
