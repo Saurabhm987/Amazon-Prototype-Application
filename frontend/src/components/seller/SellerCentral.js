@@ -118,10 +118,10 @@ class SellerCentral extends Component {
                             <Header as='h3'>Your Orders</Header>
                             <Segment inverted color='blue' tertiary key='mini' size='mini'>
                                 <Grid columns={2}>
-                                    <Grid.Column width={14} onClick={() => this.setState({...this.state,orderStatus:''})}>
+                                    <Grid.Column width={12} onClick={() => this.setState({...this.state,orderStatus:''})}>
                                         <Header as='h3' color='blue'>All</Header>
                                     </Grid.Column>
-                                    <Grid.Column width={2}>
+                                    <Grid.Column width={4}>
                                         <Header as='h3' color='blue'>{this.props.order.userOrders.length}</Header>
                                     </Grid.Column>
                                 </Grid>
