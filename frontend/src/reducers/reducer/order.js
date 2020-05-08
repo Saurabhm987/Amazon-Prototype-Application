@@ -30,7 +30,8 @@ export default function(state = initialState, action) {
                 state,
                 {
                     userOrders: state.userOrders.map(item => {
-                        if(payload.orderId === item.orderId) {
+                        // if(payload.orderId === item.orderId && payload.productId === item.productId._id) {
+                        if(payload._id === item._id) {
                             let updatedOrder = Object.assign({},
                                 item, 
                                 {
