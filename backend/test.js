@@ -1,14 +1,15 @@
-var app = require('../index');
+var app = require('../backend/index');//../index
 var chai = require('chai');
 chai.use(require('chai-http'));
 var expect = require('chai').expect;
+var assert = require('chai').assert;
 
 var agent = require('chai').request.agent(app);
 
 describe('Amazon App', function () {
 
-    it('GET /allCategories - Verifying category count is greater than 0', function (done) {
-        agent.get('/allCategories')
+    it('GET /getAddress - Verifying customer has at least one address', function (done) {
+        agent.get('/address/getAddress/5ea6217130c53720685db7dd')
             .then(function (res) {
                 expect(res.body.length).to.greaterThan(0);
                 done();
@@ -17,108 +18,58 @@ describe('Amazon App', function () {
                 done(e);
             });
     });
-    it('GET /allSeller - Verifying seller  count is greater than 0', function (done) {
-        agent.get('/sellers?search=')
+
+
+    it('GET /getCard - Verifying customer card info', function (done) {
+        agent.get('/card/getCard/5ea6217130c53720685db7dd')
             .then(function (res) {
-                expect(res.body.length).to.greaterThan(0);
+                console.log(res.body);
+                //expect(res.body[0].number).is.include(4100334566776789);
+                assert.approximately(res.body[0].number,4100334566776789,0);
                 done();
             })
             .catch((e) => {
                 done(e);
             });
     });
-    it('GET /seller products based on search name should contain name', function (done) {
-        agent.get('/seller/5eb2d83f82ef2693d79aa01e/products?searchText=bed&filterCategory=&displayResultsOffset=1')
-            .then(function (res) {
-                if (res.body.products.length > 0) {
-                    let products = res.body.products;
-                    for (let product of products) {
-                        expect(product.name.toLowerCase()).to.include('bed');
-                    }
-                }
-                else {
-                    expect(res.body.products.length).to.equal(0);
-                }
-                done();
-
-            })
-            .catch((e) => {
-                done(e);
-            });
-    });
 
 
-
-    it('GET product review of product should get reviews of the same product', function (done) {
-        agent.get('/user/productreviews/5eb2d92a82ef2693d79aa020')
-            .then(function (res) {
-                if (res.body.length > 0) {
-                    let productReviews = res.body;
-                    for (let productr of productReviews) {
-                        expect(productr.product_id).to.include('5eb2d92a82ef2693d79aa020');
-                    }
-
-
-                }
-                else {
-                    expect(res.body.length).to.equal(0);
-                }
-                done();
-
-            })
-            .catch((e) => {
-                done(e);
-            });
-    });
-
-
-
-    it('GET Seller Profile with the id and checking the id', function (done) {
-        let sellerId = "5eb2d83f82ef2693d79aa01e"
-        agent.get(`/seller/${sellerId}/profile`)
+    it('PUT update order status', function (done) {
+        let updatedStatusPayload={
+            "orderId":"5ea7bfc22cc68d1737f2b47f",
+            "productId":"5ea29a3a5de6843370680c17",
+            "updatedStatus":"Not yet delivered"
+        }
+        agent.put(`/order/updateStatus`)
+            .send(updatedStatusPayload)
             .then(function (res) {
                 if (res.body._id)
-                    expect(res.body._id).to.equal(sellerId);
+                    expect(res.body.status.status.toLowerCase()).to.equal(updatedStatusPayload.updatedStatus.toLowerCase());
+
                 done();
+
             })
             .catch((e) => {
                 done(e);
             });
     });
 
-    it('PUT seller profile details and check the response.', function (done) {
-        let sellerDetails = { "id": "5eb2d83f82ef2693d79aa01e", "name": "Vamsi Mundr", "address": { "address1": "329 N, first street ,", "address2": "villa torinos", "city": "Hyderabad", "state": "CA", "zip": "95110" } }
-        agent.put(`/seller/profile`)
-            .send(sellerDetails)
+    it('GET /product/getCategories - Verifying number of product categories', function (done) {
+        agent.get('/product/getCategories')
             .then(function (res) {
-                if (res.body._id)
-                    expect(res.body.name).to.equal(sellerDetails.name);
-
+                assert.approximately(res.body.length,4,0);
                 done();
-
             })
             .catch((e) => {
                 done(e);
             });
     });
 
-    it('POST User adding item to cart checking the response', function (done) {
-        let cart = { "product_id": "5eb2d92a82ef2693d79aa020", "gift": false, "quantity": 2 }
-        agent.post(`/customer/5eb2d9be82ef2693d79aa021/cart`)
-            .send(cart)
+    it('GET /seller/profile/ - Validating Seller profile', function (done) {
+        agent.get('/seller/profile/5eb34b42176d324496e40c31')
             .then(function (res) {
-                let rsponse_cart = res.body.cart;
-                let isProductThere = false;
-                for (let product of rsponse_cart) {
-                    if (product.product === cart.product_id) {
-                        isProductThere = true;
-                    }
-                }
-
-                expect(isProductThere).to.equal(true);
-
+                expect(res.body.email.toLowerCase()).to.equal('cloudtail@gmail.com');
                 done();
-
             })
             .catch((e) => {
                 done(e);
@@ -126,52 +77,66 @@ describe('Amazon App', function () {
     });
 
 
-    it('GET  seller Orders checking the correct order id.', function (done) {
-        let orderId = "5eb2db6c82ef2693d79aa026"
-        agent.get(`/seller/5eb2d83f82ef2693d79aa01e/orders/${orderId}`)
+    it('GET /analytics/sales - Validating Sales related Analytics', function (done) {
+        agent.get('/analytics/sales')
             .then(function (res) {
-                if (res.body._id)
-                    expect(res.body._id).to.equal(orderId);
-
+                expect(res.body.topFiveMostSoldProducts[0]._id.name.toLowerCase()).to.equal('oneplus');
                 done();
-
             })
             .catch((e) => {
                 done(e);
             });
     });
 
-
-    it('GET  User payment cards and check his id with it .', function (done) {
-        let userID = "5eb2d9be82ef2693d79aa021"
-        agent.get(`/profile/cards/${userID}`)
+    it('GET /analytics/products - Validating Product related Analytics, getting top rated Product', function (done) {
+        agent.get('/analytics/products')
             .then(function (res) {
-                if (res.body._id)
-                    expect(res.body._id).to.equal(userID);
-
+                expect(res.body.topTenProductsRating[0].name.toLowerCase()).to.include('adidas');
+                assert.approximately(res.body.topTenProductsRating[0].overallRating,5,0);
                 done();
-
             })
             .catch((e) => {
                 done(e);
             });
     });
 
-
-
-    it('GET  Customer profile check the id.', function (done) {
-        let userID = "5eb2d9be82ef2693d79aa021"
-        agent.get(`/profile/customer/${userID}`)
+    it('GET /customer/profile/ - Validating Customer profile', function (done) {
+        agent.get('/customer/profile/5eb3c925f10e7d6c60224d88')
             .then(function (res) {
-                if (res.body[0]._id)
-                    expect(res.body[0]._id).to.equal(userID);
-
+                expect(res.body.email.toLowerCase()).to.equal('shubham@gmail.com');
                 done();
-
             })
             .catch((e) => {
                 done(e);
             });
     });
+
+  it('GET /analytics/products - Validating Product related Analytics, getting top rated Product', function (done) {
+        agent.get('/analytics/products')
+            .then(function (res) {
+                expect(res.body.topTenProductsRating[0].name.toLowerCase()).to.include('adidas');
+                assert.approximately(res.body.topTenProductsRating[0].overallRating,5,0);
+                done();
+            })
+            .catch((e) => {
+                done(e);
+            });
+    });
+
+   /* it('DELETE /analytics/products - Deleting saved for later product', function (done) {
+        let savedProductCountBeforeDelete="";
+
+        agent.get('/customer/profile/5eb3c925f10e7d6c60224d88')
+            .then(async function (res) {
+                savedProductCountBeforeDelete=res.body.saveForLater.length;
+
+                let custProfileAfterDeletion = await agent.delete('/saveForLater/deleteSaveForLater/5eb3c925f10e7d6c60224d88/product/5ea29a3a5de6843370680c17/deleteProductInSaveForLater');
+                assert.approximately(custProfileAfterDeletion.body.saveForLater.length,savedProductCountBeforeDelete-1,0);
+                done();
+            })
+            .catch((e) => {
+                done(e);
+            });
+    });*/
 
 })
