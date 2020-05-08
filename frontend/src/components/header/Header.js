@@ -189,7 +189,7 @@ class AppHeader extends Component {
             this.state.user.userType === 'customer'
               ?
               <Menu.Item as='a' header>
-                <Link to='#'>
+                <Link to='/customerorders'>
                   Return &  Orders
                 </Link>
               </Menu.Item>

@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types'
 import { Link, withRouter } from 'react-router-dom'
 import { getUserOrder, updateStatus } from '../../actions/order';
+import {setupOrderedProductForDetail } from '../../actions/product';
 import { Container, Grid, Segment, Menu, Header, Placeholder, Dropdown, Button, Card, Image } from 'semantic-ui-react'
 import JwtDecode from 'jwt-decode';
 import { USER_CUSTOMER, USER_SELLER, USER_ADMIN } from '../controller/config';
@@ -17,6 +18,7 @@ class orderCard extends Component {
     }
 
     render() {
+        console.log(this.props.orders)
         var orders = _.mapValues(_.groupBy(this.props.orders, 'orderId'), clist => clist.map(order => _.omit(order, 'orderId')));
 
         console.log(orders);
@@ -58,16 +60,16 @@ class orderCard extends Component {
                                                     <Header as='h5' color='grey'>Current Status: {product.status.status}</Header>
                                                 </Grid.Row>
                                                 <Grid.Row>
-                                                    {(JwtDecode(localStorage.getItem('token'))).userType === USER_SELLER ? 
+                                                    {(localStorage.getItem('token')) ? ((JwtDecode(localStorage.getItem('token'))).userType === USER_SELLER ? 
                                                     <Menu compact>
                                                         <Dropdown placeholder='Change Status' options={options} simple item compact onChange={(e,v) => this.props.updateStatus(orderId,product.productId._id,v.value)} />
-                                                    </Menu> : <div></div>
+                                                    </Menu> : <div></div>) : (<div></div>)
                                                     }
                                                 </Grid.Row>
                                             </Grid.Column>
                                             <Grid.Column width={5}>
                                                 <Grid.Row>
-                                                    <Button color='blue' floated='right' style={{ height: '35px', width: '150px', margin: '5px' }} onClick={() => this.props.history.push('/orderdetails')}>Details</Button>
+                                                    <Button color='blue' floated='right' style={{ height: '35px', width: '150px', margin: '5px' }} onClick={() => {this.props.setupOrderedProductForDetail({...product,'orderId':orderId});this.props.history.push('/orderdetails')}}>Details</Button>
                                                 </Grid.Row>
                                                 <Grid.Row>
                                                     <Button color='red' floated='right' style={{ height: '35px', width: '150px', margin: '5px' }} onClick={() => this.props.updateStatus(orderId,product.productId._id,'Cancelled')}>Cancel</Button>
@@ -96,5 +98,6 @@ const mapStateToProps = state => ({
 })
 
 export default connect(mapStateToProps, {
-    updateStatus
+    updateStatus,
+    setupOrderedProductForDetail
 })(withRouter(orderCard))

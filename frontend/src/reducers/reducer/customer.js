@@ -7,6 +7,8 @@ import {
     ADD_REVIEW,
     FETCH_CUSTOMER_PROFILE,
     UPDATE_CUSTOMER_PROFILE,
+    DEFAULT_ADDRESS,
+    DEFAULT_CARD
 } from '../../actions/types';
 
 const initialState = {
@@ -16,6 +18,8 @@ const initialState = {
     reviews: [],
     customerComments:[],
     profile: {},
+    defaultCard: {},
+    defaultAddress: {}
 };
 
 export default function (state = initialState, action) {
@@ -71,6 +75,17 @@ export default function (state = initialState, action) {
             return {
                 ...state,
                 profile: payload
+            }
+        case DEFAULT_ADDRESS:
+            return {
+                ...state,
+                defaultAddress: payload
+            }
+
+        case DEFAULT_CARD:
+            return {
+                ...state,
+                defaultCard: payload
             }
 
         default:

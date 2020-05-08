@@ -282,4 +282,19 @@ export const updateCustomerProfile = (body, userId) => async (dispatch) => {
         .catch(error => {
             console.log('error', error)
         })
+
+    }
+    
+export const defaultAddress = (address) => async (dispatch) => {
+    dispatch({
+        type: 'DEFAULT_ADDRESS',
+        payload: address
+    })
+}
+
+export const defaultCard = (card) => async (dispatch) => {
+    dispatch({
+        type: 'DEFAULT_CARD',
+        payload: card
+    })
 }

@@ -9,10 +9,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^4.0.1",
     "kafka-node": "^2.6.1",
     "mongodb": "^3.5.5",
     "mongoose": "^5.9.6",
     "mongoose-auto-increment": "^5.0.1",
+    "mongoose-unique-validator": "^2.0.3",
     "nodemon": "^2.0.2",
     "redis": "^3.0.2"
   }

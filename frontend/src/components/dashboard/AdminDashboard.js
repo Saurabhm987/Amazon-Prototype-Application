@@ -2,12 +2,22 @@ import React, { Component } from 'react'
 import { Container, Grid, Image, Menu, Header, Placeholder, Dropdown, Button, Card, Modal } from 'semantic-ui-react'
 import CentralHeader from '../header/CentralHeader'
 import AddProduct from '../product/AddProduct'
+import OrderCard from '../order/OrderCard'
 import Graph from '../common/Graph'
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types'
 import SellerProduct from '../seller/SellerProduct'
-import { getUserOrder } from '../../actions/order'
+import { getUserOrder, getAdminAllOrders } from '../../actions/order'
 import axios from 'axios'
+/**
+ * Using action:  this.props.getAdminAllOrders(page, limit);
+ * 
+ * // this.props.order.userOrders will contain all orders
+ * const { paginationNext } = this.props.order;
+ * if(paginationNext) { // onClick next page button
+ *      this.props.getAdminAllOrders(paginationNext.page, limit);
+ * }
+ */
 
 class AdminDashboard extends Component {
     constructor(props) {
@@ -18,7 +28,8 @@ class AdminDashboard extends Component {
             salesAnalytics: {},
             productAnalytics: {},
             statsMonthly: {},
-            seller: []
+            seller: [],
+            paginationLimit: 5
         }
     }
 
@@ -67,6 +78,24 @@ class AdminDashboard extends Component {
             productAnalytics,
             seller
         })
+
+        this.props.getAdminAllOrders();
+    }
+
+    orderPageNext = (e) => {
+        if(this.props.order.paginationNext) {
+            console.log('getting next page..');
+            const {page, limit} = this.props.order.paginationNext;
+            this.props.getAdminAllOrders(page, limit);
+        }
+    }
+
+    orderPagePrev = (e) => {
+        if(this.props.order.paginationPrev) {
+            console.log('getting Prev page..');
+            const {page, limit} = this.props.order.paginationPrev;
+            this.props.getAdminAllOrders(page, limit);
+        }
     }
 
     handleNavItem = (e, { name }) => this.setState({ activeNavItem: name })
@@ -101,10 +130,7 @@ class AdminDashboard extends Component {
 
         console.log(activeNavItem);
 
-        if (activeNavItem == 'PROFILE') {
-            contentPage = (<SellerProduct />)
-        }
-        else if (activeNavItem == 'INVENTORY') {
+        if (activeNavItem == 'INVENTORY') {
             contentPage = (<AddProduct />)
         }
         else if (activeNavItem == 'SELLERS') {
@@ -152,51 +178,53 @@ class AdminDashboard extends Component {
                 { key: 2, text: 'Packing', value: 2 },
                 { key: 3, text: 'Out For Delivery', value: 3 },
             ]
-            contentPage = this.state.orders.map(order => {
 
-                return (
-                    <Card fluid>
-                        <Card.Content>
-                            <Header as='h3'>ORDER ID: {order.id}</Header>
-                        </Card.Content>
-                        {order.products.map(product => {
-                            return (
-                                <Card.Content>
-                                    <Grid columns={3}>
-                                        <Grid.Column width={3}>
-                                            <Placeholder>
-                                                <Placeholder.Image style={{ width: '100px', height: '100px' }}></Placeholder.Image>
-                                            </Placeholder>
-                                        </Grid.Column>
-                                        <Grid.Column width={8}>
-                                            <Grid.Row>
-                                                {product.name}
-                                            </Grid.Row>
-                                            <Grid.Row>
-                                                <Menu compact>
-                                                    <Dropdown text='Order Status' options={options} simple item />
-                                                </Menu>
-                                            </Grid.Row>
-                                        </Grid.Column>
-                                        <Grid.Column width={5}>
-                                            <Grid.Row>
-                                                <Button color='blue' floated='right' style={{ height: '35px', width: '150px', margin: '5px' }}>Billing Details</Button>
-                                            </Grid.Row>
-                                            <Grid.Row>
-                                                <Button color='blue' floated='right' style={{ height: '35px', width: '150px', margin: '5px' }}>Payment Details</Button>
-                                            </Grid.Row>
-                                            <Grid.Row>
-                                                <Button color='blue' floated='right' style={{ height: '35px', width: '150px', margin: '5px' }}>Delivery Address</Button>
-                                            </Grid.Row>
-                                        </Grid.Column>
-                                    </Grid>
-                                </Card.Content>
-                            )
-                        }
-                        )}
-                    </Card>
-                )
-            })
+            contentPage = <OrderCard orders={this.props.order.userOrders}></OrderCard>;
+            // contentPage = this.state.orders.map(order => {
+
+            //     return (
+            //         <Card fluid>
+            //             <Card.Content>
+            //                 <Header as='h3'>ORDER ID: {order.id}</Header>
+            //             </Card.Content>
+            //             {order.products.map(product => {
+            //                 return (
+            //                     <Card.Content>
+            //                         <Grid columns={3}>
+            //                             <Grid.Column width={3}>
+            //                                 <Placeholder>
+            //                                     <Placeholder.Image style={{ width: '100px', height: '100px' }}></Placeholder.Image>
+            //                                 </Placeholder>
+            //                             </Grid.Column>
+            //                             <Grid.Column width={8}>
+            //                                 <Grid.Row>
+            //                                     {product.name}
+            //                                 </Grid.Row>
+            //                                 <Grid.Row>
+            //                                     <Menu compact>
+            //                                         <Dropdown text='Order Status' options={options} simple item />
+            //                                     </Menu>
+            //                                 </Grid.Row>
+            //                             </Grid.Column>
+            //                             <Grid.Column width={5}>
+            //                                 <Grid.Row>
+            //                                     <Button color='blue' floated='right' style={{ height: '35px', width: '150px', margin: '5px' }}>Billing Details</Button>
+            //                                 </Grid.Row>
+            //                                 <Grid.Row>
+            //                                     <Button color='blue' floated='right' style={{ height: '35px', width: '150px', margin: '5px' }}>Payment Details</Button>
+            //                                 </Grid.Row>
+            //                                 <Grid.Row>
+            //                                     <Button color='blue' floated='right' style={{ height: '35px', width: '150px', margin: '5px' }}>Delivery Address</Button>
+            //                                 </Grid.Row>
+            //                             </Grid.Column>
+            //                         </Grid>
+            //                     </Card.Content>
+            //                 )
+            //             }
+            //             )}
+            //         </Card>
+            //     )
+            // })
         }
 
 
@@ -206,11 +234,6 @@ class AdminDashboard extends Component {
                 {/* Header Nav Bar */}
                 <div style={{ margin: '65px 0px 0px 0px' }}>
                     <Menu pointing secondary>
-                        <Menu.Item
-                            name='PROFILE'
-                            active={activeNavItem === 'PROFILE'}
-                            onClick={this.handleNavItem}
-                        />
                         <Menu.Item
                             name='INVENTORY'
                             active={activeNavItem === 'INVENTORY'}
@@ -231,13 +254,6 @@ class AdminDashboard extends Component {
                             active={activeNavItem === 'ANALYTICS'}
                             onClick={this.handleNavItem}
                         />
-                        <Menu.Menu position='right'>
-                            <Menu.Item
-                                name='logout'
-                                active={activeNavItem === 'logout'}
-                                onClick={this.handleNavItem}
-                            />
-                        </Menu.Menu>
                     </Menu>
                 </div>
                 <br></br>
@@ -252,10 +268,13 @@ class AdminDashboard extends Component {
 AdminDashboard.propTypes = {
     isAuthenticated: PropTypes.bool.isRequired,
     getUserOrder: PropTypes.func.isRequired,
+    order: PropTypes.object.isRequired,
+    getAdminAllOrders: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
-    isAuthenticated: state.auth.isAuthenticated
+    isAuthenticated: state.auth.isAuthenticated,
+    order: state.order
 })
 
-export default connect(mapStateToProps, { getUserOrder })(AdminDashboard)
+export default connect(mapStateToProps, { getUserOrder, getAdminAllOrders })(AdminDashboard)

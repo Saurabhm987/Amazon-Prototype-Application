@@ -218,8 +218,8 @@ class Cart extends Component {
                                 </Grid.Row>
                                 <Grid.Row>
                                     Sold by 
-                                    <Link class='productlink' to={`/sellerprofile/?id=${cartitem.productId.seller.sellerId}` }>
-                                    <span class='stocklabel'> {cartitem.productId.seller.sellerName?cartitem.productId.seller.sellerName:""}</span>
+                                    <Link class='productlink' to={`/sellerprofile/?id=${cartitem.productId.sellerId}` }>
+                                    <span class='stocklabel'> {cartitem.productId.sellerName?cartitem.productId.sellerName:""}</span>
                                     </Link>
                                     <div class='stocklabel'>
                                         Only few left in stock - order soon.
