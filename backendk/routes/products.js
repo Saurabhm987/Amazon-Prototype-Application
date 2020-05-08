@@ -76,35 +76,65 @@ router.post('/addproduct', uploadMultiple, async (request, response) => {
         const requestBody = {
             body: data,
             files: request.files,
+            type:"addProduct"
         }
+ ///
+ await kafka.make_request('products', requestBody, async (err, data) => {
+    if (err) throw new Error(err)
+////////////
 
-        const res = await productServices.addProduct(requestBody)
+// const res = await productServices.addProduct(requestBody)
 
-        if (res.body) {
+if (data.body) {
 
-            await client.exists('products', async (error, reply) => {
+    await client.exists('products', async (error, reply) => {
+        if(error) throw error
+
+        if(reply){
+            await client.del('products',(error, reply) => {
                 if(error) throw error
 
                 if(reply){
-                    await client.del('products',(error, reply) => {
-                        if(error) throw error
-
-                        if(reply){
-                            console.log('cache has been cleared!')
-                        }
-                    })
+                    console.log('cache has been cleared!')
                 }
             })
-
-            const { category, quantity } = res.body
-
-            var result = await productServices.incproductCount(category, quantity)
         }
+    })
 
-        if (result.status === 200)
-            response.status(res.status).json(res.body)
-        else
-            response.status(500).json('cannot increment quantity')
+    const { category, quantity } = data.body
+    let data2={
+        "category":category,
+        "quantity":quantity,
+        "type":"incproductCount"
+    }
+    await kafka.make_request('products', data2, async (err, data1) => {
+        if (err) throw new Error(err)
+        await response.status(data.status).json(data.body);
+
+        if (data1.status === 200)
+        response.status(data.status).json(data.body)
+    else
+        response.status(500).json('cannot increment quantity')
+
+    });
+    // var result = await productServices.incproductCount(data)
+
+    // var result = await productServices.incproductCount(category, quantity)
+}
+
+
+
+
+
+
+////////////////
+
+});
+///
+
+      
+
+       
 
     } catch (error) {
 
@@ -123,6 +153,47 @@ router.post('/addproduct', uploadMultiple, async (request, response) => {
 })
 
 
+// router.get('/searchWithKafka', cachedsearch, async (request, response) => {
+
+//     console.log('Kafka search api call')
+
+//     try {
+
+//         const data = {
+//             "body": request.body,
+//             "params": request.params,
+//             "query": request.query,
+//             "type":"ProductSearchResults"
+//         }
+
+//         // params = { topic_name, request_body, callback}
+//         await kafka.make_request('product', data, async (err, data) => {
+//             if (err) throw new Error(err)
+
+//             await client.set('products', JSON.stringify(data.body))
+
+//             response.status(data.status).json(data.body);
+//         });
+
+//         // let res = await productServices.getProductsforCustomer(data);
+//         // response.status(res.status).json(res.body);
+
+//     }
+//     catch (error) {
+//         if (error.message)
+//             message = error.message
+//         else
+//             message = 'Error while fetching products'
+
+//         if (error.statusCode)
+//             code = error.statusCode
+//         else
+//             code = 500
+
+//         return response.status(code).json({ message });
+//     }
+
+// });
 
 
 
@@ -146,11 +217,18 @@ router.post('/review/:product_id', checkAuth, async (request, response) => {
     console.log('hitting adreview')
 
     try {
-        const requestBody = { body: request.body, params: request.params, user:request.user }
+        const requestBody = { body: request.body, params: request.params, user:request.user, 
+        type:"addReview"
+    }
+///
+await kafka.make_request('products', requestBody, async (err, data) => {
+    if (err) throw new Error(err)
+    await response.json(data);
+});
+///
+        // const result = await productServices.addReview(requestBody)
 
-        const result = await productServices.addReview(requestBody)
-
-        response.json(result)
+        // response.json(result)
 
     } catch (error) {
 
@@ -188,11 +266,17 @@ router.post('/addcategory', async (request, response) => {
     console.log('hitting addcategory')
 
     try {
-        const requestBody = { body: request.body }
+        const requestBody = { body: request.body , type:"addCategory"
+    }
+///
+await kafka.make_request('products', requestBody, async (err, data) => {
+    if (err) throw new Error(err)
+    await  response.status(data.status).json(data.body)
+});
+///
+        // const res = await productServices.addCategory(requestBody)
 
-        const res = await productServices.addCategory(requestBody)
-
-        response.status(res.status).json(res.body)
+        // response.status(res.status).json(res.body)
 
     } catch (error) {
 
@@ -227,11 +311,18 @@ router.put('/updateproduct/:product_id', async (request, response) => {
 
     try {
 
-        const requestBody = { body: request.body, params: request.params }
+        const requestBody = { body: request.body, params: request.params , type:"updateProduct" }
 
-        const result = await productServices.updateProduct(requestBody)
+///
+await kafka.make_request('products', requestBody, async (err, data) => {
+    if (err) throw new Error(err)
+    await  response.json(data.body)
+});
+///
 
-        response.json(result.body) 
+        // const result = await productServices.updateProduct(requestBody)
+
+        // response.json(result.body) 
 
     } catch (error) {
 
@@ -263,10 +354,16 @@ router.get('/getcategories', async (request, response) => {
     try {
 
         console.log('getting categories')
+        const data = {  "type":"getallcategories" }
+///
+await kafka.make_request('products', data, async (err, data) => {
+    if (err) throw new Error(err)
+    await  response.status(data.status).json(data.body)
+});
+///
+        // const res = await productServices.getallcategories(data)
 
-        const res = await productServices.getallcategories()
-
-        response.status(res.status).json(res.body)
+        // response.status(res.status).json(res.body)
 
     } catch (error) {
 
@@ -288,10 +385,19 @@ router.get('/getcategories', async (request, response) => {
 router.delete('/deletecategory/:category_name', async(request, response) => {
 
     try {
+        
+        request.type="deleteCategory"
 
-        const res = await productServices.deleteCategory(request)
+        ///
+await kafka.make_request('products', request, async (err, data) => {
+    if (err) throw new Error(err)
+    await  response.status(data.status).json(data.body)
+});
+///
+        // const res = await productServices.deleteCategory(request)
 
-        response.status(res.status).json(res.body)
+
+        // response.status(res.status).json(res.body)
 
     } catch (error) {
 
@@ -329,11 +435,18 @@ router.get('/sellerproduct/:seller_id', async (request, response) => {
 
     try {
 
-        const requestBody = { params: request.params }
+        const requestBody = { params: request.params,type:"getsellerProduct" }
 
-        const res = await productServices.getsellerProduct(requestBody)
+ ///
+ await kafka.make_request('products', requestBody, async (err, data) => {
+    if (err) throw new Error(err)
+    await  response.status(data.status).json(data.body)
+});
+///
 
-        response.status(res.status).json(res.body)
+        // const res = await productServices.getsellerProduct(requestBody)
+
+        // response.status(res.status).json(res.body)
 
     } catch (error) {
 
@@ -362,8 +475,17 @@ router.get('/search', async (request, response) => {
             "body": request.body,
             "params": request.params,
             "query": request.query,
+            "type":"getProductsforCustomer"
         }
-        let res = await productServices.getProductsforCustomer(data);
+
+ ///
+ await kafka.make_request('products', data, async (err, data) => {
+    if (err) throw new Error(err)
+    await  response.status(data.status).json(data.body)
+});
+///
+
+        // let res = await productServices.getProductsforCustomer(data);
 
         // client.set('products', JSON.stringify(res.body))
 
@@ -399,9 +521,18 @@ router.get('/getSellerPaginatedResult', async (request, response) => {
             "body": request.body,
             "params": request.params,
             "query": request.query,
+            "type":"getProductsforSeller"
+
         }
-        let res = await productServices.getProductsforSeller(data);
-        response.status(res.status).json(res.body);
+///
+await kafka.make_request('products', data, async (err, data) => {
+    if (err) throw new Error(err)
+    await  response.status(data.status).json(data.body)
+});
+///
+
+        // let res = await productServices.getProductsforSeller(data);
+        // response.status(res.status).json(res.body);
 
     }
     catch (error) {
@@ -440,22 +571,33 @@ router.put('/deleteproduct/:product_id', async (request, response) => {
 
     try {
 
-        const requestBody = { params: request.params }
+        const requestBody = { params: request.params,type:"deleteProduct" }
 
-        const res = await productServices.deleteProduct(requestBody)
+        ///
+        await kafka.make_request('products', requestBody, async (err, data) => {
+            if (err) throw new Error(err)
+            if (data.body) {
+                const { category, quantity } = data.body
+                let data1={
+                    "category":category,
+                    "quantity":quantity,
+                    "type":"dcrproductCount"
+                }
 
-        if (res.body) {
-            const { category, quantity } = res.body
-            var result = await productServices.dcrproductCount(category, quantity)
-        }
+                await kafka.make_request('products', data1, async (err, data2) => {
+                    if (err) throw new Error(err)
+                    if (data2.status === 200)
+                    response.status(data.status).json(data.body)
+                else
+                    response.status(500).json('Product has already been deleted!')
 
-        if (result.status === 200)
-            response.status(res.status).json(res.body)
-        else
-            response.status(500).json('Product has already been deleted!')
+                });
+               
+            }
+        });
+    
     }
     catch{
-
         if (error.message)
             message = error.message
         else
@@ -495,10 +637,20 @@ router.get('/:product_id', async (req, res, next) => {
     }
 
     try {
+        let data={
+            "product_id":product_id,
+            "type":"getProduct"
 
-        const result = await productServices.getProduct(product_id)
+        }
+///
+await kafka.make_request('products', data, async (err, data) => {
+    if (err) throw new Error(err)
+    await  res.status(data.status).json(data.body)
+});
+///
+        // const result = await productServices.getProduct(data)
 
-        res.status(result.status).json(result.body)
+        // res.status(result.status).json(result.body)
 
     } catch (error) {
 

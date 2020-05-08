@@ -308,11 +308,11 @@ const getsellerProduct = async (request) => {
     }
 }
 
-const getProduct = async (product_id) => {
+const getProduct = async (request) => {
 
     try {
 
-        let findId = product_id
+        let findId = request.product_id
         const result = await queries.findDocumentsById(products, findId)
 
         return { status: 200, body: result }
@@ -391,11 +391,11 @@ const deleteProduct = async (request) => {
     }
 }
 
-const incproductCount = async (category, quantity) => {
+const incproductCount = async (request) => {
     try {
 
-        let findQuery = { name: category }
-        let updateQuery = { $inc: { numOfProducts: quantity } }
+        let findQuery = { name: request.category }
+        let updateQuery = { $inc: { numOfProducts: request.quantity } }
 
         await queries.updateField(productCategory, findQuery, updateQuery)
 
@@ -418,11 +418,11 @@ const incproductCount = async (category, quantity) => {
     }
 }
 
-const dcrproductCount = async (category, quantity) => {
+const dcrproductCount = async (request) => {
     try {
 
-        let findQuery = { name: category, numOfProducts: { $gte: 0 } }
-        let updateQuery = { $inc: { numOfProducts: -quantity } }
+        let findQuery = { name: request.category, numOfProducts: { $gte: 0 } }
+        let updateQuery = { $inc: { numOfProducts: -request.quantity } }
 
         const result = await queries.updateField(productCategory, findQuery, updateQuery)
 
