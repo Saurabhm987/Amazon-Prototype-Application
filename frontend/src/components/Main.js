@@ -11,6 +11,8 @@ import AddAddress from './customer/addAddress'
 import AddCard from './customer/addCard'
 import Checkout from './customer/checkout'
 import CustomerOrders from './customer/CustomerOrders'
+import OrderSummary from './customer/orderSummary'
+
 
 import CustomerProfile from './customer/customerProfile'
 import ProductDetail from './product/ProductDetail'
@@ -54,6 +56,8 @@ class Main extends Component {
                 <Route path="/orderDetails" exact component={OrderDetail} />
                 <Route path="/orderTracking" exact component={OrderTrackingModal} />
                 <Route path='/checkout'  component={Checkout} />
+                <Route path='/ordersummary'  component={OrderSummary} />
+                
 
                 { 
                     user !== null

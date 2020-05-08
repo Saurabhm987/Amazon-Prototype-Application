@@ -3,16 +3,66 @@ import { Menu, Image, Grid, Header, Divider, Card, Icon, Button, Container} from
 import {Link} from 'react-router-dom'
 import { connect } from 'react-redux';
 import { getCustomerCart } from '../../actions/cart';
+import jwtDecode from 'jwt-decode';
 
 class Checkout extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            deliveryAddress: {},
+            paymentDetails: '',
+            buyer_id: '',
+            seller_id : '',
+            product_id: '',
+            gift: '',
+            giftMessage: '',
+            quantity: '', 
+            totalAmount: ''
 
-    componentDidMount() {
-        // 5ea6217130c53720685db7dd
-        this.props.getCustomerCart("5ea6217130c53720685db7dd")
-        // this.props.getCustomerCart(sessionStorage.getItem("id"))
+        };
+    }
+    changeAddress = (e,v) => {
+        console.log(v.value);
+        
     }
 
+    changeCard = (e,v) => {
+        console.log(v.value);
+        
+    }
+
+    componentDidMount() {
+        if (localStorage.getItem("token") !== null) {
+            var user = jwtDecode(localStorage.getItem("token"));
+            this.setState({ userId: user.userId });
+
+        }
+        console.log(user)
+
+        this.setState ={
+            ...this.state,
+            buyer_id: user.userId
+        }
+
+        console.log(this.state.userId)
+        // this.props.getCustomerCart(user.userId)
+    }
+
+    // createOrder = () => {
+    //     data = {
+    //         buyer_id:this.state.userId,
+    //         seller_id : thi,
+    //         product_id: ,
+    //         deliveryAddress: this.state.deliveryAddress,
+    //         paymentDetails: this.state.paymentDetails,
+    //         gift: this.props.
+    //         giftMessage: "",
+    //         quantity: quantity, 
+    //         totalAmount:
+    //     }
+    // }
   render() {
+      console.log(this.props.cart)
       return(
         <div>
             <div>
@@ -24,7 +74,7 @@ class Checkout extends Component {
             <br/>
             </div>
             </div>
-            
+{/*             
             <div>
                 <Menu id="headerMenu" fixed='top' inverted>
                 <Menu.Item as='a' header>
@@ -40,45 +90,61 @@ class Checkout extends Component {
                 </Grid.Column>
                 </Grid.Row>
                 </Menu>
-            </div>
-            <Grid columns={2} divided>
+            </div> */}
+            <Grid columns={2} >
                 <Grid.Row>
                     <Grid.Column width={11}> 
                         <Container textAlign='left' style={{ padding: '50px' }}>
                         <React.Fragment>
-                            <Header as='h3'>Shipping Address</Header>
-                            <div>
-                            User 1
-                            3220 Appian ST 3620
-                            PLEASANTON, CA 94588-4161
-                            United States
-                            Phone number: 9890808080
-                            </div>
-                            <div >
-                                <Link to='/yourAddresses' className="nav-link" >
-                                    Change 
-                                </Link>
-                                    <br/>
-                                <Link to='/addAddress' className="nav-link">
-                                    Add New Address
-                                </Link>
-                            </div>
+                        <Grid columns={2} >
+                            <Grid.Row>
+                                <Grid.Column width={12}> 
+                                <Header as='h3'>Shipping Address</Header>
+                                    <div onChange={this.changeAddress}>
+                                    User 1
+                                    3220 Appian ST 3620
+                                    PLEASANTON, CA 94588-4161
+                                    United States
+                                    Phone number: 9890808080
+                                    </div>
+                                    </Grid.Column>
+                                    <Divider hidden />
+                                    <Grid.Column width={4}> 
+                                    <div >
+                                        <Link to='/yourAddresses' className="nav-link" >
+                                            Change 
+                                        </Link>
+                                            <br/>
+                                        <Link to='/addAddress' className="nav-link">
+                                            Add New Address
+                                        </Link>
+                                    </div>
+                                </Grid.Column>
+                            </Grid.Row>
+                        </Grid>
                             <Divider section />
-
-                            <Header as='h3'>Payment Details</Header>
-                            <div>
-                            User 1
-                            card number: 9890808080
-                            </div>
-                            <div >
-                                <Link to='/yourAddresses' className="nav-link" >
-                                    Change 
-                                </Link>
-                                    <br/>
-                                <Link to='/addAddress' className="nav-link">
-                                    Add New Card
-                                </Link>
-                            </div>
+                        <Grid columns={2} >
+                            <Grid.Row>
+                                <Grid.Column width={12}> 
+                                    <Header as='h3'>Payment Details</Header>
+                                    <div onChange={this.changeCard}>
+                                    User 1
+                                    card number: 9890808080
+                                    </div>
+                                </Grid.Column>
+                                <Grid.Column width={4}> 
+                                    <div >
+                                        <Link to='/yourAddresses' className="nav-link" >
+                                            Change 
+                                        </Link>
+                                            <br/>
+                                        <Link to='/addAddress' className="nav-link">
+                                            Add New Card
+                                        </Link>
+                                    </div>
+                                </Grid.Column>
+                    </Grid.Row>
+                 </Grid>
                         </React.Fragment>
                         </Container>
                     </Grid.Column>
@@ -88,6 +154,7 @@ class Checkout extends Component {
                             <br/>
                             <Link to='/ordersummary' className="nav-link" >
                                 <Button 
+                                    onClick={this.createOrder}
                                     color='yellow'  
                                     size='medium' 
                                     style={{border:"solid 1px black"}}>
@@ -96,7 +163,6 @@ class Checkout extends Component {
                             </Link>
                             <br/>
                             <div>By placing your order, you agree to Amazon's privacy notice and conditions of use.</div>
-                            <Card.Content header='Order Status' />
                             <Card.Content > Total Items : {this.props.carttotalitems} </Card.Content>
                             <Card.Content > Order Total : ${this.props.cartsubtotal} </Card.Content>
                         </Card>
@@ -117,10 +183,5 @@ const mapStateToProps = state => {
     };
 };
 
-function mapDispatchToProps(dispatch) {
-    return {
-        getCustomerCart: payload => dispatch(getCustomerCart(payload)),
-    };
-}
 
-export default connect(mapStateToProps, mapDispatchToProps)(Checkout);
+export default connect(mapStateToProps)(Checkout);
