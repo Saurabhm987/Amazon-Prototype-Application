@@ -132,7 +132,7 @@ class CustomerDashboard extends Component {
                                         <Fragment>
                                             <Card.Header style={{ fontWeight: 400 }}>{item.name}</Card.Header>
                                             <Card.Meta>
-                                                <Rating maxRating={5} defaultRating={3} icon='star' size='small' disabled />
+                                                <Rating maxRating={5} defaultRating={item.overallRating || 1} icon='star' size='small' disabled />
                                             </Card.Meta>
                                             <Card.Description>$ {item.price} Save ${item.price - 10}</Card.Description>
                                         </Fragment>

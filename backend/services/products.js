@@ -636,25 +636,28 @@ const incrementView = async (request) => {
     try {
 
         const { product_id } = request.params
-        console.log('review findqury - ', request)
 
-        let findQuery = {
-            $and: [
-                { _id: product_id },
-                {
-                    'viewdata':
-                        { "$gte": new Date("2015-05-27T00:00:00Z")}
-                }
-            ]
+        let findQuery = { _id: mongoose.Types.ObjectId(product_id) }
+        let projection = { viewData: 1, _id: 0 }
 
+        let result = await queries.findDocumets(product, findQuery, projection)
+
+        var prevdate = result[0].viewData
+        if (prevdate !== undefined) {
+            let prevday = prevdate.getDate()
+            let currdate = new Date()
+            let currday = currdate.getDate()
+
+            if (prevday !== currday) {
+
+                let res = await queries.updateField(product, findQuery, { $set: { views: 0 } })
+                return { status: 200, body: res }
+            }
         }
-
-        let result = await queries.findDocumets(product, findQuery)
-
-        console.log('result date comparison - ', result)
-        // let updateQuery = {$set : { viewData : new Date()}, $inc: { views: 1 } }
-        // const result = await queries.updateField(product, findQuery, updateQuery)
-        return { status: 200, body: result.review }
+        else {
+            let result = await queries.updateField( product, findQuery, { $inc: { views: 1 } })
+            return { status: 200, body: result }
+        }
 
     } catch (error) {
         console.log(error)
