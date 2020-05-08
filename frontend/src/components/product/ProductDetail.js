@@ -370,10 +370,10 @@ class ProductDetail extends Component {
                     <Grid.Row>
                         <Segment style={{ width: '100%' }}>
                             {
-                                this.state.productId
+                                this.state.productId&&this.props.productDetail
                                     ?
                                     <Grid.Column stretched columns={1} textAlign='left'>
-                                        <ProductComment productId={this.state.productId} />
+                                        <ProductComment rating={this.props.productDetail.overallRating} productId={this.state.productId} />
                                     </Grid.Column>
                                     : null
                             }

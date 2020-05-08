@@ -408,7 +408,7 @@ class SellerProduct extends Component {
                                                                 <Header style={{ fontWeight: '400' }} data-id={item._id} onClick={this.handleRoute}>{item.name}</Header>
                                                             </Grid.Row>
                                                             <Grid.Row>
-                                                                <Rating maxRating={5} defaultRating={3} icon='star' size='small' disabled />
+                                                                <Rating maxRating={5} defaultRating={item.overallRating ||1} icon='star' size='small' disabled />
                                                             </Grid.Row>
                                                             <Grid.Row>
                                                                 <b>Best Price: $ {item.price} </b>
