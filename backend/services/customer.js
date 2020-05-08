@@ -2,6 +2,8 @@ const queries = require('../queries/mongoQueries')
 userAuth = require('../dbModels/userAuth')
 const bcrypt = require('bcrypt');
 
+
+
 buyer = require('../dbModels/buyer')
 
 const getCustomerProfile = async (request) => {
