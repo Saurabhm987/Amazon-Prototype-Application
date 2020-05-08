@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha",
     "server": "nodemon index.js",
     "client": "npm run start --prefix ../frontend",
     "dev": "concurrently \"npm run server\" \"npm run client\""
@@ -16,6 +16,8 @@
     "aws-sdk": "^2.636.0",
     "bcrypt": "^4.0.1",
     "body-parser": "^1.19.0",
+    "chai": "^4.2.0",
+    "chai-http": "^4.3.0",
     "concurrently": "^5.1.0",
     "cookie-parser": "^1.4.4",
     "cors": "^2.8.5",
@@ -29,6 +31,7 @@
     "jsonwebtoken": "^8.5.1",
     "kafka-node": "^5.0.0",
     "mdbreact": "^4.25.2",
+    "mocha": "^7.1.2",
     "mongoose": "^5.9.5",
     "mongoose-unique-validator": "^2.0.3",
     "morgan": "^1.9.1",

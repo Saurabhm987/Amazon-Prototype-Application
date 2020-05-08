@@ -489,7 +489,7 @@ router.get('/search', async (request, response) => {
 
         // client.set('products', JSON.stringify(res.body))
 
-        response.status(res.status).json(res.body);
+        // response.status(res.status).json(res.body);
 
     }
     catch (error) {
