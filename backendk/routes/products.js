@@ -263,7 +263,7 @@ await kafka.make_request('products', requestBody, async (err, data) => {
 */
 
 
-router.post('/addcategory', async (request, response) => {
+router.put('/addcategory', async (request, response) => {
 
     console.log('hitting addcategory')
 
