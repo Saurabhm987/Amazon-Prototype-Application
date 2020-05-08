@@ -23,8 +23,8 @@ class SellerCentral extends Component {
 
 
         this.state = {
-            activeNavItem: 'Add Product',
-            activeItem: 'Growth',
+            activeNavItem: 'REPORTS',
+            activeItem: 'REPORTS',
             orderStatus: '',
             stats: [],
             statsMonthly : [],

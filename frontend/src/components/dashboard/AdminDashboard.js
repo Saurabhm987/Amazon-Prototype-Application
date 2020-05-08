@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types'
 import SellerProduct from '../seller/SellerProduct'
 import { getUserOrder, getAdminAllOrders } from '../../actions/order'
+import { getCategories, addCategory, deleteCategory } from '../../actions/product'
 import axios from 'axios'
 /**
  * Using action:  this.props.getAdminAllOrders(page, limit);
@@ -32,7 +33,9 @@ class AdminDashboard extends Component {
             paginationLimit: 5,
             orderStatus: '',
             sellerName: '',
-            sellerNameList: ''
+            sellerNameList: '',
+            addValue: '',
+            deleteValue: ''
         }
     }
 
@@ -82,21 +85,22 @@ class AdminDashboard extends Component {
             seller
         })
 
-        this.props.getAdminAllOrders();
+        await this.props.getAdminAllOrders();
+        await this.props.getCategories()
     }
 
     orderPageNext = (e) => {
-        if(this.props.order.paginationNext) {
+        if (this.props.order.paginationNext) {
             console.log('getting next page..');
-            const {page, limit} = this.props.order.paginationNext;
+            const { page, limit } = this.props.order.paginationNext;
             this.props.getAdminAllOrders(page, limit);
         }
     }
 
     orderPagePrev = (e) => {
-        if(this.props.order.paginationPrev) {
+        if (this.props.order.paginationPrev) {
             console.log('getting Prev page..');
-            const {page, limit} = this.props.order.paginationPrev;
+            const { page, limit } = this.props.order.paginationPrev;
             this.props.getAdminAllOrders(page, limit);
         }
     }
@@ -133,16 +137,17 @@ class AdminDashboard extends Component {
 
         console.log(activeNavItem);
 
-        if (activeNavItem == 'INVENTORY') {
-            contentPage = (<AddProduct />)
+        if (activeNavItem == 'Manage Inventory') {
+            contentPage = (<Header>Products Page PENDING!</Header>)
         }
+
         else if (activeNavItem == 'SELLERS') {
             const sellers = this.state.seller.filter(seller => {
                 return (seller.name.toLowerCase().indexOf(this.state.sellerNameList.toLowerCase()) !== -1)
             })
 
             contentPage = (<Card fluid>
-                <Input placeholder='Search Seller' onChange={(e,v) => this.setState({...this.state,sellerNameList:v.value})} fluid/>
+                <Input placeholder='Search Seller' onChange={(e, v) => this.setState({ ...this.state, sellerNameList: v.value })} fluid />
                 {
                     sellers.map(slr => {
                         return (
@@ -168,7 +173,6 @@ class AdminDashboard extends Component {
                                                 <Graph statsMonthly={this.state.statsMonthly} />
                                             </Modal.Content>
                                         </Modal>
-                                        {/* <Button color='blue' onClick={this.statsClick}>Monthly Statistics</Button> */}
                                     </Grid.Column>
                                 </Grid>
                             </Card.Content>
@@ -182,13 +186,15 @@ class AdminDashboard extends Component {
 
         else if (activeNavItem == 'ORDERS') {
 
-            // contentPage = <OrderCard orders={this.props.order.userOrders}></OrderCard>;
+            console.log('====================================')
+            console.log(this.props.categories)
+            console.log('====================================')
 
             const orders = this.props.order.userOrders.filter(order => {
                 return ((order.status.status.indexOf(this.state.orderStatus) !== -1) && order.sellerId ?
-                (order.sellerId.name.toLowerCase().indexOf(this.state.sellerName.toLowerCase()) !== -1): false)
+                    (order.sellerId.name.toLowerCase().indexOf(this.state.sellerName.toLowerCase()) !== -1) : false)
             })
-            
+
             contentPage = (
                 <Grid columns={2}>
                     <Grid.Column width={5}>
@@ -196,7 +202,7 @@ class AdminDashboard extends Component {
                             <Header as='h3'>Your Orders</Header>
                             <Segment inverted color='blue' tertiary key='mini' size='mini'>
                                 <Grid columns={2}>
-                                    <Grid.Column width={12} onClick={() => this.setState({...this.state,orderStatus:''})}>
+                                    <Grid.Column width={12} onClick={() => this.setState({ ...this.state, orderStatus: '' })}>
                                         <Header as='h3' color='blue'>All</Header>
                                     </Grid.Column>
                                     <Grid.Column width={4}>
@@ -206,35 +212,35 @@ class AdminDashboard extends Component {
                             </Segment>
                             <Segment inverted color='blue' tertiary key='mini' size='mini'>
                                 <Grid columns={2}>
-                                    <Grid.Column width={14} onClick={() => this.setState({...this.state,orderStatus:'Ordered'})}>
+                                    <Grid.Column width={14} onClick={() => this.setState({ ...this.state, orderStatus: 'Ordered' })}>
                                         <Header as='h3' color='blue'>Ordered</Header>
                                     </Grid.Column>
                                 </Grid>
                             </Segment>
                             <Segment inverted color='blue' tertiary key='mini' size='mini'>
                                 <Grid columns={2}>
-                                    <Grid.Column width={14} onClick={() => this.setState({...this.state,orderStatus:'Packing'})}>
+                                    <Grid.Column width={14} onClick={() => this.setState({ ...this.state, orderStatus: 'Packing' })}>
                                         <Header as='h3' color='blue'>Packing</Header>
                                     </Grid.Column>
                                 </Grid>
                             </Segment>
                             <Segment inverted color='blue' tertiary key='mini' size='mini'>
                                 <Grid columns={2}>
-                                    <Grid.Column width={14} onClick={() => this.setState({...this.state,orderStatus:'Out For Delivery'})}>
+                                    <Grid.Column width={14} onClick={() => this.setState({ ...this.state, orderStatus: 'Out For Delivery' })}>
                                         <Header as='h3' color='blue'>Out For Delivery</Header>
                                     </Grid.Column>
                                 </Grid>
                             </Segment>
                             <Segment inverted color='blue' tertiary key='mini' size='mini'>
                                 <Grid columns={2}>
-                                    <Grid.Column width={14} onClick={() => this.setState({...this.state,orderStatus:'Delivered'})}>
+                                    <Grid.Column width={14} onClick={() => this.setState({ ...this.state, orderStatus: 'Delivered' })}>
                                         <Header as='h3' color='blue'>Delivered</Header>
                                     </Grid.Column>
                                 </Grid>
                             </Segment>
                             <Segment inverted color='blue' tertiary key='mini' size='mini'>
                                 <Grid columns={2}>
-                                    <Grid.Column width={14} onClick={() => this.setState({...this.state,orderStatus:'Cancelled'})}>
+                                    <Grid.Column width={14} onClick={() => this.setState({ ...this.state, orderStatus: 'Cancelled' })}>
                                         <Header as='h3' color='blue'>Cancelled</Header>
                                     </Grid.Column>
                                 </Grid>
@@ -242,7 +248,7 @@ class AdminDashboard extends Component {
 
                             <Header as='h3'>Search by Seller</Header>
                             <Grid.Row>
-                                <Input placeholder='Search...' onChange={(e,v) => this.setState({...this.state,sellerName:v.value})} fluid/>
+                                <Input placeholder='Search...' onChange={(e, v) => this.setState({ ...this.state, sellerName: v.value })} fluid />
                             </Grid.Row>
                         </Segment>
                     </Grid.Column>
@@ -255,6 +261,12 @@ class AdminDashboard extends Component {
             )
         }
 
+        const options = this.props.categories? this.props.categories.map(category => {return ({ key: category.name, text: category.name, value: category.name })}) : []
+
+        // { key: 1, text: 'Ordered', value: 'Ordered' },
+        // { key: 2, text: 'Packing', value: 'Packing' },
+        // { key: 3, text: 'Out For Delivery', value: 'Out For Delivery' },
+
 
         return (
             <Container style={{ marginBottom: '20px' }}>
@@ -262,11 +274,37 @@ class AdminDashboard extends Component {
                 {/* Header Nav Bar */}
                 <div style={{ margin: '65px 0px 0px 0px' }}>
                     <Menu pointing secondary>
-                        <Menu.Item
-                            name='INVENTORY'
-                            active={activeNavItem === 'INVENTORY'}
-                            onClick={this.handleNavItem}
-                        />
+                        <Dropdown text='INVENTORY' pointing className='link item'>
+                            <Dropdown.Menu>
+                                <Dropdown.Item
+                                    name='Manage Inventory'
+                                    active={activeNavItem === 'Manage Inventory'}
+                                    onClick={this.handleNavItem}>Manage Inventory</Dropdown.Item>
+                                <Modal trigger={<Dropdown.Item name='Add a Category'>Add a Category</Dropdown.Item>} centered={false}>
+                                    <Modal.Header>Manage Category</Modal.Header>
+                                    <Modal.Content>
+                                        <Grid columns={2}>
+                                            <Grid.Column width={12}>
+                                                <Input placeholder='Add a Category' onChange={(e, v) => this.setState({ ...this.state, addValue: v.value })} fluid />
+                                            </Grid.Column>
+                                            <Grid.Column width={4}>
+                                                <Button color='blue' onClick={async () => {await this.props.addCategory({ category: this.state.addValue.toUpperCase() });await this.props.getCategories() }}>Add</Button>
+                                            </Grid.Column>
+                                        </Grid>
+                                        <Grid columns={2}>
+                                            <Grid.Column width={12}>
+                                                <Menu compact>
+                                                    <Dropdown placeholder='Delete Category' options={options} simple item compact onChange={(e, v) => this.setState({ ...this.state, deleteValue: v.value })} />
+                                                </Menu>
+                                            </Grid.Column>
+                                            <Grid.Column width={4}>
+                                                <Button color='red' onClick={async () => {await this.props.deleteCategory(this.state.deleteValue);await this.props.getCategories() }}>Delete</Button>
+                                            </Grid.Column>
+                                        </Grid>
+                                    </Modal.Content>
+                                </Modal>
+                            </Dropdown.Menu>
+                        </Dropdown>
                         <Menu.Item
                             name='SELLERS'
                             active={activeNavItem === 'SELLERS'}
@@ -302,7 +340,8 @@ AdminDashboard.propTypes = {
 
 const mapStateToProps = state => ({
     isAuthenticated: state.auth.isAuthenticated,
-    order: state.order
+    order: state.order,
+    categories: state.product.categoriesList
 })
 
-export default connect(mapStateToProps, { getUserOrder, getAdminAllOrders })(AdminDashboard)
+export default connect(mapStateToProps, { getUserOrder, getAdminAllOrders, getCategories, addCategory, deleteCategory })(AdminDashboard)
