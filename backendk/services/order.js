@@ -62,12 +62,12 @@ exports.createNewOrder = async (req) => {
             item.buyerId = buyerId;
             item.status = {
                 status: orderStatus.ORDER_STAT_PLACED,
-                updatedAt: Date.now(),
+                // updatedAt: Date.now(),
                 location: ""
             };
             item.statusHistory = [{
                 status: orderStatus.ORDER_STAT_PLACED,
-                updatedAt: Date.now(),
+                // updatedAt: Date.now(),
                 location: ""
             }];            
             return item;
@@ -203,5 +203,3 @@ exports.getUserOrders= async (data)=>{
     }
 
 }
-
-

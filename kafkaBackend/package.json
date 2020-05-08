@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^4.0.1",
     "kafka-node": "^2.6.1",
     "mongodb": "^3.5.5",
     "mongoose": "^5.9.6",

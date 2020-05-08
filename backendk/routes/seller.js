@@ -46,10 +46,19 @@ router.get('/', async (request, response) => {
 
 
     try {
+     ///
 
-        const res = await sellerServices.getAllSeller()
+        const data = {
+            type : "getAllSellers"
+        }
+          await kafka.make_request('seller', data, async (err, data) => {
+            if (err) throw new Error(err)
+            await response.status(data.status).json(data.body);
+        });
+        ///
+        // const res = await sellerServices.getAllSeller()
 
-        response.status(res.status).json(res.body)
+        // response.status(res.status).json(res.body)
 
     } catch (error) {
 
@@ -73,14 +82,18 @@ router.get('/profile/:sellerId', async (request, response) => {
     try {
 
         const body = {
-            params : request.params
+            params : request.params,
+            type:"getSellerProfile"
         }
+        await kafka.make_request('seller', body, async (err, data) => {
+            if (err) throw new Error(err)
+            await response.status(data.status).json(data.body[0]);
+        });
+        // const res = await sellerServices.getSellerProfile(body)
 
-        const res = await sellerServices.getSellerProfile(body)
+        // console.log('seller profile response - ', res)
 
-        console.log('seller profile response - ', res)
-
-        response.status(res.status).json(res.body[0])
+        // response.status(res.status).json(res.body[0])
 
     } catch (error) {
 
@@ -109,14 +122,20 @@ router.post('/profileupdate/:sellerId', upload, async (request, response) => {
         const body = {
             body: data,
             params : request.params,
-            file: request.files
+            file: request.files,
+            type:"updateSellerProfile"
         }
+///
+        await kafka.make_request('seller', body, async (err, data) => {
+            if (err) throw new Error(err)
+            await response.status(data.status).json(data.body);
+        });
+///
+        // console.log('update body --', body)
 
-        console.log('update body --', body)
+        // const res = await sellerServices.updateSellerProfile(body)
 
-        const res = await sellerServices.updateSellerProfile(body)
-
-        response.status(res.status).json(res.body)
+        // response.status(res.status).json(res.body)
 
     } catch (error) {
 
