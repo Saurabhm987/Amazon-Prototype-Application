@@ -6,8 +6,17 @@ import Graph from '../common/Graph'
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types'
 import SellerProduct from '../seller/SellerProduct'
-import { getUserOrder } from '../../actions/order'
+import { getUserOrder, getAdminAllOrders } from '../../actions/order'
 import axios from 'axios'
+/**
+ * Using action:  this.props.getAdminAllOrders(page, limit);
+ * 
+ * // this.props.order.userOrders will contain all orders
+ * const { paginationNext } = this.props.order;
+ * if(paginationNext) { // onClick next page button
+ *      this.props.getAdminAllOrders(paginationNext.page, limit);
+ * }
+ */
 
 class AdminDashboard extends Component {
     constructor(props) {
@@ -101,10 +110,7 @@ class AdminDashboard extends Component {
 
         console.log(activeNavItem);
 
-        if (activeNavItem == 'PROFILE') {
-            contentPage = (<SellerProduct />)
-        }
-        else if (activeNavItem == 'INVENTORY') {
+        if (activeNavItem == 'INVENTORY') {
             contentPage = (<AddProduct />)
         }
         else if (activeNavItem == 'SELLERS') {
@@ -207,11 +213,6 @@ class AdminDashboard extends Component {
                 <div style={{ margin: '65px 0px 0px 0px' }}>
                     <Menu pointing secondary>
                         <Menu.Item
-                            name='PROFILE'
-                            active={activeNavItem === 'PROFILE'}
-                            onClick={this.handleNavItem}
-                        />
-                        <Menu.Item
                             name='INVENTORY'
                             active={activeNavItem === 'INVENTORY'}
                             onClick={this.handleNavItem}
@@ -231,13 +232,6 @@ class AdminDashboard extends Component {
                             active={activeNavItem === 'ANALYTICS'}
                             onClick={this.handleNavItem}
                         />
-                        <Menu.Menu position='right'>
-                            <Menu.Item
-                                name='logout'
-                                active={activeNavItem === 'logout'}
-                                onClick={this.handleNavItem}
-                            />
-                        </Menu.Menu>
                     </Menu>
                 </div>
                 <br></br>
@@ -252,10 +246,13 @@ class AdminDashboard extends Component {
 AdminDashboard.propTypes = {
     isAuthenticated: PropTypes.bool.isRequired,
     getUserOrder: PropTypes.func.isRequired,
+    order: PropTypes.object.isRequired,
+    getAdminAllOrders: PropTypes.func.isRequired,
 }
 
 const mapStateToProps = state => ({
-    isAuthenticated: state.auth.isAuthenticated
+    isAuthenticated: state.auth.isAuthenticated,
+    order: state.order
 })
 
-export default connect(mapStateToProps, { getUserOrder })(AdminDashboard)
+export default connect(mapStateToProps, { getUserOrder, getAdminAllOrders })(AdminDashboard)

@@ -1,7 +1,16 @@
 var connection =  new require('./kafka/Connection');
 const mongoose = require('mongoose');
-var product = require('./services/product.js');
 const mongoPool = require('./database/mongoDbConnection')
+
+var addressCard = require('./services/addressCard.js');
+var analytics = require('./services/analytics.js');
+var buyer = require('./services/buyer.js');
+var cartSaveforlater = require('./services/cartSaveforlater.js');
+var order = require('./services/order.js');
+var products = require('./services/products.js');
+var seller = require('./services/seller.js');
+var signup = require('./services/signup.js');
+
 
 // mongo connection
 mongoPool
@@ -35,7 +44,14 @@ async function handleTopicRequest(topic_name,fname){
         
 }
 
-handleTopicRequest("testB",product)
+handleTopicRequest("address-card",addressCard)
+handleTopicRequest("analytics",analytics)
+handleTopicRequest("buyer",buyer)
+handleTopicRequest("cart-saveforlater",cartSaveforlater)
+handleTopicRequest("order",order)
+handleTopicRequest("products",products)
+handleTopicRequest("seller",seller)
+handleTopicRequest("signup",signup)
 
 
 
