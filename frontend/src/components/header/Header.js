@@ -1,12 +1,11 @@
 import { Link } from 'react-router-dom';
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import './header.css'
 import { logout } from '../../actions/auth'
-import ProductCategoryDropdown from '../product/productCategoryDropdown'
 import { Redirect } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { fetchProduct, productCategories } from '../../actions/product';
-import { USER_CUSTOMER, USER_SELLER, USER_ADMIN } from '../controller/config';
+import { connect } from 'react-redux';
 
 import {
   Container,
@@ -19,7 +18,6 @@ import {
   Menu,
   Segment,
 } from 'semantic-ui-react';
-import { connect } from 'react-redux';
 import JwtDecode from 'jwt-decode';
 
 
@@ -32,6 +30,7 @@ class AppHeader extends Component {
       searchText: '',
       data: [{ key: '', text: '', value: '' }],
       searchCategory: '',
+      user: ''
     }
   }
 
@@ -39,18 +38,12 @@ class AppHeader extends Component {
 
     let token = localStorage.getItem('token')
 
-    // if(token !== null){
-    //   this.props.history.push('/dashboard')
-    //   let user = JwtDecode(token);
-    //   if (user.userType === USER_CUSTOMER) {
-    //     this.props.history.push('/dashboard');
-    //   } else if (user.userType === USER_SELLER) {
-    //     this.props.history.push('/sellerCentral');
-    //   } else {
-    //     // his.props.history.push('/sellerCentral');
-    //   }
-       
-    // }
+    if (token === null) {
+      this.props.history.push('/login')
+    }
+
+    let user = JwtDecode(token)
+    this.setState({ user: user });
 
     await this.props.productCategories()
     await this.createOptions()
@@ -88,9 +81,7 @@ class AppHeader extends Component {
 
     const { searchText, searchCategory } = this.state
 
-    console.log('searchText - ', searchText, 'cate -', searchCategory)
-
-    await this.props.fetchProduct(searchText,searchCategory)
+    await this.props.fetchProduct(searchText, searchCategory)
 
     await this.props.history.push('/dashboard')
 
@@ -158,7 +149,7 @@ class AppHeader extends Component {
             </Grid.Column>
           </Grid.Row>
 
-          <Dropdown item simple text='Hello Your Name'>
+          <Dropdown item simple text={this.state.user.name}>
             <Dropdown.Menu>
               <Dropdown.Item onClick={this.onProfileClick}>Profile</Dropdown.Item>
               {
@@ -168,36 +159,54 @@ class AppHeader extends Component {
                   : null
               }
               <Dropdown.Divider />
-              <Dropdown.Header>Header Item</Dropdown.Header>
-              <Dropdown.Item>
-                <i className='dropdown icon' />
-                <span className='text'>Account</span>
-                <Dropdown.Menu>
-                  <Dropdown.Item as='a' header>
-                  <Link  style={{ color: 'black' }} to={"/youraddresses"}>
-                    Your Addresses
-                  </Link>
-                  </Dropdown.Item>
-                  <Dropdown.Item as='a' header>
-                  <Link  style={{ color: 'black' }} to={"/yourpayments"}>
-                    Your Payments
-                  </Link>
-                  </Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown.Item>
+              {
+                this.state.user.userType === 'customer'
+                  ? (
+                    <Dropdown.Item>
+                      <i className='dropdown icon' />
+                      <span className='text'>Account</span>
+                      <Dropdown.Menu>
+                        <Dropdown.Item as='a' header>
+                          <Link style={{ color: 'black' }} to={"/customer/address"}>
+                            Your Addresses
+                          </Link>
+                        </Dropdown.Item>
+                        <Dropdown.Item as='a' header>
+                          <Link style={{ color: 'black' }} to={"/customer/card"}>
+                            Your Payments
+                          </Link>
+                        </Dropdown.Item>
+                      </Dropdown.Menu>
+                    </Dropdown.Item>
+                  )
+                  :
+                  null
+              }
               <Dropdown.Item onClick={this.onLogout}>Sign Out</Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
-          <Menu.Item as='a' header>
-          <Link  to={"/customerorders"}>
-            Return &  Orders
-            </Link> 
-          </Menu.Item>
-          <Menu.Item as='a' header>
-          <Link  to={"/cart"}>
-              Cart
-            </Link>  
-        </Menu.Item>
+          {
+            this.state.user.userType === 'customer'
+              ?
+              <Menu.Item as='a' header>
+                <Link to='#'>
+                  Return &  Orders
+                </Link>
+              </Menu.Item>
+              : null
+          }
+
+          {
+            this.state.user.userType === 'customer'
+              ?
+              <Menu.Item as='a' header>
+                <Link to={"/cart"}>
+                  Cart
+                    </Link>
+              </Menu.Item>
+              : null
+          }
+
         </Menu>
         <Segment inverted vertical style={{ margin: '5em 0em 0em 0em', padding: '2em 0em ' }}>
           <Container textAlign='center'>

@@ -1,14 +1,9 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
-import HeaderView from './header/Header'
 import sellerCentral from './seller/SellerCentral'
 import SignupForm from './signup/Signup'
 import LoginForm from './login/Login'
 import Cart from './customer/cart'
-import Address from './customer/address'
-import Cards from './customer/card'
-import AddAddress from './customer/addAddress'
-import AddCard from './customer/addCard'
 import Checkout from './customer/checkout'
 import CustomerOrders from './customer/CustomerOrders'
 import OrderSummary from './customer/orderSummary'
@@ -25,6 +20,12 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types'
 import OrderDetail from "./order/orderDetail";
 import OrderTrackingModal from "./order/orderTrackingModal";
+import AddAddress from './customer/AddAddress'
+import AddCard from './customer/AddCard';
+import Address from './customer/Address';
+import UserCard from './customer/UserCard';
+import EditAddress from './customer/EditAddress';
+import CustomerReiviews from './customer/CustomerReiviews'
 
 class Main extends Component {
     constructor(props) {
@@ -49,15 +50,22 @@ class Main extends Component {
                 <Route path='/sellerproducts' exact component={SellerProduct} />
                 <Route path='/customerorders' exact component={CustomerOrders} />
                 <Route path='/cart' exact component={Cart} />
-                <Route path='/youraddresses' exact component={Address} />
-                <Route path='/addaddress' exact component={AddAddress} />
-                <Route path='/yourpayments' exact component={Cards} />
-                <Route path='/addcard' exact component={AddCard} />
+                {/* <Route path='/youraddresses' exact component={Address} /> */}
+                {/* <Route path='/yourpayments' exact component={Cards} /> */}
                 <Route path="/orderDetails" exact component={OrderDetail} />
                 <Route path="/orderTracking" exact component={OrderTrackingModal} />
+                <Route path='/addaddress' exact component={AddAddress} />
+                <Route path='/addcard' exact component={AddCard} />
+                <Route path='/customer/address' exact component={Address} />
+                <Route path='/customer/card' exact component={UserCard} />
+                <Route path='/customer/addressupdate' exact component={EditAddress} />
                 <Route path='/checkout'  component={Checkout} />
+<<<<<<< HEAD
                 <Route path='/ordersummary'  component={OrderSummary} />
                 
+=======
+                <Route path='/customer/reviews' component={CustomerReiviews} />
+>>>>>>> 88cf199a5d403bb6a57d13caaf2a697a91a82b1c
 
                 { 
                     user !== null

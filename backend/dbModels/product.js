@@ -21,7 +21,8 @@ const productSchema = new mongoose.Schema({
         required: true
     },
     overallRating: {
-        type: Number
+        type: Number,
+        default: null
     },
     description: {
         type: String,
@@ -40,6 +41,9 @@ const productSchema = new mongoose.Schema({
     },
     views:{
         type: Number
+    },
+    viewData: {
+        type: Date,
     },
     review: [{
         _id: false,

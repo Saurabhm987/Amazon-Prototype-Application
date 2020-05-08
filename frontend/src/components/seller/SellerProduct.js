@@ -42,7 +42,6 @@ class SellerProduct extends Component {
             description: '',
             quantity: '',
             price: '',
-            giftPrice: '',
             data: [{ key: '', text: '', value: '' }],
             selectedCategory: '',
             selectedProduct: '',
@@ -161,18 +160,16 @@ class SellerProduct extends Component {
             price,
             quantity,
             selectedCategory,
-            giftPrice,
             activePage,
             sellerId,
         } = this.state
 
         const body = {
-            name: name,
-            description: description,
-            quantity: price,
-            price: quantity,
-            category: selectedCategory,
-            giftPrice: giftPrice,
+            name: name || e.currentTarget.dataset.productname,
+            description: description || e.currentTarget.dataset.description,
+            quantity: quantity || e.currentTarget.dataset.quantity,
+            price: price || e.currentTarget.dataset.price,
+            category: selectedCategory || e.currentTarget.dataset.category,
         }
 
         console.log('udpate body - ', body)
@@ -180,7 +177,9 @@ class SellerProduct extends Component {
         await this.props.updateProduct(id, body)
         await this.props.getSellerProductsPaginated('', selectedCategory, activePage, '', sellerId)
         await alert('Product Updated!')
-        await this.setState({ modalOpen: false });
+        await this.setState({ modalOpen: false }); 
+        window.location.reload();
+
     }
 
     deleteHandler = async (e) => {
@@ -320,7 +319,6 @@ class SellerProduct extends Component {
                                                         <Form.TextArea name='description' type="text" label="Product Description" defaultValue={editOption[0].description || ''} onChange={this.handleInputChange} />
                                                         <Form.Input name='quantity' type="number" label="Quantity" defaultValue={editOption[0].quantity || ''} onChange={this.handleInputChange} />
                                                         <Form.Input name='price' type="number" label="Standard Price" defaultValue={editOption[0].price || ''} onChange={this.handleInputChange} />
-                                                        <Form.Input name='giftPrice' type="number" label="Gift Price" defaultValue={editOption[0].giftPrice || ''} onChange={this.handleInputChange} />
                                                         <Form.Field>
                                                             <label>Category Options</label>
                                                             {
@@ -337,7 +335,18 @@ class SellerProduct extends Component {
                                                             }
                                                         </Form.Field>
                                                         <Form.Field>
-                                                            <Form.Button color='teal' type='submit' data-id={editOption[0]._id} onClick={this.updateHandler}>Update Product </Form.Button>
+                                                            <Form.Button
+                                                                color='teal'
+                                                                type='submit'
+                                                                data-id={editOption[0]._id}
+                                                                onClick={this.updateHandler}
+                                                                data-productname={editOption[0].name}
+                                                                data-description={editOption[0].description}
+                                                                data-price={editOption[0].price}
+                                                                data-quantity={editOption[0].quantity}
+                                                                data-category={editOption[0].category}
+                                                            >Update Product
+                                                            </Form.Button>
                                                         </Form.Field>
                                                     </Segment>
                                                 </Form>
@@ -395,7 +404,6 @@ class SellerProduct extends Component {
                                                         <Grid.Column>
                                                             <Grid.Row>
                                                                 <Header style={{ fontWeight: '400' }}>{item.name}</Header>
-
                                                             </Grid.Row>
                                                             <Grid.Row>
                                                                 <Rating maxRating={5} defaultRating={3} icon='star' size='small' disabled />
@@ -403,9 +411,9 @@ class SellerProduct extends Component {
                                                             <Grid.Row>
                                                                 <b>Best Price: $ {item.price} </b>
                                                             </Grid.Row>
-                                                            <Grid.Row>
+                                                            {/* <Grid.Row>
                                                                 <b>Gift Price: $ {item.giftPrice} </b>
-                                                            </Grid.Row>
+                                                            </Grid.Row> */}
                                                             <Grid.Row>
                                                                 <b>Quantity: {item.quantity} </b>
                                                             </Grid.Row>
@@ -426,7 +434,6 @@ class SellerProduct extends Component {
                                                             }
                                                         </Grid.Column>
                                                     </Grid.Row>
-
                                                     <Divider />
                                                 </Grid>
                                             </Fragment>
