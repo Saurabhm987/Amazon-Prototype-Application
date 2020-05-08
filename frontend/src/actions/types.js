@@ -41,6 +41,8 @@ export const ADD_CARD = 'ADD_CARD'
 export const ADD_ADDRESS = 'ADD_ADDRESS'
 export const ADDRESS_DETAIL='ADDRESS_DETAIL'
 export const ADD_REVIEW='ADD_REVIEW'
+export const DEFAULT_ADDRESS='DEFAULT_ADDRESS'
+export const DEFAULT_CARD='DEFAULT_CARD'
 // ...add a new action type
 
 // seller 
