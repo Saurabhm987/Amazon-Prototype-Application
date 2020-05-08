@@ -147,7 +147,7 @@ class UserCard extends Component {
                             ?
                             (
                                 <div style={{ marginTop: '5px' }}>
-                                    <Card.Content onClick={() => {this.props.setDefaultCard(card);this.props.history.push(`/checkout`)}}>
+                                <Card.Content >
                                         <Grid columns={1}>
                                             <Grid.Column style={{ marginLeft: '5px', margin: '5px' }}>
                                                 <Grid.Row><Input size='small' defaultValue={card.name || ''} onChange={this.handleChange} error={this.state.namerr} fluid placeholder='Enter card name' type='text' name='name' /></Grid.Row>
