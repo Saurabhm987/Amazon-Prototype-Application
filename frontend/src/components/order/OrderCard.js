@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types'
 import { Link, withRouter } from 'react-router-dom'
 import { getUserOrder, updateStatus } from '../../actions/order';
+import {setupOrderedProductForDetail } from '../../actions/product';
 import { Container, Grid, Segment, Menu, Header, Placeholder, Dropdown, Button, Card, Image } from 'semantic-ui-react'
 import JwtDecode from 'jwt-decode';
 import { USER_CUSTOMER, USER_SELLER, USER_ADMIN } from '../controller/config';
@@ -17,6 +18,7 @@ class orderCard extends Component {
     }
 
     render() {
+        console.log(this.props.orders)
         var orders = _.mapValues(_.groupBy(this.props.orders, 'orderId'), clist => clist.map(order => _.omit(order, 'orderId')));
 
         console.log(orders);
@@ -67,7 +69,7 @@ class orderCard extends Component {
                                             </Grid.Column>
                                             <Grid.Column width={5}>
                                                 <Grid.Row>
-                                                    <Button color='blue' floated='right' style={{ height: '35px', width: '150px', margin: '5px' }} onClick={() => this.props.history.push('/orderdetails')}>Details</Button>
+                                                    <Button color='blue' floated='right' style={{ height: '35px', width: '150px', margin: '5px' }} onClick={() => {this.props.setupOrderedProductForDetail({...product,'orderId':orderId});this.props.history.push('/orderdetails')}}>Details</Button>
                                                 </Grid.Row>
                                                 <Grid.Row>
                                                     <Button color='red' floated='right' style={{ height: '35px', width: '150px', margin: '5px' }} onClick={() => this.props.updateStatus(orderId,product.productId._id,'Cancelled')}>Cancel</Button>
@@ -96,5 +98,6 @@ const mapStateToProps = state => ({
 })
 
 export default connect(mapStateToProps, {
-    updateStatus
+    updateStatus,
+    setupOrderedProductForDetail
 })(withRouter(orderCard))

@@ -11,73 +11,7 @@ const initialState = {
     productList: [],
     productDetail:{},
     productCount:0,
-    productListPerOrder:
-        {
-            "_id": "5ea7c94794935719fdc926b6",
-            "buyerId": "5ea27851c464a507b34a86ea",
-            "buyerName":"Shubham",
-            "sellerId": "5e9e769c53ba4429d4835ade",
-            "productId": "5ea29a3a5de6843370680c17",
-            "productName":"3M 2364 Performance Masking Tape - 0.50 in. x 180 ft. Tan, Rubber Adhesive, Crepe Paper Backing Painters Tape Roll",
-            "sellerName":"Cloudtail LLC.",
-            "deliveryAddress": {
-                "_id": "5ea7c94794935719fdc926b7",
-                "street1": "33S 3rd St",
-                "street2": "",
-                "city": "San Jose",
-                "state": "CA",
-                "country": "USA",
-                "pincode": 95113,
-                "phone": "123456789"
-            },
-            "paymentDetails": "card ending with ***4444",
-            "billingAddress": {
-                "_id": "5ea7c94794935719fdc926b8",
-                "name": "jon Doe",
-                "street1": "33S 3rd St",
-                "street2": "",
-                "city": "San Jose",
-                "state": "CA",
-                "country": "USA",
-                "pincode": 95113,
-                "phone": "123456789"
-            },
-            "totalAmount": 60,
-            "quantity": 1,
-            "orderId": "5ea7c94794935719fdc926b5",
-            "status": {
-                "_id": "5ea7c94794935719fdc926b9",
-                "updatedAt": "2020-04-28T06:12:23.794Z",
-                "timestamps": "2020-05-05T20:56:50.522Z",
-                "status": "Ordered",
-                "location": ""
-            },
-            "statusHistory": [
-                {
-                    "updatedAt": "2020-04-28T06:12:23.794Z",
-                    "timestamps": "2020-05-05T20:56:50.525Z",
-                    "_id": "5ea7c94794935719fdc926ba",
-                    "status": "Ordered",
-                    "location": "San Jose"
-                },
-                {
-                    "updatedAt": "2020-04-28T06:12:23.794Z",
-                    "timestamps": "2020-05-05T20:56:50.525Z",
-                    "_id": "5ea7c94794935719fdc926ba",
-                    "status": "Ordered",
-                    "location": "San Francisco"
-                },
-                {
-                    "updatedAt": "2020-04-28T06:12:23.794Z",
-                    "timestamps": "2020-05-05T20:56:50.525Z",
-                    "_id": "5ea7c94794935719fdc926ba",
-                    "status": "Ordered",
-                    "location": "Ottawa"
-                }
-            ],
-            "orderDate": "2020-04-28T06:12:23.810Z",
-            "__v": 0
-        }
+    productListPerOrder:{}
 };
 
 export default function(state = initialState, action) {
