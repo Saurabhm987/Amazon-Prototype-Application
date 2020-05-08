@@ -100,8 +100,8 @@ export const updateStatus = (orderId, productId, updatedStatus) => async dispatc
 export const createNewOrder = (data) => async dispatch => {
     try {
         console.log('POST /order/newOrder with data: ', data);
-        const res = await axios.post(`/order/newOrder`, data, config );
-        console.log(`/order/newOrder`, 'NEW ORDER CREATED');
+        const res = await axios.post(`/createOrder/newOrder`, data, config );
+        console.log(`/createOrder/newOrder`, 'NEW ORDER CREATED');
 
         dispatch({
             type: CREATE_NEW_ORDER,

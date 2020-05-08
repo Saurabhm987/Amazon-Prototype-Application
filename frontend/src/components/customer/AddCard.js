@@ -1,8 +1,8 @@
-import React, { Component } from 'react'
-import { Button, Form, Grid, Header, Segment } from 'semantic-ui-react'
-import { addCard } from '../../actions/customer'
-import PropTypes, { bool } from 'prop-types'
-import { connect } from 'react-redux'
+import React, {Component} from 'react'
+import { Button, Form, Grid, Header, Segment} from 'semantic-ui-react'
+import {addCard, setDefaultCard} from '../../actions/customer'
+import PropTypes,{bool} from 'prop-types'
+import {connect} from 'react-redux'
 
 class AddCard extends Component {
     constructor(props) {
@@ -74,6 +74,8 @@ class AddCard extends Component {
                 cvv: this.state.cvv,
             }
 
+        await this.props.addCard(newCard)
+        await this.props.setDefaultCard(newCard)
             console.log('card details', newCard)
 
             await this.props.addCard(newCard)
@@ -143,8 +145,9 @@ AddCard.propTypes = {
     cardList: PropTypes.array.isRequired,
 }
 
-const mapStateToProps = state => ({
-    cardList: state.customer.cardlist
-})
+  const mapStateToProps = state => ({
+    cardList: state.customer.cardlist,
+    defaultCard: state.customer.defaultCard
+  })
 
-export default connect(mapStateToProps, { addCard })(AddCard);
+  export default connect(mapStateToProps, {addCard, setDefaultCard})(AddCard);
