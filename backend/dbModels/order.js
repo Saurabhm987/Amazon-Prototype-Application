@@ -105,10 +105,10 @@ const statusSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    updatedAt: {
-        type: Date,
-        default: Date.now
-    },
+    // updatedAt: {
+    //     type: Date,
+    //     default: Date.now
+    // },
     timestamps: { //to get updated timestamp for each update
         type: Date,
         default: Date.now
