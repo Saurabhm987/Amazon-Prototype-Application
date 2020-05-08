@@ -23,11 +23,16 @@ class orderCard extends Component {
 
         console.log(orders);
 
-        const options = [
+
+        const options = (localStorage.getItem('token')) ? ((JwtDecode(localStorage.getItem('token'))).userType === USER_ADMIN ? [
+            { key: 1, text: 'Package Arrived', value: 'Package Arrived' },
+            { key: 2, text: 'Out For Delivery', value: 'Out For Delivery' },
+            { key: 3, text: 'Delivered', value: 'Delivered' },
+        ] : [
             { key: 1, text: 'Ordered', value: 'Ordered' },
             { key: 2, text: 'Packing', value: 'Packing' },
             { key: 3, text: 'Out For Delivery', value: 'Out For Delivery' },
-        ]
+        ]) : []
         return (
             <div>
                 {Object.keys(orders).map(orderId => {
@@ -60,7 +65,7 @@ class orderCard extends Component {
                                                     <Header as='h5' color='grey'>Current Status: {product.status.status}</Header>
                                                 </Grid.Row>
                                                 <Grid.Row>
-                                                    {(localStorage.getItem('token')) ? ((JwtDecode(localStorage.getItem('token'))).userType === USER_SELLER ? 
+                                                    {(localStorage.getItem('token')) ? ((JwtDecode(localStorage.getItem('token'))).userType !== USER_CUSTOMER ? 
                                                     <Menu compact>
                                                         <Dropdown placeholder='Change Status' options={options} simple item compact onChange={(e,v) => this.props.updateStatus(orderId,product.productId._id,v.value)} />
                                                     </Menu> : <div></div>) : (<div></div>)

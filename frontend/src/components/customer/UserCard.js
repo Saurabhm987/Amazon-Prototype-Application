@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { getCard } from '../../actions/customer'
 import { connect } from 'react-redux';
-import { updateCard, deleteCard } from '../../actions/customer'
+import { updateCard, deleteCard, setDefaultCard } from '../../actions/customer'
 import PropTypes from 'prop-types'
 import JwtDecode from 'jwt-decode';
+import queryString from 'query-string';
 
 
 import {
@@ -136,22 +137,12 @@ class UserCard extends Component {
     }
 
     render() {
-
-        if (this.props.cardList && this.props.cardList[0]) {
-            const { expiryDate } = this.props.cardList[0]
-
-            if (expiryDate) {
-                let de = new Date(expiryDate)
-                
-                console.log('date ----', de.toLocaleDateString())
-
-            }
-        }
-
-        var getCard = this.props.cardList && this.props.cardList.map(card => {
-            return (
-                <Card>
-                    {
+        if (this.props.cardList) {
+            var getCard = this.props.cardList.map(card => {
+                // var str = queryString.stringify(card);
+                return (
+                    <Card onClick={() => {this.props.setDefaultCard(card);this.props.history.push(`/checkout`)}}>
+                        {
                         this.state.editmode && this.state.currentCardId === card._id
                             ?
                             (
@@ -217,6 +208,8 @@ class UserCard extends Component {
                 </Card>
             )
         })
+    }
+
         return (
 
             <div>
@@ -262,10 +255,11 @@ Card.propTypes = {
     cardList: PropTypes.array.isRequired,
     getCard: PropTypes.func.isRequired,
     updateCard: PropTypes.func.isRequired,
+    setDefaultCard: PropTypes.func.isRequired
 }
 
 const mapStateToProps = state => ({
     cardList: state.customer.cardList
 })
 
-export default connect(mapStateToProps, { getCard, updateCard, deleteCard })(withRouter(UserCard));
+export default connect(mapStateToProps, { getCard, updateCard, deleteCard , setDefaultCard})(withRouter(UserCard));

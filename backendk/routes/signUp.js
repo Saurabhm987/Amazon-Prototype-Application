@@ -15,8 +15,16 @@ const hashPassword = (password) => {
 // Post /signUp/customer
 router.post('/customer', async (req, res) => {    
     try {   
-        const response = await signUpService.registerBuyer(req);
-        return res.status(response.status).json(response.body);
+  ///
+  req.type="registerBuyer"
+  await kafka.make_request('signup', req, async (err, data) => {
+    if (err) throw new Error(err)
+    await res.status(data.status).json(data.body);
+});
+///
+
+        // const response = await signUpService.registerBuyer(req);
+        // return res.status(response.status).json(response.body);
     } catch (err) {
         console.error(err.message);
         res.status(500).send('server error');        
@@ -27,9 +35,18 @@ router.post('/customer', async (req, res) => {
 // for seller, name param shoould also be unique
 router.post('/seller', async (req, res) => {
     try {   
-        const response = await signUpService.registerSeller(req);
+
+///
+req.type="registerSeller"
+await kafka.make_request('signup', req, async (err, data) => {
+  if (err) throw new Error(err)
+  await res.status(data.status).json(data.body);
+});
+///
+
+        // const response = await signUpService.registerSeller(req);
          //Success, send a jwt token back
-        return res.status(response.status).json(response.body);
+        // return res.status(response.status).json(response.body);
     } catch (err) {
         console.error(err.message);
         res.status(500).send('server error');        
@@ -39,9 +56,18 @@ router.post('/seller', async (req, res) => {
 // Post /signUp/admin
 router.post('/admin', async (req, res) => {
     try {   
-        const response = await signUpService.registerAdmin(req);
+
+        ///
+        req.type="registerAdmin"
+        await kafka.make_request('signup', req, async (err, data) => {
+        if (err) throw new Error(err)
+        await res.status(data.status).json(data.body);
+        });
+        ///
+
+        // const response = await signUpService.registerAdmin(req);
          //Success, send a jwt token back
-        return res.status(response.status).json(response.body);
+        // return res.status(response.status).json(response.body);
     } catch (err) {
         console.error(err.message);
         res.status(500).send('server error');        

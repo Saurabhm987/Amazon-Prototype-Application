@@ -56,6 +56,7 @@ exports.createNewOrder = async (req) => {
     try{
         const orderId = mongoose.Types.ObjectId();
         const buyerId = req.user.userId;
+        console.log(req);
         
         const ordersdata = req.body.map((item, index) => {
             item.orderId = orderId;
@@ -72,7 +73,7 @@ exports.createNewOrder = async (req) => {
             }];            
             return item;
         });
-        
+        console.log(ordersdata)
         let dbResp = await order.insertMany(ordersdata);
         return { "status": 200, body: dbResp };
     } catch (error) {
