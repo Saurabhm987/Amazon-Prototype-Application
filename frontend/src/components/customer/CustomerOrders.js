@@ -31,7 +31,7 @@ class CustomerOrders extends Component {
 
         const { activeItem } = this.state
         return (
-            <Container style={{ margin: '100px' }}>
+            <Container style={{minHeight: '400px', margin: '100px'}}>
                 <Menu attached='top' tabular>
                     <Menu.Item
                         name='All'

@@ -202,7 +202,7 @@ class Cart extends Component {
             cartlist = (<div >
                 {customercart.map((cartitem, index) => {
                     return (
-                        <div>
+                        <React.Fragment style={{minHeight: '400px'}}>
                         <Divider fitted />
 
                         <div style={{marginTop:'20px'}}>
@@ -285,7 +285,7 @@ class Cart extends Component {
                                     ${cartitem.gift ? (cartitem.productId.price * 105/100).toFixed(2) : cartitem.productId.price}
                                 </div>                            </Grid.Column>
                         </Grid>
-                        </div></div>
+                        </div></React.Fragment>
 
                     )
                 })}

@@ -265,7 +265,7 @@ class AdminDashboard extends Component {
 
 
         return (
-            <Container style={{ marginBottom: '20px' }}>
+            <Container style={{ marginBottom: '20px',minHeight: '400px' }}>
 
                 {/* Header Nav Bar */}
                 <div style={{ margin: '65px 0px 0px 0px' }}>
