@@ -138,7 +138,7 @@ class AdminDashboard extends Component {
         console.log(activeNavItem);
 
         if (activeNavItem == 'Manage Inventory') {
-            contentPage = (<Header>Products Page PENDING!</Header>)
+            this.props.history.push('/dashboard')
         }
 
         else if (activeNavItem == 'SELLERS') {
