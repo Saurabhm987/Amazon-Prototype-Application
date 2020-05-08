@@ -27,8 +27,10 @@ class Checkout extends Component {
 
         };
     }
+    
     createOrder = (address, card) => {
         try {
+            console.log(this.props.cart)
             const orderArray = []
             this.props.cart.map(cart => {
                 let tempOrder = {
@@ -43,12 +45,13 @@ class Checkout extends Component {
                     billingAddress: { ...address, 'name': this.state.name }
                 }
                 orderArray.push(tempOrder)
-                console.log(tempOrder)
+                
             })
-            this.props.createNewOrder(orderArray)
+            return orderArray
         }
         catch (e) {
             console.log(e);
+            return []
 
         }
 
@@ -172,7 +175,7 @@ class Checkout extends Component {
                                 <br />
                                 <Link to='/' className="nav-link" >
                                     <Button
-                                        onClick={this.createOrder(address, card)}
+                                        onClick={() => this.props.createNewOrder(this.createOrder(address, card))}
                                         color='yellow'
                                         size='medium'
                                         style={{ border: "solid 1px black" }}>
